@@ -23,6 +23,22 @@ public class Employee {
 
     }
 
+    public int getExpLvl() {
+        return expLvl;
+    }
+    public int[] getDepartments() {
+        return departments;
+    }
+    public Preference[] getPref() {
+        return pref;
+    }
+    public int getWeeklyHrs() {
+        return weeklyHrs;
+    }
+    public String getName() {
+        return name;
+    }
+
     public String toString() {
         String s = "name: " + name + ", id: " + id + ", dep: [";
         for (int i = 0; i < departments.length; i++) {

@@ -1,5 +1,5 @@
 package app.program.controller;
-import app.program.View;
+import app.program.App;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
@@ -8,6 +8,6 @@ public class PrimaryController {
 
     @FXML
     private void switchToSecondary() throws IOException {
-        View.setRoot("secondary");
+        App.setRoot("secondary");
     }
 }

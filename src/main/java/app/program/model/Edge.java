@@ -21,6 +21,29 @@ public class Edge {
         edgeIndex = totalEdges - 1;
     }
 
+    public Edge(int type, Vertex frm, Vertex to, int cap, int weight, int lowerBound) {
+        this.type = type;
+        this.frm = frm;
+        this.to = to;
+        this.cap = cap;
+        this.weight = weight;
+        this.lowerBound = lowerBound;
+        totalEdges++;
+        edgeIndex = totalEdges - 1;
+    }
+
+    public Edge(int type, Vertex frm, Vertex to, int cap, Edge counterpart, int weight, int lowerBound) {
+        this.type = type;
+        this.frm = frm;
+        this.to = to;
+        this.cap = cap;
+        this.counterpart = counterpart;
+        this.weight = weight;
+        this.lowerBound = lowerBound;
+        totalEdges++;
+        edgeIndex = totalEdges - 1;
+    }
+
     public void addFlow(int flow) {
         if (this.type == 0) {
             this.flow += flow;
@@ -32,6 +55,10 @@ public class Edge {
 
     public void addToCap(int cap) {
         this.cap += cap;
+    }
+
+    public void setCounterpart(Edge e) {
+        this.counterpart = e;
     }
 
     public String toString() {

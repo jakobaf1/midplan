@@ -9,7 +9,7 @@ public class Shift {
         this.endTime = endTime;
     }
 
-    public boolean sameShift(Shift shift1, Shift shift2) {
+    public static boolean sameShift(Shift shift1, Shift shift2) {
         return (shift1.getStartTime() == shift2.getStartTime()) && (shift1.getEndTime() == shift2.getEndTime());
     }
 
@@ -21,11 +21,15 @@ public class Shift {
         }
     }
 
-    private int getEndTime() {
+    public int getEndTime() {
         return endTime;
     }
 
-    private int getStartTime() {
+    public int getStartTime() {
         return startTime;
+    }
+
+    public String toString() {
+        return startTime + "-" + endTime;
     }
 }

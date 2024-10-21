@@ -17,27 +17,82 @@ public class Vertex {
     private int exp;
     private String name;
 
-    public Vertex(int purpose, int day, String name) {
+    public Vertex(int purpose, String name) {
+        this.purpose = purpose;
+        this.name = name;
+        this.inGoing = new ArrayList<>();
+        this.outGoing = new ArrayList<>();
+        totalVertices++;
+        this.vertexIndex = totalVertices-1;
+    }
+
+    public Vertex(int purpose, String name, int day) {
         this.purpose = purpose;
         this.day = day;
         this.name = name;
+        
         this.inGoing = new ArrayList<>();
         this.outGoing = new ArrayList<>();
         totalVertices++;
         this.vertexIndex = totalVertices-1;
     }
 
-    public Vertex(int purpose, Employee emp, String name) {
+    public Vertex(int purpose, String name, Employee emp) {
         this.purpose = purpose;
         this.emp = emp;
         this.name = name;
+
         this.inGoing = new ArrayList<>();
         this.outGoing = new ArrayList<>();
         totalVertices++;
         this.vertexIndex = totalVertices-1;
     }
 
-// More to come...
+    public Vertex(int purpose, String name, Shift shift) {
+        this.purpose = purpose;
+        this.shift = shift;
+        this.name = name;
+
+        this.inGoing = new ArrayList<>();
+        this.outGoing = new ArrayList<>();
+        totalVertices++;
+        this.vertexIndex = totalVertices-1;
+    }
+
+    public Vertex(int purpose, String name, int dep, int timeOfDay) {
+        this.purpose = purpose;
+        this.name = name;
+        this.dep = dep;
+        this.timeOfDay = timeOfDay;
+
+        this.inGoing = new ArrayList<>();
+        this.outGoing = new ArrayList<>();
+        totalVertices++;
+        this.vertexIndex = totalVertices-1;
+    }
+
+    public Vertex(int purpose, String name, int dep, int timeOfDay, int exp) {
+        this.purpose = purpose;
+        this.name = name;
+        this.dep = dep;
+        this.timeOfDay = timeOfDay;
+        this.exp = exp;
+
+        this.inGoing = new ArrayList<>();
+        this.outGoing = new ArrayList<>();
+        totalVertices++;
+        this.vertexIndex = totalVertices-1;
+    }
+
+
+    public ArrayList<Edge> getInGoing() {
+        return inGoing;
+    }
+
+    public ArrayList<Edge> getOutGoing() {
+        return outGoing;
+    }
+
 
     public void addInGoing(Edge e) {
         this.inGoing.add(e);
@@ -48,7 +103,7 @@ public class Vertex {
     }
 
     public String toString() {
-        if (this.purpose == 5) {
+        if (this.purpose == 4) {
             switch (this.name) {
                 case "0_0_0":
                     return "( day_lab_1 )";
@@ -75,7 +130,7 @@ public class Vertex {
                 case "2_1_1":
                     return "( night_mat_2 )";
             }
-        } else if (this.purpose == 6) {
+        } else if (this.purpose == 5) {
             if (this.name.contains("0_0")) {
                 return "( lab_day"+this.name.substring(3)+" )";
             }
