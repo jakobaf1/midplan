@@ -38,6 +38,12 @@ public class Employee {
     public String getName() {
         return name;
     }
+    public int getEmpIndex() {
+        return empIndex;
+    }
+    public String getID() {
+        return id;
+    }
 
     public String toString() {
         String s = "name: " + name + ", id: " + id + ", dep: [";

@@ -61,6 +61,38 @@ public class Edge {
         this.counterpart = e;
     }
 
+    public int getTotalEdges() {
+        return totalEdges;
+    }
+
+    public Vertex getTo() {
+        return to;
+    }
+
+    public int getCap() {
+        return cap;
+    }
+
+    public int getFlow() {
+        return flow;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+    public Vertex getFrm() {
+        return frm;
+    }
+    public int getType() {
+        return type;
+    }
+    public Edge getCounterpart() {
+        return counterpart;
+    }
+    public int getLowerBound() {
+        return lowerBound;
+    }
+
     public String toString() {
         if (this.type == 0) {
             return this.frm + " -- (" + this.flow +"/" + this.cap +", w="+this.weight+", lw_b = "+this.lowerBound+" --> "+this.to;

@@ -9,9 +9,9 @@ public class Vertex {
     private ArrayList<Edge> inGoing;
     private ArrayList<Edge> outGoing;
     private int purpose;
-    private int day;
-    private Employee emp;
-    private Shift shift;
+    private int day = -1;
+    private Employee emp = null;
+    private Shift shift = null;
     private int timeOfDay;
     private int dep;
     private int exp;
@@ -84,6 +84,17 @@ public class Vertex {
         this.vertexIndex = totalVertices-1;
     }
 
+    public void addInGoing(Edge e) {
+            this.inGoing.add(e);
+        }
+
+    public void addOutGoing(Edge e) {
+        this.outGoing.add(e);
+    }
+
+
+
+
 
     public ArrayList<Edge> getInGoing() {
         return inGoing;
@@ -93,60 +104,76 @@ public class Vertex {
         return outGoing;
     }
 
-
-    public void addInGoing(Edge e) {
-        this.inGoing.add(e);
+    public int getTotalVertices() {
+        return totalVertices;
     }
 
-    public void addOutGoing(Edge e) {
-        this.outGoing.add(e);
+    public int getVertexIndex() {
+        return vertexIndex;
     }
+
+    public Employee getEmp() {
+        return emp;
+    }
+    public Shift getShift() {
+        return shift;
+    }
+    public int getDay() {
+        return day;
+    }
+    public int getPurpose() {
+        return purpose;
+    }
+    public int getDep() {
+        return dep;
+    }
+    
 
     public String toString() {
         if (this.purpose == 4) {
             switch (this.name) {
-                case "0_0_0":
-                    return "( day_lab_1 )";
                 case "0_0_1":
+                    return "( day_lab_1 )";
+                case "0_0_2":
                     return "( day_lab_2 )";
-                case "0_1_0":
-                    return "( day_mat_1 )";
                 case "0_1_1":
+                    return "( day_mat_1 )";
+                case "0_1_2":
                     return "( day_mat_2 )";
-                case "1_0_0":
-                    return "( eve_lab_1 )";
                 case "1_0_1":
+                    return "( eve_lab_1 )";
+                case "1_0_2":
                     return "( eve_lab_2 )";
-                case "1_1_0":
-                    return "( eve_mat_1 )";
                 case "1_1_1":
+                    return "( eve_mat_1 )";
+                case "1_1_2":
                     return "( eve_mat_2 )";
-                case "2_0_0":
-                    return "( night_lab_1 )";
                 case "2_0_1":
+                    return "( night_lab_1 )";
+                case "2_0_2":
                     return "( night_lab_2 )";
-                case "2_1_0":
-                    return "( night_mat_1 )";
                 case "2_1_1":
+                    return "( night_mat_1 )";
+                case "2_1_2":
                     return "( night_mat_2 )";
             }
         } else if (this.purpose == 5) {
-            if (this.name.contains("0_0")) {
+            if (this.name.substring(0,3).equals("0_0")) {
                 return "( lab_day"+this.name.substring(3)+" )";
             }
-            if (this.name.contains("0_1")) {
+            if (this.name.substring(0,3).equals("0_1")) {
                 return "( lab_eve"+this.name.substring(3)+" )";
             }
-            if (this.name.contains("0_2")) {
+            if (this.name.substring(0,3).equals("0_2")) {
                 return "( lab_night"+this.name.substring(3)+" )";
             }
-            if (this.name.contains("1_0")) {
+            if (this.name.substring(0,3).equals("1_0")) {
                 return "( mat_day"+this.name.substring(3)+" )";
             }
-            if (this.name.contains("1_1")) {
+            if (this.name.substring(0,3).equals("1_1")) {
                 return "( mat_eve"+this.name.substring(3)+" )";
             }
-            if (this.name.contains("1_2")) {
+            if (this.name.substring(0,3).equals("1_2")) {
                 return "( mat_night"+this.name.substring(3)+" )";
             }
         }

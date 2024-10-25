@@ -65,13 +65,13 @@ public class App extends Application {
                             pref.setDate(LocalDate.of(year, month, day));
                         } else if (line.contains("day")) {
                             switch (line.substring(5).trim().toLowerCase()) {
-                                case "monday": pref.setDay(0); break;
-                                case "tuesday": pref.setDay(1); break;
-                                case "wednesday": pref.setDay(2); break;
-                                case "thursday": pref.setDay(3); break;
-                                case "friday": pref.setDay(4); break;
-                                case "saturday": pref.setDay(5); break;
-                                case "sunday": pref.setDay(6); break;
+                                case "monday": pref.setDay(1); break;
+                                case "tuesday": pref.setDay(2); break;
+                                case "wednesday": pref.setDay(3); break;
+                                case "thursday": pref.setDay(4); break;
+                                case "friday": pref.setDay(5); break;
+                                case "saturday": pref.setDay(6); break;
+                                case "sunday": pref.setDay(7); break;
                             }
                         } else if (line.contains("shifts:")) {
                             String[] shiftParts = line.substring(7).trim().split("-");
@@ -133,18 +133,38 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
+    
 
     public static void main(String[] args) {
         // launch();
         LocalDate date = LocalDate.now();
         long startTime = System.currentTimeMillis();
-        Shift[] shifts = {new Shift(7, 15), new Shift(15, 23), new Shift(23, 7), new Shift(7, 19), new Shift(19,7)};
+        Shift[] shifts = {new Shift(7, 15), new Shift(15, 23), new Shift(7, 19), new Shift(19,7), new Shift(23, 7)};
         FlowGraph fg = new FlowGraph(8, shifts, readEmployeeFile());
         fg.generateGraph(date);
+        System.out.println("total amount of vertices: " + fg.getS().getTotalVertices());
+        System.out.println("total amount of edges: " + fg.getS().getOutGoing().get(0).getTotalEdges());
+
+        int totalHours = 0;
+        for (Edge e : fg.getS().getOutGoing()) {
+            totalHours += e.getCap();
+        }
+        System.out.println("Employee hours add up to a total of: " + totalHours);
+        Algorithms algo = new Algorithms(fg);
+        int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
+        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
         long endTime = System.currentTimeMillis();
         System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
-        fg.printGraphSink();
+        
+        // fg.printPathsWithFlow(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        // fg.printRuleViolations(algo.getEmployeeShifts());
+        // fg.printShiftAssignments(algo.getEmployeeShifts());
 
+        // For test graph
+        // Vertex[] s_t = fg.makeExperimentalGraph();
+        // int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), 24, s_t[0], s_t[1]);
+        // fg.printPathsWithFlow(s_t[0], s_t[1], new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        // System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
     }
 
 }
