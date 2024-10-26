@@ -325,17 +325,31 @@ public class FlowGraph {
     public int setDayWeight(List<Preference> dailyPref) {
         for (Preference p : dailyPref) {
             if (p.getDay() != -1) {
+                // switch (p.getPrefLvl()) {
+                //     case 1:
+                //         return p.getWanted() ? 0 : Integer.MAX_VALUE;
+                //     case 2:
+                //         return p.getWanted() ? 0 : 2000;
+                //     case 3:
+                //         return p.getWanted() ? 750 : 1250;
+                //     case 4:
+                //         return p.getWanted() ? 950 : 1050;
+                //     case 5:
+                //         return p.getWanted() ? 995 : 1005;
+                //     default:
+                //         return 0;
+                // }
                 switch (p.getPrefLvl()) {
                     case 1:
-                        return p.getWanted() ? 0 : Integer.MAX_VALUE;
+                        return p.getWanted() ? -10000 : Integer.MAX_VALUE;
                     case 2:
-                        return p.getWanted() ? 0 : 2000;
+                        return p.getWanted() ? -1000 : 1000;
                     case 3:
-                        return p.getWanted() ? 750 : 1250;
+                        return p.getWanted() ? -250 : 250;
                     case 4:
-                        return p.getWanted() ? 950 : 1050;
+                        return p.getWanted() ? -50 : 50;
                     case 5:
-                        return p.getWanted() ? 995 : 1005;
+                        return p.getWanted() ? -5 : 5;
                     default:
                         return 0;
                 }
@@ -346,18 +360,32 @@ public class FlowGraph {
 
     public int setShiftWeight(List<Preference> dailyPref, Shift shift) {
         for (Preference p : dailyPref) {
-            if (Shift.sameShift(p.getShift(), shift)) {
+            if (shift.equals(p.getShift())) {
+                // switch (p.getPrefLvl()) {
+                //     case 1:
+                //         return p.getWanted() ? 0 : Integer.MAX_VALUE;
+                //     case 2:
+                //         return p.getWanted() ? 0 : 2000;
+                //     case 3:
+                //         return p.getWanted() ? 750 : 1250;
+                //     case 4:
+                //         return p.getWanted() ? 950 : 1050;
+                //     case 5:
+                //         return p.getWanted() ? 995 : 1005;
+                //     default:
+                //         return 0;
+                // }
                 switch (p.getPrefLvl()) {
                     case 1:
-                        return p.getWanted() ? 0 : Integer.MAX_VALUE;
+                        return p.getWanted() ? -10000 : Integer.MAX_VALUE;
                     case 2:
-                        return p.getWanted() ? 0 : 2000;
+                        return p.getWanted() ? -1000 : 1000;
                     case 3:
-                        return p.getWanted() ? 750 : 1250;
+                        return p.getWanted() ? -250 : 250;
                     case 4:
-                        return p.getWanted() ? 950 : 1050;
+                        return p.getWanted() ? -50 : 50;
                     case 5:
-                        return p.getWanted() ? 995 : 1005;
+                        return p.getWanted() ? -5 : 5;
                     default:
                         return 0;
                 }
@@ -392,42 +420,91 @@ public class FlowGraph {
     public Vertex[] makeExperimentalGraph() {
         Vertex s = new Vertex(0, "source");
         Vertex t = new Vertex(6, "sink");
-        Vertex e1 = new Vertex(1, "E1", new Employee("E1", "E1", null, 12, 0, null));
-        Vertex e2 = new Vertex(1, "E2", new Employee("E2", "E2", null, 12, 0, null));
+        // employee nodes
+        Vertex e1 = new Vertex(1, "E1", new Employee("E1", "E1", null, 16, 0, null));
+        Vertex e2 = new Vertex(1, "E2", new Employee("E2", "E2", null, 16, 0, null));
         addEdge(s, e1, e1.getEmp().getWeeklyHrs(), 0, 8);
-        addEdge(s, e2, e2.getEmp().getWeeklyHrs(), 0, 8);
+        // addEdge(s, e2, e2.getEmp().getWeeklyHrs(), 0, 8);
+        // day nodes emp1
+        Vertex d1e1 = new Vertex(2, "day1", 1);
+        Vertex d2e1 = new Vertex(2, "day2", 2);
+        addEdge(e1, d1e1, 12, 0, 0);
+        addEdge(e1, d2e1, 12, 0, 0);
+        // day nodes emp2
+        Vertex d1e2 = new Vertex(2, "day1", 1);
+        Vertex d2e2 = new Vertex(2, "day2", 2);
+        addEdge(e2, d1e2, 12, 0, 0);
+        addEdge(e2, d2e2, 12, 0, 0);
+
+        // shift nodes
+        // day 1, emp 1
         Vertex s1 = new Vertex(3, "7-19", new Shift(7, 19));
         Vertex s2 = new Vertex(3, "7-15", new Shift(7, 15));
         Vertex s3 = new Vertex(3, "15-23", new Shift(15, 23));
-        addEdge(e1, s1, s1.getShift().calcHours(), 0, 8);
-        addEdge(e1, s2, s2.getShift().calcHours(), 0, 8);
-        addEdge(e1, s3, s3.getShift().calcHours(), 0, 8);
-
+        addEdge(d1e1, s1, s1.getShift().calcHours(), 0, 8);
+        addEdge(d1e1, s2, s2.getShift().calcHours(), 0, 8);
+        addEdge(d1e1, s3, s3.getShift().calcHours(), 0, 8);
+        // day 2, emp 1
+        Vertex s12 = new Vertex(3, "7-19", new Shift(7, 19));
+        Vertex s22 = new Vertex(3, "7-15", new Shift(7, 15));
+        Vertex s32 = new Vertex(3, "15-23", new Shift(15, 23));
+        addEdge(d2e1, s12, s12.getShift().calcHours(), 0, 8);
+        addEdge(d2e1, s22, s22.getShift().calcHours(), 0, 8);
+        addEdge(d2e1, s32, s32.getShift().calcHours(), 0, 8);
+        
+        // day 1, emp 2
         Vertex s4 = new Vertex(3, "7-19", new Shift(7, 19));
         Vertex s5 = new Vertex(3, "7-15", new Shift(7, 15));
         Vertex s6 = new Vertex(3, "15-23", new Shift(15, 23));
-        addEdge(e2, s4, s1.getShift().calcHours(), 0, 8);
-        addEdge(e2, s5, s2.getShift().calcHours(), 0, 8);
-        addEdge(e2, s6, s3.getShift().calcHours(), 0, 8);
+        addEdge(d1e2, s4, s1.getShift().calcHours(), 0, 8);
+        addEdge(d1e2, s5, s2.getShift().calcHours(), 0, 8);
+        addEdge(d1e2, s6, s3.getShift().calcHours(), 0, 8);
 
-        Vertex t1 = new Vertex(5, "0_0", 0, 0);
-        Vertex t2 = new Vertex(5, "0_1", 0, 1);
-        addEdge(s1, t1, 8, 0, 8);
-        addEdge(s1, t2, 4, 0, 4);
-        addEdge(s2, t1, 8, 0, 8);
-        addEdge(s3, t2, 8, 0, 8);
+        // day 2, emp 2
+        Vertex s42 = new Vertex(3, "7-19", new Shift(7, 19));
+        Vertex s52 = new Vertex(3, "7-15", new Shift(7, 15));
+        Vertex s62 = new Vertex(3, "15-23", new Shift(15, 23));
+        addEdge(d2e2, s42, s42.getShift().calcHours(), 0, 8);
+        addEdge(d2e2, s52, s52.getShift().calcHours(), 0, 8);
+        addEdge(d2e2, s62, s62.getShift().calcHours(), 0, 8);
 
-        Vertex t3 = new Vertex(5, "0_0", 0, 0);
-        Vertex t4 = new Vertex(5, "0_1", 0, 1);
-        addEdge(s4, t3, 8, 0, 8);
-        addEdge(s4, t4, 4, 0, 4);
-        addEdge(s5, t3, 8, 0, 8);
-        addEdge(s6, t4, 8, 0, 8);
+        // time of day nodes emp 1
+        Vertex d1t1 = new Vertex(5, "0_0", 0, 0);
+        Vertex d1t2 = new Vertex(5, "0_1", 0, 1);
+        Vertex d2t1 = new Vertex(5, "0_0", 0, 0);
+        Vertex d2t2 = new Vertex(5, "0_1", 0, 1);
+        addEdge(s1, d1t1, 8, 0, 8);
+        addEdge(s1, d1t2, 4, 0, 4);
+        addEdge(s2, d1t1, 8, 0, 8);
+        addEdge(s3, d1t2, 8, 0, 8);
+        addEdge(s12, d2t1, 8, 0, 8);
+        addEdge(s12, d2t2, 4, 0, 4);
+        addEdge(s22, d2t1, 8, 0, 8);
+        addEdge(s32, d2t2, 8, 0, 8);
 
-        addEdge(t1, t, 12, 0, 0);
-        addEdge(t2, t, 12, 0, 0);
-        addEdge(t3, t, 12, 0, 0);
-        addEdge(t4, t, 12, 0, 0);
+        // time of day nodes emp 2
+        Vertex d1t3 = new Vertex(5, "0_0", 0, 0);
+        Vertex d1t4 = new Vertex(5, "0_1", 0, 1);
+        Vertex d2t3 = new Vertex(5, "0_0", 0, 0);
+        Vertex d2t4 = new Vertex(5, "0_1", 0, 1);
+        addEdge(s4, d1t3, 8, 0, 8);
+        addEdge(s4, d1t4, 4, 0, 4);
+        addEdge(s5, d1t3, 8, 0, 8);
+        addEdge(s6, d1t4, 8, 0, 8);
+        addEdge(s42, d2t3, 8, 0, 8);
+        addEdge(s42, d2t4, 4, 0, 4);
+        addEdge(s52, d2t3, 8, 0, 8);
+        addEdge(s62, d2t4, 8, 0, 8);
+
+        // link time of day to sink
+        addEdge(d1t1, t, 12, 0, 0);
+        addEdge(d1t2, t, 12, 0, 0);
+        addEdge(d1t3, t, 12, 0, 0);
+        addEdge(d1t4, t, 12, 0, 0);
+        addEdge(d2t1, t, 12, 0, 0);
+        addEdge(d2t2, t, 12, 0, 0);
+        addEdge(d2t3, t, 12, 0, 0);
+        addEdge(d2t4, t, 12, 0, 0);
 
         Vertex[] v = {s,t};
         return v;

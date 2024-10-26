@@ -13,6 +13,147 @@ public class Algorithms {
         this.employeeShifts = new Shift[fg.getEmps().length][fg.getDaysInPeriod()];
     }
 
+    // Breadth-First-Search version 1 (standard)
+    public boolean bfsV1(Vertex s, Vertex t, Edge[] parentEdges, boolean[] nodesVisited) {
+        Queue<Vertex> q = new LinkedList<>();
+        for (int i = 0; i < nodesVisited.length; i++) {
+            nodesVisited[i] = false;
+            parentEdges[i] = null;
+        }
+
+        nodesVisited[s.getVertexIndex()] = true;
+        q.add(s);
+
+        while (!q.isEmpty()) {
+            Vertex node = q.remove();
+            for (Edge e : node.getOutGoing()) {
+                if (!nodesVisited[e.getTo().getVertexIndex()] && (e.getCap() - e.getFlow()) > 0) {
+                    q.add(e.getTo());
+                    nodesVisited[e.getTo().getVertexIndex()] = true;
+                    parentEdges[e.getTo().getVertexIndex()] = e;
+                }
+                if (nodesVisited[t.getVertexIndex()]) return true;
+            }
+        }
+        return false;
+    }
+
+    // Breadth-First-Search Version 2 (holds lower bounds)
+    // TODO: need to work on the backwards flow
+    public boolean bfsV2(Vertex s, Vertex t, Edge[] parentEdges, boolean[] nodesVisited) {
+        Queue<Vertex> q = new LinkedList<>();
+        int[][] minFlowMaxBound = new int[s.getTotalVertices()][2];
+        int[] backFlows = new int[s.getTotalVertices()];
+
+        for (int i = 0; i < nodesVisited.length; i++) {
+            nodesVisited[i] = false;
+            parentEdges[i] = null;
+            minFlowMaxBound[i][0] = Integer.MAX_VALUE;
+        }
+
+        nodesVisited[s.getVertexIndex()] = true;
+        q.add(s);
+
+        while (!q.isEmpty()) {
+            Vertex node = q.remove();
+            int minFlow = minFlowMaxBound[node.getVertexIndex()][0];
+            int maxBound = minFlowMaxBound[node.getVertexIndex()][1];
+            int backFlow = backFlows[node.getVertexIndex()];
+
+            for (Edge e : node.getOutGoing()) {
+                if (!nodesVisited[e.getTo().getVertexIndex()] && (e.getCap() - e.getFlow()) > 0  && checkLowerBoundConditions(e, minFlow, maxBound, backFlow)) {
+                    q.add(e.getTo());
+                    nodesVisited[e.getTo().getVertexIndex()] = true;
+                    parentEdges[e.getTo().getVertexIndex()] = e;
+
+                    if (e.getType() == 0) {
+                        minFlowMaxBound[e.getTo().getVertexIndex()][0] = Math.min(minFlow, e.getCap()-e.getFlow()+backFlow);
+                        minFlowMaxBound[e.getTo().getVertexIndex()][1] = Math.max(maxBound, e.getLowerBound()-e.getFlow());
+                    } else {
+                        minFlowMaxBound[e.getTo().getVertexIndex()][0] = Math.min(minFlow, minFlow);
+                        minFlowMaxBound[e.getTo().getVertexIndex()][1] = maxBound;
+                        backFlows[e.getTo().getVertexIndex()] = e.getCap()-minFlow;
+                    }
+                }
+                if (nodesVisited[t.getVertexIndex()]) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkLowerBoundConditions(Edge e, int minFlow, int maxBound, int backFlow) {
+        minFlow = Math.min(minFlow, e.getCap()-e.getFlow());
+        maxBound = Math.max(maxBound, e.getLowerBound()-e.getFlow());
+        if (e.getType() == 0) {
+            return backFlow + minFlow >= maxBound;
+        }
+        minFlow = Math.min(minFlow, e.getCap());
+        return (e.getCounterpart().getFlow() - minFlow) >= maxBound || ((e.getCounterpart().getFlow() - minFlow) == 0);
+    }
+
+    // Edmonds-Karp for max flow
+    // TODO: need to implement the backwards flow as well
+    public int edmondsKarpV2(Vertex s, Vertex t) {
+        Edge[] parentEdges = new Edge[s.getOutGoing().get(0).getTotalEdges()];
+        int totalFlow = 0;
+        boolean[] nodesVisited = new boolean[s.getTotalVertices()];
+        int[] backFlows = new int[s.getTotalVertices()];
+
+        while (bfsV2(s, t, parentEdges, nodesVisited)) {
+            int bottleFlow = Integer.MAX_VALUE;
+            Vertex node = t;
+            while (node != s) {
+                Edge edge = parentEdges[node.getVertexIndex()];
+                bottleFlow = Math.min(bottleFlow, edge.getCap()-edge.getFlow()+backFlows[node.getVertexIndex()]); // I think there should be special circumstances for the backwards edges
+                node = parentEdges[node.getVertexIndex()].getFrm();
+            }
+
+            totalFlow += bottleFlow;
+
+            node = t;
+            while (node != s) {
+                Edge edge = parentEdges[node.getVertexIndex()];
+                edge.addFlow(bottleFlow); 
+                node = parentEdges[node.getVertexIndex()].getFrm();
+            }
+            // System.out.println("currently at " + ( (totalFlow/9224.0)*100.0) + "%");
+            markEmployeeShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        }
+        return totalFlow;
+    }
+
+    // Edmonds-Karp for max flow
+    public int edmondsKarp(Vertex s, Vertex t) {
+        Edge[] parentEdges = new Edge[s.getOutGoing().get(0).getTotalEdges()];
+        int totalFlow = 0;
+        boolean[] nodesVisited = new boolean[s.getTotalVertices()];
+
+        while (bfsV1(s, t, parentEdges, nodesVisited)) {
+            int bottleFlow = Integer.MAX_VALUE;
+            Vertex node = t;
+            while (node != s) {
+                Edge edge = parentEdges[node.getVertexIndex()];
+                bottleFlow = Math.min(bottleFlow, edge.getCap()-edge.getFlow());
+                node = parentEdges[node.getVertexIndex()].getFrm();
+            }
+
+            totalFlow += bottleFlow;
+
+            node = t;
+            while (node != s) {
+                Edge edge = parentEdges[node.getVertexIndex()];
+                edge.addFlow(bottleFlow);
+                node = parentEdges[node.getVertexIndex()].getFrm();
+            }
+            // System.out.println("currently at " + ( (totalFlow/9224.0)*100.0) + "%");
+            markEmployeeShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        }
+        return totalFlow;
+    }
+
+
+
+
     // Successive shortest path algorithm: V1 (Original)
     public void shortestPathsV1(int n, Vertex s, int[] dist, Edge[] parentEdges) {
         for (int i = 0; i < dist.length; i++) {
@@ -64,10 +205,12 @@ public class Algorithms {
             Vertex node = q.remove();
             inQ[node.getVertexIndex()] = false;
             for (Edge e : node.getOutGoing()) {
+                // System.out.println("Searching: " + e);
                 int minFlow = minFlowMaxBound[node.getVertexIndex()][0];
                 int maxBound = minFlowMaxBound[node.getVertexIndex()][1];
                 Vertex toNode = e.getTo();
                 if (e.getCap() - e.getFlow() > 0 && dist[toNode.getVertexIndex()] > dist[node.getVertexIndex()] + e.getWeight() && checkConditions(e, minFlow, maxBound)) {
+                    // System.out.println("Passed the conditions");
                     dist[toNode.getVertexIndex()] = dist[node.getVertexIndex()] + e.getWeight();
                     parentEdges[toNode.getVertexIndex()] = e;
 
@@ -75,7 +218,7 @@ public class Algorithms {
                         minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap()-e.getFlow());
                         minFlowMaxBound[toNode.getVertexIndex()][1] = Math.max(maxBound, e.getLowerBound()-e.getFlow());
                     } else {
-                        minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap());
+                        minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap()+minFlow);
                         minFlowMaxBound[toNode.getVertexIndex()][1] = maxBound;
                     }
 
@@ -93,9 +236,12 @@ public class Algorithms {
         minFlow = Math.min(minFlow, e.getCap()-e.getFlow());
         maxBound = Math.max(maxBound, e.getLowerBound()-e.getFlow());
         if (e.getType() == 0) {
+            // System.out.println("Checking whether: " + minFlow + " >= " + maxBound);
             return minFlow >= maxBound;
         }
         minFlow = Math.min(minFlow, e.getCap());
+        // System.out.println("Checking whether: " + (e.getCounterpart().getFlow() - minFlow) + " >= " + maxBound + " || " + (e.getCounterpart().getFlow() - minFlow) + " == 0");
+        // System.out.println("returning: " + ((e.getCounterpart().getFlow() - minFlow) >= maxBound || ((e.getCounterpart().getFlow() - minFlow) == 0)));
         return (e.getCounterpart().getFlow() - minFlow) >= maxBound || ((e.getCounterpart().getFlow() - minFlow) == 0);
     }
 
@@ -313,7 +459,7 @@ public class Algorithms {
         Edge[] parentEdges = new Edge[n];
 
         while (totalFlow < k) {
-            shortestPathsV2(n, s, dist, parentEdges);
+            shortestPathsV1(n, s, dist, parentEdges);
             if (dist[t.getVertexIndex()] == Integer.MAX_VALUE) break;
             
             int bottleFlow = Integer.MAX_VALUE;

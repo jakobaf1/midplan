@@ -139,7 +139,7 @@ public class App extends Application {
         // launch();
         LocalDate date = LocalDate.now();
         long startTime = System.currentTimeMillis();
-        Shift[] shifts = {new Shift(7, 15), new Shift(15, 23), new Shift(7, 19), new Shift(19,7), new Shift(23, 7)};
+        Shift[] shifts = {new Shift(7, 19), new Shift(19,7), new Shift(7, 15), new Shift(15, 23), new Shift(23, 7)};
         FlowGraph fg = new FlowGraph(8, shifts, readEmployeeFile());
         fg.generateGraph(date);
         System.out.println("total amount of vertices: " + fg.getS().getTotalVertices());
@@ -153,6 +153,8 @@ public class App extends Application {
         Algorithms algo = new Algorithms(fg);
         int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
         System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
+        // int maxFlow = algo.edmondsKarp(fg.getS(), fg.getT());
+        // System.out.println("Max flow: " + maxFlow);
         long endTime = System.currentTimeMillis();
         System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
         
@@ -163,8 +165,12 @@ public class App extends Application {
         // For test graph
         // Vertex[] s_t = fg.makeExperimentalGraph();
         // int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), 24, s_t[0], s_t[1]);
+        // int maxFlow = algo.edmondsKarp(s_t[0], s_t[1]);
         // fg.printPathsWithFlow(s_t[0], s_t[1], new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        // System.out.println("Max flow: " + maxFlow);
         // System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
+
+        
     }
 
 }

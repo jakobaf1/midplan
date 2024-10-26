@@ -45,6 +45,11 @@ public class Employee {
         return id;
     }
 
+    public boolean equals(Employee e) {
+        return this.name == e.getName() && this.id == e.getID() && this.departments == e.getDepartments() && 
+        this.weeklyHrs == e.getWeeklyHrs() && this.expLvl == e.getExpLvl() && this.pref == e.getPref() && this.empIndex == e.getEmpIndex();
+    }
+
     public String toString() {
         String s = "name: " + name + ", id: " + id + ", dep: [";
         for (int i = 0; i < departments.length; i++) {

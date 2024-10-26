@@ -9,9 +9,7 @@ public class Shift {
         this.endTime = endTime;
     }
 
-    public static boolean sameShift(Shift shift1, Shift shift2) {
-        return (shift1.getStartTime() == shift2.getStartTime()) && (shift1.getEndTime() == shift2.getEndTime());
-    }
+    
 
     public int calcHours() {
         if (endTime > startTime) {
@@ -27,6 +25,10 @@ public class Shift {
 
     public int getStartTime() {
         return startTime;
+    }
+
+    public boolean equals(Shift shift1) {
+            return (shift1.getStartTime() == this.startTime) && (shift1.getEndTime() == this.endTime);
     }
 
     public String toString() {
