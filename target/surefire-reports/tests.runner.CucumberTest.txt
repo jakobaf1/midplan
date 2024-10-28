@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------
 Test set: tests.runner.CucumberTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.335 s -- in tests.runner.CucumberTest
+Tests run: 11, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.453 s <<< FAILURE! -- in tests.runner.CucumberTest
+Checking whether preferences are handled.Graph has no edges to unwanted shifts on certain days -- Time elapsed: 0.016 s <<< FAILURE!
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at app.program/tests.steps.TestSteps.other_shifts_on_the_same_day_are_still_present(TestSteps.java:650)
+	at ✽.other shifts on the same day are still present(file:///c:/Users/jakob/Documents/DTU/3_year/Bachelor/midplan/src/test/java/resources/features/Preferences.feature:60)
+

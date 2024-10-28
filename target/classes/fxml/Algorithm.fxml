@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<TabPane prefHeight="640.0" prefWidth="740.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.program.controller.AlgorithmController">
+   <tabs>
+      <Tab text="Algorithm">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="606.0" prefWidth="82.0" style="-fx-background-color: #bfbfbf;">
+               <children>
+                  <GridPane gridLinesVisible="true" layoutX="506.0" layoutY="14.0" minWidth="180.0" prefHeight="566.0" prefWidth="200.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="189.0" prefWidth="248.0" GridPane.rowIndex="1">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Solvers" textAlignment="CENTER" wrappingWidth="196.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Button fx:id="minCostMaxFlowButton" alignment="CENTER" mnemonicParsing="false" onAction="#runMinCostAlgorithm" prefHeight="25.0" prefWidth="175.0" text="MinCost-MaxFlow" textAlignment="CENTER">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+                                 </VBox.margin>
+                              </Button>
+                              <Button fx:id="expGraphButton" alignment="CENTER" mnemonicParsing="false" onAction="#testExpGraph" prefHeight="25.0" prefWidth="178.0" text="Experimental Graph" textAlignment="CENTER">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                 </VBox.margin>
+                              </Button>
+                           </children>
+                        </VBox>
+                        <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Runtime" textAlignment="CENTER" wrappingWidth="197.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="20.0" />
+                                 </VBox.margin>
+                              </Text>
+                              <Label fx:id="runTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox minWidth="180.0" prefHeight="189.0" prefWidth="240.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Results" textAlignment="CENTER" wrappingWidth="199.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="32.0" prefWidth="180.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Flow:" textAlignment="CENTER" wrappingWidth="87.13134765625">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Text>
+                                    <Label fx:id="flowLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                       <font>
+                                          <Font name="System Bold" size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="10.0" right="10.0" top="20.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cost:" wrappingWidth="55.13134765625">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Text>
+                                    <Label fx:id="costLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                       <font>
+                                          <Font name="System Bold" size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </GridPane>
+                  <TabPane layoutY="15.0" prefHeight="565.0" prefWidth="503.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Paths">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Shift Assignments">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="451.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab text="Employees">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="580.0" prefWidth="740.0" snapToPixel="false">
+               <children>
+                  <ListView fx:id="employeeList" layoutX="59.0" layoutY="71.0" prefHeight="511.0" prefWidth="258.0" />
+                  <Label fx:id="costLabel1" alignment="CENTER" layoutX="59.0" layoutY="21.0" prefHeight="43.0" prefWidth="259.0" text="Employees" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="costLabel11" alignment="CENTER" layoutX="430.0" layoutY="21.0" prefHeight="43.0" prefWidth="259.0" text="Employee data" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <VBox layoutX="387.0" layoutY="72.0" minWidth="180.0" prefHeight="467.0" prefWidth="328.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="346.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" wrappingWidth="66.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Label fx:id="nameLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Id:" wrappingWidth="39.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Label fx:id="idLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Departments:" wrappingWidth="128.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Label fx:id="departmentsLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Weekly hours:" wrappingWidth="136.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Label fx:id="hoursLabel" prefHeight="30.0" prefWidth="185.0" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Experience Level:" wrappingWidth="162.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Label fx:id="experienceLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Preferences:" wrappingWidth="101.13134765625">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Label fx:id="preferencesLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <Button layoutX="617.0" layoutY="552.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="98.0" text="Add Preference" />
+               </children></AnchorPane>
+         </content>
+      </Tab>
+      <Tab text="Info">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+         </content>
+      </Tab>
+   </tabs>
+</TabPane>

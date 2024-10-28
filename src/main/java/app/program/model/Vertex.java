@@ -14,7 +14,7 @@ public class Vertex {
     private Shift shift = null;
     private int timeOfDay;
     private int dep;
-    private int exp;
+    private int expLvl;
     private String name;
 
     public Vertex(int purpose, String name) {
@@ -76,7 +76,7 @@ public class Vertex {
         this.name = name;
         this.dep = dep;
         this.timeOfDay = timeOfDay;
-        this.exp = exp;
+        this.expLvl = exp;
 
         this.inGoing = new ArrayList<>();
         this.outGoing = new ArrayList<>();
@@ -126,6 +126,9 @@ public class Vertex {
     }
     public int getDep() {
         return dep;
+    }
+    public int getExpLvl() {
+        return expLvl;
     }
     
 

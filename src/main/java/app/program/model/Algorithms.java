@@ -10,7 +10,9 @@ public class Algorithms {
 
     public Algorithms(FlowGraph fg) {
         this.fg = fg;
-        this.employeeShifts = new Shift[fg.getEmps().length][fg.getDaysInPeriod()];
+        // this.employeeShifts = new Shift[fg.getEmps().length][fg.getDaysInPeriod()];
+        // The following is just for the sake of tests, and should probably find a better solution
+        this.employeeShifts = new Shift[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
     }
 
     // Breadth-First-Search version 1 (standard)

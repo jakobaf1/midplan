@@ -1,7 +1,7 @@
 package app.program.model;
 
 public class Edge {
-    private static int totalEdges = 0;
+    private int totalEdges = 0;
     private int edgeIndex = -1;
     private int type = 0;
     private Vertex frm = null;
@@ -91,6 +91,9 @@ public class Edge {
     }
     public int getLowerBound() {
         return lowerBound;
+    }
+    public int getEdgeIndex() {
+        return edgeIndex;
     }
 
     public String toString() {

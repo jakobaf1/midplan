@@ -14,6 +14,7 @@ public class FlowGraph {
     private int daysInPeriod = periodInWeeks*7;
     private Vertex s = new Vertex(0, "s");
     private Vertex t = new Vertex(6, "t");
+    private LocalDate startDate;
 
     private Shift[] shifts;
     private Employee[] emps;
@@ -27,6 +28,7 @@ public class FlowGraph {
     public void generateGraph(LocalDate startDate) {
         // Initialize the date for which the roster begins
         LocalDate date = startDate;
+        this.startDate = startDate;
         // Used to bind edges
         Vertex[][] sharedNodes = new Vertex[daysInPeriod][2*3*2]; // 2 is the amount of departments, 3 times of day and 2 exp levels in the model
 
@@ -252,7 +254,7 @@ public class FlowGraph {
                     int firstDay = 0;
                     int weekDay = date.getDayOfWeek().getValue();
 
-                    // find out what day of the week the schefule starts
+                    // find out what day of the week the schedule starts
                     if (p.getDay() == weekDay) {
                         firstDay = 0;
                     } else if (p.getDay() < weekDay) {
@@ -260,48 +262,9 @@ public class FlowGraph {
                     } else {
                         firstDay = p.getDay()-weekDay;
                     }
-
-                    // TODO: Dunno if the following will be relevant
-                    // if (p.getRepeat() != -1) {
-                    //     int startingWeek = 0;
-                        // switch (p.getRepeat()) {
-                            // case 0: // daily
-                            //      for (int i = 0; i < days, i++) {
-                            //          dayPreferences.get(i).add(p);
-                            //      }
-                            // case 1: // weekly
-                                for (int i = firstDay; i < days; i += 7) {
-                                    shiftPreferences[i].add(p);
-                                }
-                            //     break;
-                            // case 2: // odd weeks
-                            //     date = date.plusDays(firstDay);
-                            //     startingWeek = week%2 == 1 ? 0 : 1;
-                            //     for (int i = firstDay+7*startingWeek; i < days; i += 14) {
-                            //         dayPreferences.get(i).add(p);
-                            //     }
-                            //     date = date.minusDays(firstDay);
-                            //     break;
-                            // case 3: // even weeks
-                            //     date = date.plusDays(firstDay);
-                            //     startingWeek = week%2 == 0 ? 0 : 1;
-                            //     for (int i = firstDay+7*startingWeek; i < days; i += 14) {
-                            //         dayPreferences.get(i).add(p);
-                            //     }
-                            //     date = date.minusDays(firstDay);
-                            //     break;
-                            // case 4: // tri-weekly
-                            //     // TODO
-                            //     break;
-                            // case 5: // monthly
-                            //     for (int i = firstDay; i < days; i += 28) {
-                            //         dayPreferences.get(i).add(p);
-                            //     }
-                            //     break;
-                            // default:
-                            //     break;
-                        // }
-                    // }   
+                    for (int i = firstDay; i < days; i += 7) {
+                        shiftPreferences[i].add(p);
+                    }  
                 } 
             }
 
@@ -599,6 +562,10 @@ public class FlowGraph {
 
     public Employee[] getEmps() {
         return emps;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
     }
         
 }
