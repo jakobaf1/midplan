@@ -474,7 +474,7 @@ public class TestSteps {
                 int week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
                 int weekDay = date.getDayOfWeek().getValue();
 
-                // find out what day of the week the schefule starts
+                // find out what day of the week the schedule starts
                 if (p.getDay() == weekDay) {
                     firstDay = 0;
                 } else if (p.getDay() < weekDay) {
@@ -562,7 +562,6 @@ public class TestSteps {
                     } else {
                         firstDay = p.getDay()-weekDay;
                     }
-
                     for (int i = firstDay; i < days; i += 7) {
                         unwantedShifts[i].add(p.getShift());
                     }
@@ -595,7 +594,7 @@ public class TestSteps {
         for (Edge e : fg.getS().getOutGoing()) {
             Vertex empNode = e.getTo();
             // make an array of the unwanted days
-            boolean[] unwantedDates = findUnwantedDates(empNode.getEmp());
+            boolean[] unwantedDates = findUnwantedDays(empNode.getEmp());
             
             for (Edge edge : empNode.getOutGoing()) {
                 if (edge.getType() == 1) continue;
@@ -604,28 +603,6 @@ public class TestSteps {
             }
             
         }
-    }
-
-    public boolean[] findUnwantedDates(Employee emp) {
-        if (emp.getPref() == null) return null;
-        LocalDate date = fg.getStartDate();
-        int days = fg.getDaysInPeriod();
-        boolean[] unwantedDates = new boolean[days];
-        for (Preference p : emp.getPref()) {
-            if (p.getDate() != null) {
-                int dayIndex = 0;
-                for (int i = 0; i < days; i++) {
-                    if (p.getDate() == date) {
-                        unwantedDates[dayIndex] = true;
-                        date = date.minusDays(dayIndex);
-                        break;
-                    }
-                    date = date.plusDays(1);
-                    dayIndex++;
-                }
-            }
-        }
-        return unwantedDates;
     }
 
     // scenario 2: Graph has no edges to unwanted shifts on certain days
@@ -643,11 +620,135 @@ public class TestSteps {
                     if (shiftEdge.getType() == 1) continue;
                     shiftsOnDay++;
                 }
-                System.out.println(shiftsOnDay + "==" + (shifts.length-unwantedShifts[dayEdge.getTo().getDay()].size()));
                 assertTrue(shiftsOnDay == (shifts.length-unwantedShifts[dayEdge.getTo().getDay()].size()));
             }
-            System.out.println(days + "==" + fg.getDaysInPeriod());
             assertTrue(days == fg.getDaysInPeriod());
+        }
+    }
+
+    @Then("edge weights properly reflect the preference level")
+    public void edge_weights_properly_reflect_the_preference_level() throws Exception {
+        for (Edge empEdge : fg.getS().getOutGoing()) {
+            Vertex empNode = empEdge.getTo();
+            boolean[] unwantedDays = findUnwantedDays(empNode.getEmp());
+            List<Shift>[] unwantedShifts = findUnwantedShifts(empNode.getEmp());
+            for (Edge dayEdge : empNode.getOutGoing()) {
+                if (dayEdge.getType() == 1) continue;
+                if (unwantedDays[dayEdge.getTo().getDay()] && unwantedShifts[dayEdge.getTo().getDay()].isEmpty()) {
+                    int prefLvl = getPrefLvl(empNode.getEmp(), dayEdge.getTo().getDay(), 0);
+                    if (prefLvl == 0) {
+                        assertTrue(dayEdge.getWeight() == 0);
+                    } else {
+                        assertTrue(checkWeight(dayEdge.getWeight(), prefLvl));
+                    }
+                } else {
+                    assertTrue(dayEdge.getWeight() == 0);
+                }
+                for (Edge shiftEdge : dayEdge.getTo().getOutGoing()) {
+                    if (shiftEdge.getType() == 1) continue;
+                    if (unwantedShifts[dayEdge.getTo().getDay()].isEmpty()) {
+                        assertTrue(shiftEdge.getWeight() == 0); 
+                        continue;
+                    }
+                    int prefLvl = getPrefLvl(empNode.getEmp(), dayEdge.getTo().getDay(), 1);
+                    if (prefLvl == 0) {
+                        assertTrue(dayEdge.getWeight() == 0);
+                    } else {
+                        assertTrue(checkWeight(dayEdge.getWeight(), prefLvl));
+                    }
+                }
+            }
+        }
+    }
+
+    public int getPrefLvl(Employee emp, int day, int type) throws Exception {
+        int prefLvl = 0;
+        for (Preference p : emp.getPref()) {
+            if (type == 0 && p.getShift() != null) continue;
+            if (p.getDate() != null) {
+                int prefDay = 0;
+                LocalDate date = fg.getStartDate();
+                while (date != p.getDate()) {
+                    prefDay++;
+                    date.plusDays(1);
+                    if (prefDay > fg.getDaysInPeriod()) throw new Exception("date not found");
+                }
+                if (prefDay == day) {
+                    prefLvl = p.getPrefLvl();
+                    break;
+                }
+            } else if (p.getDay() != -1) {
+                if (p.getRepeat() != -1) {
+                    int firstDay = 0;
+                    LocalDate date = fg.getStartDate();
+                    int week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+                    int weekDay = date.getDayOfWeek().getValue();
+
+                    // find out what day of the week the schedule starts
+                    if (p.getDay() == weekDay) {
+                        firstDay = 0;
+                    } else if (p.getDay() < weekDay) {
+                        firstDay = p.getDay()+7-weekDay;
+                    } else {
+                        firstDay = p.getDay()-weekDay;
+                    }
+
+                    int days = fg.getDaysInPeriod();
+                    if (p.getRepeat() != -1) {
+                        int startingWeek = 0;
+                        switch (p.getRepeat()) {
+                            case 1: // weekly
+                                for (int i = firstDay; i < days; i += 7) {
+                                    if (i == day) return p.getPrefLvl();
+                                }
+                                break;
+                            case 2: // odd weeks
+                                date = date.plusDays(firstDay);
+                                startingWeek = week%2 == 1 ? 0 : 1;
+                                for (int i = firstDay+7*startingWeek; i < days; i += 14) {
+                                    if (i == day) return p.getPrefLvl();
+                                }
+                                date = date.minusDays(firstDay);
+                                break;
+                            case 3: // even weeks
+                                date = date.plusDays(firstDay);
+                                startingWeek = week%2 == 0 ? 0 : 1;
+                                for (int i = firstDay+7*startingWeek; i < days; i += 14) {
+                                    if (i == day) return p.getPrefLvl();
+                                }
+                                date = date.minusDays(firstDay);
+                                break;
+                            case 4: // tri-weekly
+                                // TODO
+                                break;
+                            case 5: // monthly
+                                for (int i = firstDay; i < days; i += 28) {
+                                    if (i == day) return p.getPrefLvl();
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+            }
+        }
+        return prefLvl;
+    }
+
+    public boolean checkWeight(int weight, int prefLvl) throws Exception {
+        switch (prefLvl) {
+            case 2:
+                return weight == 1000;
+            case 3:
+                return weight == 250;
+            case 4:
+                return weight == 50;
+            case 5:
+                return weight == 5;
+            default:
+                throw new Exception("Unwanted weight encountered");
         }
     }
 

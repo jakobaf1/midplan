@@ -75,10 +75,10 @@ public class FlowGraph {
             for (int day = 0; day < daysInPeriod; day++) {
                 int weekday = date.getDayOfWeek().getValue();
                 // now I check whether the employee has any preferences for shifts on this day
-                boolean shiftPref = shiftPreferences[day].isEmpty();
+                boolean shiftPref = !shiftPreferences[day].isEmpty();
                 int w = setDayWeight(dayPreferences[day]);
                 //  if the employee is required to not work this day, it is skipped and no edge is drawn
-                if (w == Integer.MAX_VALUE) {
+                if (w == Integer.MAX_VALUE && !shiftPref) {
                     date = date.plusDays(1); 
                     continue;
                 }
@@ -250,7 +250,7 @@ public class FlowGraph {
         if (e.getPref() == null) return shiftPreferences; 
         for (Preference p : e.getPref()) {
             if (p.getShift() != null) {
-                if (p.getDay() != -1) {
+                if (p.getDay() != -1 && p.getDate() == null) {
                     int firstDay = 0;
                     int weekDay = date.getDayOfWeek().getValue();
 
@@ -265,21 +265,23 @@ public class FlowGraph {
                     for (int i = firstDay; i < days; i += 7) {
                         shiftPreferences[i].add(p);
                     }  
-                } 
-            }
-
-            if (p.getDate() != null) {
-                int dayIndex = 0;
-                for (int i = 0; i < days; i++) {
-                    if (p.getDate() == date) {
-                        shiftPreferences[dayIndex].add(p);
-                        date = date.minusDays(dayIndex);
-                        break;
+                } else if (p.getDate() == null) {
+                    for (int i = 0; i < days; i ++) {
+                        shiftPreferences[i].add(p);
+                    }  
+                } else {
+                    int dayIndex = 0;
+                    for (int i = 0; i < days; i++) {
+                        if (p.getDate() == date) {
+                            shiftPreferences[dayIndex].add(p);
+                            date = date.minusDays(dayIndex);
+                            break;
+                        }
+                        date = date.plusDays(1);
+                        dayIndex++;
                     }
-                    date = date.plusDays(1);
-                    dayIndex++;
                 }
-            }
+            } 
         }
 
         return shiftPreferences;

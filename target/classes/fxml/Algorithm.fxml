@@ -137,7 +137,7 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="580.0" prefWidth="740.0" snapToPixel="false">
                <children>
-                  <ListView fx:id="employeeList" layoutX="59.0" layoutY="71.0" prefHeight="511.0" prefWidth="258.0" />
+                  <ListView fx:id="employeeList" layoutX="59.0" layoutY="71.0" orientation="HORIZONTAL" prefHeight="511.0" prefWidth="258.0" />
                   <Label fx:id="costLabel1" alignment="CENTER" layoutX="59.0" layoutY="21.0" prefHeight="43.0" prefWidth="259.0" text="Employees" textAlignment="CENTER" wrapText="true">
                      <font>
                         <Font name="System Bold" size="18.0" />
@@ -148,101 +148,21 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <VBox layoutX="387.0" layoutY="72.0" minWidth="180.0" prefHeight="467.0" prefWidth="328.0">
+                  <VBox layoutX="387.0" layoutY="72.0" minWidth="180.0" prefHeight="509.0" prefWidth="328.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="346.0">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Results" textAlignment="CENTER" wrappingWidth="327.13134765625">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Text>
+                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" wrappingWidth="66.13134765625">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Text>
-                              <Label fx:id="nameLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Id:" wrappingWidth="39.13134765625">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Text>
-                              <Label fx:id="idLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Departments:" wrappingWidth="128.13134765625">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Text>
-                              <Label fx:id="departmentsLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Weekly hours:" wrappingWidth="136.13134765625">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Text>
-                              <Label fx:id="hoursLabel" prefHeight="30.0" prefWidth="185.0" textAlignment="CENTER" wrapText="true">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Experience Level:" wrappingWidth="162.13134765625">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Text>
-                              <Label fx:id="experienceLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Preferences:" wrappingWidth="101.13134765625">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Text>
-                              <Label fx:id="preferencesLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                              <Label prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
                                  <font>
                                     <Font name="System Bold" size="18.0" />
                                  </font>
@@ -254,7 +174,6 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Button layoutX="617.0" layoutY="552.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="98.0" text="Add Preference" />
                </children></AnchorPane>
          </content>
       </Tab>
