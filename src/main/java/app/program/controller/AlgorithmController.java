@@ -26,6 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 
 public class AlgorithmController implements Initializable {
 
@@ -52,30 +53,33 @@ public class AlgorithmController implements Initializable {
     private Label hoursLabel;
     @FXML
     private Label experienceLabel;
-    @FXML
-    private Label preferencesLabel;
     
 
     // ListView
     @FXML
     private ListView<Employee> employeeList;
+    @FXML
+    private ListView<String> pathList;
 
+    // TextFields
+    @FXML
+    private TextField searchPaths;
 
     private FlowGraph fg;
     private Algorithms algo;
     private Shift[] shifts = {new Shift(7, 19), new Shift(19,7), new Shift(7, 15), new Shift(15, 23), new Shift(23, 7)};
     private LocalDate date = LocalDate.now();
+    private ArrayList<String> flowPaths = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fg = new FlowGraph(8, shifts, readEmployeeFile());
         fg.generateGraph(date);
-        // System.out.println("total amount of vertices: " + fg.getS().getTotalVertices());
-        // System.out.println("total amount of edges: " + fg.getS().getOutGoing().get(0).getTotalEdges());
+        System.out.println("total amount of vertices: " + fg.getS().getTotalVertices());
+        System.out.println("total amount of edges: " + fg.getS().getOutGoing().get(0).getTotalEdges());
         
         employeeList.getItems().addAll(fg.getEmps());
         employeeList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
-
             @Override
             public void changed(ObservableValue<? extends Employee> arg0, Employee arg1, Employee arg2) {
                 Employee emp = employeeList.getSelectionModel().getSelectedItem();
@@ -98,7 +102,18 @@ public class AlgorithmController implements Initializable {
                 experienceLabel.setText("" + emp.getExpLvl());
                 // preferencesLabel.setText(emp.getName());
             }
+        });
 
+        searchPaths.textProperty().addListener((obs, oldVal, newVal) -> {
+            String searchText = newVal.toLowerCase();
+            // Filter flow paths based on search text
+            ObservableList<String> filteredList = FXCollections.observableArrayList();
+            for (String path : flowPaths) {
+                if (path.toLowerCase().contains(searchText)) {
+                    filteredList.add(path);
+                }
+            }
+            pathList.setItems(filteredList);
         });
         
         // print statements. Need to make these appear in the middle of the algorithm part
@@ -127,6 +142,8 @@ public class AlgorithmController implements Initializable {
         flowLabel.setText(results[0] + "");
         costLabel.setText("" + results[1]);
         runTimeLabel.setText((endTime-startTime)/1000.0 + " s");
+        fg.getPathsWithFlow(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, flowPaths);
+        pathList.getItems().addAll(flowPaths);
 
     }
 

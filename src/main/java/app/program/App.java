@@ -16,17 +16,15 @@ import java.util.List;
 
 import app.program.model.*;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     private static Scene scene;
     
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("Algorithm"), 740, 640);
+        scene = new Scene(loadFXML("Algorithm"), 1040, 640);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 

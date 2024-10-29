@@ -541,6 +541,43 @@ public class FlowGraph {
 
     }
 
+    public void getPathsWithFlow(Vertex v, Vertex t, boolean[] visited, ArrayList<Vertex> path, ArrayList<Integer> flows, int flow, ArrayList<Integer> capacities, int cap, ArrayList<String> flowPath) {
+        visited[v.getVertexIndex()] = true;
+        path.add(v);
+        if (flow != 0) {
+            flows.add(flow);
+        }
+        if (cap > 0) {
+            capacities.add(cap);
+        }
+
+        if (v == t) {
+            String edge = "";
+            for (int i = 0; i < path.size(); i++) {
+                if (i == path.size()-1) {
+                    edge += path.get(i);
+                } else {
+                    edge += path.get(i) + " - " + flows.get(i) + "/" + capacities.get(i) + " -> ";
+                }
+            }
+            flowPath.add(edge);
+        } else {
+            for (Edge e : v.getOutGoing()) {
+                if (e.getFlow() > 0 && !visited[e.getTo().getVertexIndex()]) {
+                    getPathsWithFlow(e.getTo(), t, visited, path, flows, e.getFlow(), capacities, e.getCap(), flowPath);
+                }
+            }
+        }
+
+        path.remove(path.size()-1);
+        if (flows.size() > 0) {
+            flows.remove(flows.size()-1);
+            capacities.remove(capacities.size()-1);
+        }
+        visited[v.getVertexIndex()] = false;
+
+    }
+
     public void printShiftAssignments(Shift[][] shifts) {
         for (int i = 0; i < shifts.length; i++) {
             System.out.println("Employee: " + emps[i].getID());
