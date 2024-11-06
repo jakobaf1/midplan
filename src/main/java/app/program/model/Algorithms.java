@@ -2,21 +2,49 @@ package app.program.model;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class Algorithms {
-    FlowGraph fg;
-    Shift[][] employeeShifts;
+    private FlowGraph fg;
+    private Shift[][] employeeShifts;
+    private int[][] deps;
+    private List<Shift>[][] assignedShifts;
 
     public Algorithms(FlowGraph fg) {
         this.fg = fg;
         // this.employeeShifts = new Shift[fg.getEmps().length][fg.getDaysInPeriod()];
-        // The following is just for the sake of tests, and should probably find a better solution
+        // this.assignedShifts = new ArrayList[fg.getEmps().length][fg.getDaysInPeriod()];
+        // for (int emp = 0; emp < this.assignedShifts.length; emp++) {
+        //     for (int day = 0; day < this.assignedShifts[0].length; day++) {
+        //         this.assignedShifts[emp][day] = new ArrayList<>();
+        //     }
+        // }
+        // this.deps = new int[fg.getEmps().length][fg.getDaysInPeriod()];
+
+        // TODO: The following is just for the sake of tests, and should probably find a better solution
+        this.assignedShifts = new ArrayList[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
+        for (int emp = 0; emp < this.assignedShifts.length; emp++) {
+            for (int day = 0; day < this.assignedShifts[0].length; day++) {
+                this.assignedShifts[emp][day] = new ArrayList<>();
+            }
+        }
+        this.deps = new int[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
         this.employeeShifts = new Shift[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
     }
 
+    // Bellman-Ford
+    public void bellmanFord(FlowGraph fg, Vertex s) {
+        int[] dist = new int[s.getTotalVertices()];
+        for (int i = 0; i < dist.length; i++) {
+            dist[i] = Integer.MAX_VALUE;
+        }
+        dist[s.getVertexIndex()] = 0;
+        
+    }
+
     // Breadth-First-Search version 1 (standard)
-    public boolean bfsV1(Vertex s, Vertex t, Edge[] parentEdges, boolean[] nodesVisited) {
+    public boolean bfs(Vertex s, Vertex t, Edge[] parentEdges, boolean[] nodesVisited) {
         Queue<Vertex> q = new LinkedList<>();
         for (int i = 0; i < nodesVisited.length; i++) {
             nodesVisited[i] = false;
@@ -130,7 +158,7 @@ public class Algorithms {
         int totalFlow = 0;
         boolean[] nodesVisited = new boolean[s.getTotalVertices()];
 
-        while (bfsV1(s, t, parentEdges, nodesVisited)) {
+        while (bfs(s, t, parentEdges, nodesVisited)) {
             int bottleFlow = Integer.MAX_VALUE;
             Vertex node = t;
             while (node != s) {
@@ -248,13 +276,12 @@ public class Algorithms {
     }
 
     // Successive Shortest Path Algorithm: V3 (with 11-hour breaks between shifts)
-    public void shortestPathsV3(int n, Vertex s, int[] dist, Edge[] parentEdges) {
-        int[][] minFlowMaxBound = new int[n][2];
+    public void shortestPaths11Hr(int n, Vertex s, int[] dist, Edge[] parentEdges) {
+        int[] minFlows = new int[n];
         for (int i = 0; i < dist.length; i++) {
             dist[i] = Integer.MAX_VALUE;
             parentEdges[i] = null;
-            minFlowMaxBound[i][0] = Integer.MAX_VALUE;
-            minFlowMaxBound[i][1] = 0;
+            minFlows[i] = Integer.MAX_VALUE;
         }
 
         dist[s.getVertexIndex()] = 0;
@@ -270,12 +297,11 @@ public class Algorithms {
         while (!q.isEmpty()) {
             Vertex node = q.remove();
             inQ[node.getVertexIndex()] = false;
+
+            // flow allowed to pass through current path
+            int minFlow = minFlows[node.getVertexIndex()];
             
             for (Edge e : node.getOutGoing()) {
-                // initialize values to keep lowerbounds handled
-                int minFlow = minFlowMaxBound[node.getVertexIndex()][0];
-                int maxBound = minFlowMaxBound[node.getVertexIndex()][1];
-                
                 // initialize values for the 11-hour check
                 Employee emp = employees[node.getVertexIndex()];
                 int day = days[node.getVertexIndex()];
@@ -283,18 +309,9 @@ public class Algorithms {
                 // define the node, which the current edge goes to
                 Vertex toNode = e.getTo();
                 if (e.getCap() - e.getFlow() > 0 && dist[toNode.getVertexIndex()] > dist[node.getVertexIndex()] + e.getWeight() && 
-                checkConditions(e, minFlow, maxBound) && checkConditions11Hr(e, emp, day, shift)) {
+                checkConditions11Hr(e, emp, day, shift, minFlow)) { //&& sameDep(e, emp, day)) {
                     dist[toNode.getVertexIndex()] = dist[node.getVertexIndex()] + e.getWeight();
                     parentEdges[toNode.getVertexIndex()] = e;
-
-                    // for the lowerbound criteria
-                    if (e.getType() == 0) {
-                        minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap()-e.getFlow());
-                        minFlowMaxBound[toNode.getVertexIndex()][1] = Math.max(maxBound, e.getLowerBound()-e.getFlow());
-                    } else {
-                        minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap());
-                        minFlowMaxBound[toNode.getVertexIndex()][1] = maxBound;
-                    }
 
                     // for the 11-hour criteria
                     if (node.getPurpose() == 1) {
@@ -309,10 +326,30 @@ public class Algorithms {
                         employees[toNode.getVertexIndex()] = emp;
                         days[toNode.getVertexIndex()] = day;
                         shifts[toNode.getVertexIndex()] = node.getShift();
+                        // TODO: can this be done in a better way? I would like for it to only be null if it's completely cancelled out
+                        // TODO: Can be improved by improving the array for shiftassignments. Use list instead and match
+                        if (e.getType() == 1 && minFlow >= e.getCap()) {
+                            if (assignedShifts[emp.getEmpIndex()][day].size() > 1) {
+                                for (int i = 0; i < assignedShifts[emp.getEmpIndex()][day].size(); i++) {
+                                    if (assignedShifts[emp.getEmpIndex()][day].get(i).equals(node.getShift())) assignedShifts[emp.getEmpIndex()][day].remove(i);
+                                }
+                            } else if (!assignedShifts[emp.getEmpIndex()][day].isEmpty()) {
+                                assignedShifts[emp.getEmpIndex()][day].remove(0);
+                            }
+                            // employeeShifts[emp.getEmpIndex()][day] = null;
+                            // deps[emp.getEmpIndex()][day] = -1;
+                        }
                     } else {
                         employees[toNode.getVertexIndex()] = emp;
                         days[toNode.getVertexIndex()] = day;
                         shifts[toNode.getVertexIndex()] = shift;
+                    }
+
+                    // updates the amount of flow the path can take
+                    if (e.getType() == 0) {
+                        minFlows[toNode.getVertexIndex()] = Math.min(minFlow, e.getCap()-e.getFlow());
+                    } else {
+                        minFlows[toNode.getVertexIndex()] = Math.min(minFlow, e.getCap());
                     }
 
                     if (!inQ[toNode.getVertexIndex()]) {
@@ -324,27 +361,84 @@ public class Algorithms {
         }
     }
 
-    public boolean checkConditions11Hr(Edge e, Employee emp, int day, Shift shift) {
+    public boolean sameDep(Edge e, Employee emp, int day) {
+        if (emp == null || day == -1 || e.getTo().getPurpose() != 4) return true;
+        if (deps[emp.getEmpIndex()][day] == -1) return true;
+        return e.getTo().getDep() ==  deps[emp.getEmpIndex()][day];
+    }
+
+    public boolean checkConditions11Hr(Edge e, Employee emp, int day, Shift shift, int minFlow) {
         if (e.getType() == 0) {
-            if (emp == null || day < 1 || shift == null) return true;
+            if (emp == null || day == -1 || shift == null) return true;
+            if (assignedShifts[emp.getEmpIndex()][day].size() > 1) return false;
+            if (!assignedShifts[emp.getEmpIndex()][day].isEmpty()) {
+                int currentStart = assignedShifts[emp.getEmpIndex()][day].get(0).getStartTime();
+                int currentEnd = assignedShifts[emp.getEmpIndex()][day].get(0).getEndTime();
+                boolean validShift = false;
+                // TODO: make this look nicer (and make sure it's correct)
+                // The min-flow condition makes sure that a new shift can't be chosen unless it will form an accurate shift (e.g. 8/8 in 15-23 and 4/8 in 23-7 is not valid)
+                for (Shift s : fg.getShifts()) {
+                    if (currentStart == shift.getEndTime()) { // cases where new shift is before old shift (new shift can be 7-15 or 15-23)
+                        if (shift.getStartTime() == s.getStartTime() && currentEnd-4 == s.getEndTime() && minFlow == 8) { // When new shift is 7-15 and old shift is 15-23 (resulting in a 7-19 shift)
+                            validShift = true;
+                            break;
+                        } else if (shift.getStartTime()+4 == s.getStartTime() && currentEnd == s.getEndTime()) { // When new shift is 15-23 and old is 23-7 (resulting in a 19-7 shift)
+                            validShift = true;
+                            break;
+                        }
+                        
+                    } else if (currentEnd == shift.getStartTime()) { // cases where new shift is after old shift (new shift can be 15-23 or 23-7)
+                        if (currentStart == s.getStartTime() && shift.getEndTime()-4 == s.getEndTime()) { // When new shift is 15-23 and old is 7-15 (resulting in 7-19)
+                            validShift = true;
+                            break;
+                        } else if (currentStart+4 == s.getStartTime() && shift.getEndTime() == s.getEndTime()  && minFlow == 8) { // When new shift is 23-7 and old os 15-23 (resulting in a 19-7)
+                            validShift = true;
+                            break;
+                        } 
+                    }
+                    
+                }
+                if (!validShift) return false;
+            }
             // for the day before
             boolean elevenRule = true;
             int endTime;
-            int startTime;
-            if (employeeShifts[emp.getEmpIndex()][day-1] != null) {
-                elevenRule = true;
-                endTime = employeeShifts[emp.getEmpIndex()][day-1].getEndTime();
-                startTime = shift.getStartTime();
-                if (endTime == 7) {
-                    elevenRule = (startTime-endTime) >= 11;
-                } else {
-                    elevenRule = (24 - endTime + startTime) >= 11;
+            int startTime = shift.getStartTime();
+            if (day != 0) {
+                if (!assignedShifts[emp.getEmpIndex()][day-1].isEmpty()) {
+                    endTime = assignedShifts[emp.getEmpIndex()][day-1].get(0).getEndTime();
+                    elevenRule = true;
+                    if (assignedShifts[emp.getEmpIndex()][day-1].size() > 1 ) {
+                        for (Shift s : assignedShifts[emp.getEmpIndex()][day-1]) {
+                            if (s.getEndTime() == 7) {
+                                endTime = s.getEndTime();
+                                break;
+                            } else {
+                                endTime = 19;
+                            }
+                        }
+                    }
+                    if (endTime == 7) {
+                        elevenRule = (startTime-endTime) >= 11;
+                    } else {
+                        elevenRule = (24 - endTime + startTime) >= 11;
+                    }
                 }
             }
             // for the day after
-            if (day >= employeeShifts[emp.getEmpIndex()].length-1 || employeeShifts[emp.getEmpIndex()][day+1] == null) return elevenRule;
+            if (day >= assignedShifts[emp.getEmpIndex()].length-1 || assignedShifts[emp.getEmpIndex()][day+1].isEmpty()) return elevenRule;
             endTime = shift.getEndTime();
-            startTime = employeeShifts[emp.getEmpIndex()][day+1].getStartTime();
+            startTime = assignedShifts[emp.getEmpIndex()][day+1].get(0).getStartTime();
+            if (assignedShifts[emp.getEmpIndex()][day+1].size() > 1) {
+                for (Shift s : assignedShifts[emp.getEmpIndex()][day+1]) {
+                    if (s.getStartTime() == 7) {
+                        startTime = s.getStartTime();
+                        break;
+                    } else {
+                        startTime = 19;
+                    }
+                }
+            }
             if (endTime == 7) {
                 return elevenRule && (startTime-endTime) >= 11;
             } else {
@@ -354,93 +448,154 @@ public class Algorithms {
         return true;
     }
 
+    // public boolean checkConditions11Hr(Edge e, Employee emp, int day, Shift shift, int minFlow) {
+    //     if (e.getType() == 0) {
+    //         if (emp == null || day == -1 || shift == null) return true;
+    //         if (employeeShifts[emp.getEmpIndex()][day] != null) {
+    //             int currentStart = employeeShifts[emp.getEmpIndex()][day].getStartTime();
+    //             int currentEnd = employeeShifts[emp.getEmpIndex()][day].getEndTime();
+    //             boolean validShift = false;
+    //             // TODO: make this look nicer (and make sure it's correct)
+    //             // The min-flow condition makes sure that a new shift can't be chosen unless it will form an accurate shift (e.g. 8/8 in 15-23 and 4/8 in 23-7 is not valid)
+    //             for (Shift s : fg.getShifts()) {
+    //                 if (currentStart == shift.getEndTime()) { // cases where new shift is before old shift (new shift can be 7-15 or 15-23)
+    //                     if (shift.getStartTime() == s.getStartTime() && currentEnd-4 == s.getEndTime() && minFlow == 8) { // When new shift is 7-15 and old shift is 15-23 (resulting in a 7-19 shift)
+    //                         validShift = true;
+    //                         break;
+    //                     } else if (shift.getStartTime()+4 == s.getStartTime() && currentEnd == s.getEndTime()) { // When new shift is 15-23 and old is 23-7 (resulting in a 19-7 shift)
+    //                         validShift = true;
+    //                         break;
+    //                     }
+                        
+    //                 } else if (currentEnd == shift.getStartTime()) { // cases where new shift is after old shift (new shift can be 15-23 or 23-7)
+    //                     if (currentStart == s.getStartTime() && shift.getEndTime()-4 == s.getEndTime()) { // When new shift is 15-23 and old is 7-15 (resulting in 7-19)
+    //                         validShift = true;
+    //                         break;
+    //                     } else if (currentStart+4 == s.getStartTime() && shift.getEndTime() == s.getEndTime()  && minFlow == 8) { // When new shift is 23-7 and old os 15-23 (resulting in a 19-7)
+    //                         validShift = true;
+    //                         break;
+    //                     } 
+    //                 }
+                    
+    //             }
+    //             if (!validShift) return false;
+    //         }
+    //         // for the day before
+    //         boolean elevenRule = true;
+    //         int endTime;
+    //         int startTime;
+    //         if (day != 0) {
+    //             if (employeeShifts[emp.getEmpIndex()][day-1] != null) {
+    //                 elevenRule = true;
+    //                 endTime = employeeShifts[emp.getEmpIndex()][day-1].getEndTime();
+    //                 startTime = shift.getStartTime();
+    //                 if (endTime == 7) {
+    //                     elevenRule = (startTime-endTime) >= 11;
+    //                 } else {
+    //                     elevenRule = (24 - endTime + startTime) >= 11;
+    //                 }
+    //             }
+    //         }
+    //         // for the day after
+    //         if (day >= employeeShifts[emp.getEmpIndex()].length-1 || employeeShifts[emp.getEmpIndex()][day+1] == null) return elevenRule;
+    //         endTime = shift.getEndTime();
+    //         startTime = employeeShifts[emp.getEmpIndex()][day+1].getStartTime();
+    //         if (endTime == 7) {
+    //             return elevenRule && (startTime-endTime) >= 11;
+    //         } else {
+    //             return elevenRule && (24 - endTime + startTime) >= 11;
+    //         }
+    //     }
+    //     return true;
+    // }
+
     // Successive shortest path algorithm V4 (Makes sure there is a min-flow of 12 if a new 12-hour shift is selected) and that the department is the same
-    public void shortestPathsV4(int n, Vertex s, int[] dist, Edge[] parentEdges) {
-        int[][] minFlowMaxBound = new int[n][2];
-        Employee[] employees = new Employee[n];
-        int[] days = new int[n];
-        Shift[] shifts = new Shift[n];
-        int[] deps = new int[n];
-        for (int i = 0; i < dist.length; i++) {
-            dist[i] = Integer.MAX_VALUE;
-            parentEdges[i] = null;
-            minFlowMaxBound[i][0] = Integer.MAX_VALUE;
-            minFlowMaxBound[i][1] = 0;
-            deps[i] = -1;
-        }
+    // public void shortestPathsV4(int n, Vertex s, int[] dist, Edge[] parentEdges) {
+    //     int[][] minFlowMaxBound = new int[n][2];
+    //     Employee[] employees = new Employee[n];
+    //     int[] days = new int[n];
+    //     Shift[] shifts = new Shift[n];
+    //     int[] deps = new int[n];
+    //     for (int i = 0; i < dist.length; i++) {
+    //         dist[i] = Integer.MAX_VALUE;
+    //         parentEdges[i] = null;
+    //         minFlowMaxBound[i][0] = Integer.MAX_VALUE;
+    //         minFlowMaxBound[i][1] = 0;
+    //         deps[i] = -1;
+    //     }
 
-        dist[s.getVertexIndex()] = 0;
-        boolean[] inQ = new boolean[n];
+    //     dist[s.getVertexIndex()] = 0;
+    //     boolean[] inQ = new boolean[n];
         
-        Queue<Vertex> q = new LinkedList<>();
-        q.add(s);
+    //     Queue<Vertex> q = new LinkedList<>();
+    //     q.add(s);
 
-        while (!q.isEmpty()) {
-            Vertex node = q.remove();
-            inQ[node.getVertexIndex()] = false;
+    //     while (!q.isEmpty()) {
+    //         Vertex node = q.remove();
+    //         inQ[node.getVertexIndex()] = false;
             
-            for (Edge e : node.getOutGoing()) {
-                // initialize values to keep lowerbounds handled
-                int minFlow = minFlowMaxBound[node.getVertexIndex()][0];
-                int maxBound = minFlowMaxBound[node.getVertexIndex()][1];
+    //         for (Edge e : node.getOutGoing()) {
+    //             // initialize values to keep lowerbounds handled
+    //             int minFlow = minFlowMaxBound[node.getVertexIndex()][0];
+    //             int maxBound = minFlowMaxBound[node.getVertexIndex()][1];
                 
-                // initialize values for the 11-hour check
-                Employee emp = employees[node.getVertexIndex()];
-                int day = days[node.getVertexIndex()];
-                Shift shift = shifts[node.getVertexIndex()];
-                int dep = deps[node.getVertexIndex()];
-                // define the node, which the current edge goes to
-                Vertex toNode = e.getTo();
-                if (e.getCap() - e.getFlow() > 0 && dist[toNode.getVertexIndex()] > dist[node.getVertexIndex()] + e.getWeight() && 
-                checkConditions(e, minFlow, maxBound) && checkConditions11Hr(e, emp, day, shift)) { //&& checkConditions12Hr(e, Math.min(minFlow, e.getCap()-e.getFlow()), shift, dep)) {
-                    dist[toNode.getVertexIndex()] = dist[node.getVertexIndex()] + e.getWeight();
-                    parentEdges[toNode.getVertexIndex()] = e;
+    //             // initialize values for the 11-hour check
+    //             Employee emp = employees[node.getVertexIndex()];
+    //             int day = days[node.getVertexIndex()];
+    //             Shift shift = shifts[node.getVertexIndex()];
+    //             int dep = deps[node.getVertexIndex()];
+    //             // define the node, which the current edge goes to
+    //             Vertex toNode = e.getTo();
+    //             if (e.getCap() - e.getFlow() > 0 && dist[toNode.getVertexIndex()] > dist[node.getVertexIndex()] + e.getWeight() && 
+    //             checkConditions(e, minFlow, maxBound) && checkConditions11Hr(e, emp, day, shift)) { //&& checkConditions12Hr(e, Math.min(minFlow, e.getCap()-e.getFlow()), shift, dep)) {
+    //                 dist[toNode.getVertexIndex()] = dist[node.getVertexIndex()] + e.getWeight();
+    //                 parentEdges[toNode.getVertexIndex()] = e;
 
-                    // for the lowerbound criteria
-                    if (e.getType() == 0) {
-                        minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap()-e.getFlow());
-                        minFlowMaxBound[toNode.getVertexIndex()][1] = Math.max(maxBound, e.getLowerBound()-e.getFlow());
-                    } else {
-                        minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap());
-                        minFlowMaxBound[toNode.getVertexIndex()][1] = maxBound;
-                    }
+    //                 // for the lowerbound criteria
+    //                 if (e.getType() == 0) {
+    //                     minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap()-e.getFlow());
+    //                     minFlowMaxBound[toNode.getVertexIndex()][1] = Math.max(maxBound, e.getLowerBound()-e.getFlow());
+    //                 } else {
+    //                     minFlowMaxBound[toNode.getVertexIndex()][0] = Math.min(minFlow, e.getCap());
+    //                     minFlowMaxBound[toNode.getVertexIndex()][1] = maxBound;
+    //                 }
 
-                    // for the 11-hour and dep criteria 
-                    if (node.getPurpose() == 1) {
-                        employees[toNode.getVertexIndex()] = node.getEmp();
-                        days[toNode.getVertexIndex()] = day;
-                        shifts[toNode.getVertexIndex()] = shift;
-                        deps[toNode.getVertexIndex()] = dep;
-                    } else if (node.getPurpose() == 2) {
-                        employees[toNode.getVertexIndex()] = emp;
-                        days[toNode.getVertexIndex()] = node.getDay();
-                        shifts[toNode.getVertexIndex()] = shift;
-                        deps[toNode.getVertexIndex()] = dep;
-                    } else if (node.getPurpose() == 3) {
-                        employees[toNode.getVertexIndex()] = emp;
-                        days[toNode.getVertexIndex()] = day;
-                        shifts[toNode.getVertexIndex()] = node.getShift();
-                        deps[toNode.getVertexIndex()] = dep;
-                    } else if (node.getPurpose() == 4) {
-                        employees[toNode.getVertexIndex()] = emp;
-                        days[toNode.getVertexIndex()] = day;
-                        shifts[toNode.getVertexIndex()] = shift;
-                        deps[toNode.getVertexIndex()] = node.getDep();
-                    } else {
-                        employees[toNode.getVertexIndex()] = emp;
-                        days[toNode.getVertexIndex()] = day;
-                        shifts[toNode.getVertexIndex()] = shift;
-                        deps[toNode.getVertexIndex()] = dep;
-                    }
+    //                 // for the 11-hour and dep criteria 
+    //                 if (node.getPurpose() == 1) {
+    //                     employees[toNode.getVertexIndex()] = node.getEmp();
+    //                     days[toNode.getVertexIndex()] = day;
+    //                     shifts[toNode.getVertexIndex()] = shift;
+    //                     deps[toNode.getVertexIndex()] = dep;
+    //                 } else if (node.getPurpose() == 2) {
+    //                     employees[toNode.getVertexIndex()] = emp;
+    //                     days[toNode.getVertexIndex()] = node.getDay();
+    //                     shifts[toNode.getVertexIndex()] = shift;
+    //                     deps[toNode.getVertexIndex()] = dep;
+    //                 } else if (node.getPurpose() == 3) {
+    //                     employees[toNode.getVertexIndex()] = emp;
+    //                     days[toNode.getVertexIndex()] = day;
+    //                     shifts[toNode.getVertexIndex()] = node.getShift();
+    //                     deps[toNode.getVertexIndex()] = dep;
+    //                 } else if (node.getPurpose() == 4) {
+    //                     employees[toNode.getVertexIndex()] = emp;
+    //                     days[toNode.getVertexIndex()] = day;
+    //                     shifts[toNode.getVertexIndex()] = shift;
+    //                     deps[toNode.getVertexIndex()] = node.getDep();
+    //                 } else {
+    //                     employees[toNode.getVertexIndex()] = emp;
+    //                     days[toNode.getVertexIndex()] = day;
+    //                     shifts[toNode.getVertexIndex()] = shift;
+    //                     deps[toNode.getVertexIndex()] = dep;
+    //                 }
 
-                    if (!inQ[toNode.getVertexIndex()]) {
-                        inQ[toNode.getVertexIndex()] = true;
-                        q.add(toNode);
-                    }
-                }
-            }
-        }
-    }
+    //                 if (!inQ[toNode.getVertexIndex()]) {
+    //                     inQ[toNode.getVertexIndex()] = true;
+    //                     q.add(toNode);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     // public boolean checkConditions12Hr(Edge e, int minFlow, Shift shift, int dep) {
     //     if (e.getTo().getPurpose() < 3 || e.getTo().getPurpose() > 3) return true;
@@ -461,7 +616,7 @@ public class Algorithms {
         Edge[] parentEdges = new Edge[n];
 
         while (totalFlow < k) {
-            shortestPathsV1(n, s, dist, parentEdges);
+            shortestPaths11Hr(n, s, dist, parentEdges); 
             if (dist[t.getVertexIndex()] == Integer.MAX_VALUE) break;
             
             int bottleFlow = Integer.MAX_VALUE;
@@ -475,7 +630,6 @@ public class Algorithms {
             totalFlow += bottleFlow;
             totalCost += dist[t.getVertexIndex()];
             
-
             node = t;
             while (node != s) {
                 Edge edge = parentEdges[node.getVertexIndex()];
@@ -483,7 +637,21 @@ public class Algorithms {
                 node = parentEdges[node.getVertexIndex()].getFrm();
             }
             // System.out.println("currently at " + ( totalFlow/((double) k)*100.0) + "%");
-            markEmployeeShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+            // markEmployeeShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+            // this.assignedShifts = new ArrayList[fg.getEmps().length][fg.getDaysInPeriod()];
+            // for (int emp = 0; emp < this.assignedShifts.length; emp++) {
+            //     for (int day = 0; day < this.assignedShifts[0].length; day++) {
+            //         this.assignedShifts[emp][day] = new ArrayList<>();
+            //     }
+            // }
+            // TODO: Find alternative... only necessary for tests
+            this.assignedShifts = new ArrayList[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
+            for (int emp = 0; emp < this.assignedShifts.length; emp++) {
+                for (int day = 0; day < this.assignedShifts[0].length; day++) {
+                    this.assignedShifts[emp][day] = new ArrayList<>();
+                }
+            }
+            markAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
         }
         int[] results = {totalFlow, totalCost};
         return results;
@@ -504,6 +672,7 @@ public class Algorithms {
             Employee emp = null;
             int day = -1;
             Shift shift = null;
+            int dep = -1;
             for (Vertex node : path) {
                 if (node.getPurpose() == 1) {
                     emp = node.getEmp();
@@ -511,6 +680,8 @@ public class Algorithms {
                     day = node.getDay();
                 } else if (node.getPurpose() == 3) {
                     shift = node.getShift();
+                } else if (node.getPurpose() == 4) {
+                    dep = node.getDep();
                 }
             }
             // if (emp.getID().equals("BOTH27") && day == 20 && employeeShifts[emp.getEmpIndex()][day] == null) {
@@ -519,6 +690,7 @@ public class Algorithms {
             //     System.out.println("Day " + (day+1) + ": " + employeeShifts[emp.getEmpIndex()][day+1]);
             // }
             employeeShifts[emp.getEmpIndex()][day] = shift;
+            deps[emp.getEmpIndex()][day] = dep;
         } else {
             for (Edge e : v.getOutGoing()) {
                 if (e.getFlow() > 0 && !visited[e.getTo().getVertexIndex()]) {
@@ -526,6 +698,7 @@ public class Algorithms {
                 }
             }
         }
+    
 
         path.remove(path.size()-1);
         if (flows.size() > 0) {
@@ -536,7 +709,50 @@ public class Algorithms {
 
     }
 
+    public void markAssignedShifts(Vertex v, Vertex t, boolean[] visited, ArrayList<Vertex> path, ArrayList<Integer> flows, int flow, ArrayList<Integer> capacities, int cap) {
+        visited[v.getVertexIndex()] = true;
+        path.add(v);
+        if (flow != 0) {
+            flows.add(flow);
+        }
+        if (cap > 0) {
+            capacities.add(cap);
+        }
 
+        if (v == t) {
+            Employee emp = null;
+            int day = -1;
+            Shift shift = null;
+            int dep = -1;
+            for (Vertex node : path) {
+                if (node.getPurpose() == 1) {
+                    emp = node.getEmp();
+                } else if (node.getPurpose() == 2) {
+                    day = node.getDay();
+                } else if (node.getPurpose() == 3) {
+                    shift = node.getShift();
+                } else if (node.getPurpose() == 4) {
+                    dep = node.getDep();
+                }
+            }
+            
+            assignedShifts[emp.getEmpIndex()][day].add(shift);
+            deps[emp.getEmpIndex()][day] = dep;
+        } else {
+            for (Edge e : v.getOutGoing()) {
+                if (e.getFlow() > 0 && !visited[e.getTo().getVertexIndex()]) {
+                    markAssignedShifts(e.getTo(), t, visited, path, flows, e.getFlow(), capacities, e.getCap());
+                }
+            }
+        }
+
+        path.remove(path.size()-1);
+        if (flows.size() > 0) {
+            flows.remove(flows.size()-1);
+            capacities.remove(capacities.size()-1);
+        }
+        visited[v.getVertexIndex()] = false;
+    }
 
     // Getters
     public Shift[][] getEmployeeShifts() {

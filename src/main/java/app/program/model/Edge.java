@@ -8,6 +8,8 @@ public class Edge {
     private Vertex to = null;
     private int cap = 0;
     private Edge counterpart = null;
+    private Edge adjacentShiftEdge = null;
+    private boolean activated = true;
     private int weight = 0;
     private int lowerBound = 0;
     private int flow = 0;
@@ -59,6 +61,21 @@ public class Edge {
 
     public void setCounterpart(Edge e) {
         this.counterpart = e;
+    }
+    public void setAdjacentShiftEdge(Edge e) {
+        this.adjacentShiftEdge = e;
+    }
+
+    public void setActivated(boolean activate) {
+        this.activated = activate;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public boolean getActivated() {
+        return activated;
     }
 
     public int getTotalEdges() {

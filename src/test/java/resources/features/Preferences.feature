@@ -28,9 +28,6 @@ Feature: Checking whether preferences are handled
     And nodes representing unwanted shifts at the highest preference level are not connected
     And nodes representing unwanted dates at the highest preference level are not connected
 
-    #### Currently think I don't handle the combination of days/shifts and dates/shifts preferences properly
-    #### See below test scenarios
-
     Scenario: Graph has no edges to unwanted shifts on certain days
     Given the shifts
         | shiftName | startTime | endTime |

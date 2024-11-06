@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import app.program.controller.AlgorithmController;
 import app.program.model.Algorithms;
 import app.program.model.Edge;
 import app.program.model.Employee;
@@ -184,6 +185,10 @@ public class TestSteps {
     // Scenario 3: Shifts are correctly linked to each employee when creating the graph
     @Then("all the given shifts are in the graph")
     public void all_the_given_shifts_are_in_the_graph() {
+        int shiftsInGraph = 0;
+        for (Shift s : shifts) {
+            if (s.calcHours() == 8) shiftsInGraph++;
+        }
         Vertex node = fg.getS();
         while (node.getPurpose() != 2) {
             for (Edge e : node.getOutGoing()) {
@@ -198,10 +203,17 @@ public class TestSteps {
         for (Edge edge : node.getOutGoing()) {
             if (edge.getType() == 1) continue;
             Shift shift = edge.getTo().getShift();
-            assertTrue(shift.equals(shifts[shiftNodes]));
+            boolean trueShift = false;
+            for (Shift s : shifts) {
+                if (s.equals(shift)) {
+                    trueShift = true;
+                    break;
+                }
+            }
+            assertTrue(trueShift);
             shiftNodes++;
         }
-        assertTrue(shiftNodes == shifts.length);
+        assertTrue(shiftNodes == shiftsInGraph);
 
     }
 
@@ -210,16 +222,27 @@ public class TestSteps {
         
         for (Edge empEdge : fg.getS().getOutGoing()) {
             Vertex empNode = empEdge.getTo();
+            int shiftsInGraph = 0;
+            for (Shift s : shifts) {
+                if (s.calcHours() == 8) shiftsInGraph++;
+            }
             for (Edge dayEdge : empNode.getOutGoing()) {
                 if (dayEdge.getType() == 1) continue;
                 int shiftNodes = 0;
                 for (Edge shiftEdge : dayEdge.getTo().getOutGoing()) {
                     if (shiftEdge.getType() == 1) continue;
                     Shift shift = shiftEdge.getTo().getShift();
-                    assertTrue(shift.equals(shifts[shiftNodes]));
+                    boolean trueShift = false;
+                    for (Shift s : shifts) {
+                        if (s.equals(shift)) {
+                            trueShift = true;
+                            break;
+                        }
+                    }
+                    assertTrue(trueShift);
                     shiftNodes++;
                 }
-                assertTrue(shiftNodes == shifts.length);
+                assertTrue(shiftNodes == shiftsInGraph);
             }
         }
     }
@@ -355,6 +378,80 @@ public class TestSteps {
         assertTrue(sourceOutGoingFlow == sinkInGoingFlow);
     }
 
+    // For scenario 2: 11-hour breaks between shifts
+    @Given("the employees from the data file")
+    public void the_employees_from_the_data_file() {
+        employees = AlgorithmController.readEmployeeFile();
+        assertTrue(employees != null && employees.length == 47);
+    }
+
+    @Then("each employee has at least {int} hours between each shift")
+    public void each_employee_has_at_least_hours_between_each_shift(int hours) {
+        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        for (Employee emp : employees) {
+            List<Shift>[] empShifts = emp.getShifts();
+            for (int day = 0; day < empShifts.length; day++) {
+                if (empShifts[day].isEmpty()) continue;
+                int endTime;
+                int startTime;
+                // assertion for shift on current day compared to day after
+                if (day < empShifts.length-1 && !empShifts[day+1].isEmpty()) {
+                    endTime = empShifts[day].get(0).getEndTime();
+                    startTime = empShifts[day+1].get(0).getStartTime();
+                    if (endTime == 7) {
+                        assertTrue((startTime-endTime) >= hours);
+                    } else {
+                        assertTrue((24 - endTime + startTime) >= hours);
+                    }
+                }
+                // assertion for shift on current day compared to day before
+                if (day > 0 && !empShifts[day-1].isEmpty()) {
+                    endTime = empShifts[day-1].get(0).getEndTime();
+                    startTime = empShifts[day].get(0).getStartTime();
+                    if (endTime == 7) {
+                        assertTrue((startTime-endTime) >= hours);
+                    } else {
+                        assertTrue((24 - endTime + startTime) >= hours);
+                    }
+                }
+                
+            }
+        }
+    }
+
+    // Scenario 3: 12 hour shifts are valid
+    @Then("every twelve hour shift is valid")
+    public void every_twelve_hour_shift_is_valid() {
+        fg.clearAssignedShifts();
+        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        for (Employee emp : employees) {
+            List<Shift>[] empShifts = emp.getShifts();
+            for (int day = 0; day < empShifts.length; day++) {
+                if (empShifts[day].isEmpty()) continue;
+                boolean validShift = false;
+                for (Shift s : shifts) {
+                    if (empShifts[day].get(0).equals(s)) {
+                        validShift = true;
+                        break;
+                    }
+                }
+                assertTrue(validShift);
+            }
+        }
+    }
+
+    @Then("only one shift is assigned per day")
+    public void only_one_shift_is_assigned_per_day() {
+        fg.clearAssignedShifts();
+        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        for (Employee emp : employees) {
+            List<Shift>[] empShifts = emp.getShifts();
+            for (int day = 0; day < empShifts.length; day++) {
+                if (empShifts[day].isEmpty()) continue;
+                assertTrue(empShifts[day].size() == 1);
+            }
+        }
+    }
 
     ////// Preferences.feature ///////
     //Scenario 1: Graph has no edges to nodes representing prefLvl 1 and not wanted
@@ -550,6 +647,7 @@ public class TestSteps {
         }
         for (Preference p : emp.getPref()) {
             if (p.getShift() != null) {
+                if (p.getShift().calcHours() != 8) continue;
                 if (p.getDay() != -1 && p.getDate() == null) {
                     int firstDay = 0;
                     int weekDay = date.getDayOfWeek().getValue();
@@ -608,6 +706,10 @@ public class TestSteps {
     // scenario 2: Graph has no edges to unwanted shifts on certain days
     @When("other shifts on the same day are still present")
     public void other_shifts_on_the_same_day_are_still_present() {
+        int shiftsInGraph = 0;
+        for (Shift s : shifts) {
+            if (s.calcHours() == 8) shiftsInGraph++;
+        }
         for (Edge empEdge : fg.getS().getOutGoing()) {
             Vertex empNode = empEdge.getTo();
             int days = 0;
@@ -620,7 +722,7 @@ public class TestSteps {
                     if (shiftEdge.getType() == 1) continue;
                     shiftsOnDay++;
                 }
-                assertTrue(shiftsOnDay == (shifts.length-unwantedShifts[dayEdge.getTo().getDay()].size()));
+                assertTrue(shiftsOnDay == (shiftsInGraph-unwantedShifts[dayEdge.getTo().getDay()].size()));
             }
             assertTrue(days == fg.getDaysInPeriod());
         }
@@ -635,34 +737,33 @@ public class TestSteps {
             for (Edge dayEdge : empNode.getOutGoing()) {
                 if (dayEdge.getType() == 1) continue;
                 if (unwantedDays[dayEdge.getTo().getDay()] && unwantedShifts[dayEdge.getTo().getDay()].isEmpty()) {
-                    int prefLvl = getPrefLvl(empNode.getEmp(), dayEdge.getTo().getDay(), 0);
-                    if (prefLvl == 0) {
-                        assertTrue(dayEdge.getWeight() == 0);
+                    Preference pref = getPref(empNode.getEmp(), dayEdge.getTo().getDay(), 0);
+                    if (pref == null) {
+                        assertTrue(dayEdge.getWeight() == fg.getBaseEdgeWeight());
                     } else {
-                        assertTrue(checkWeight(dayEdge.getWeight(), prefLvl));
+                        assertTrue(fg.findWeight(pref) == dayEdge.getWeight());
                     }
                 } else {
-                    assertTrue(dayEdge.getWeight() == 0);
+                    assertTrue(dayEdge.getWeight() == fg.getBaseEdgeWeight());
                 }
                 for (Edge shiftEdge : dayEdge.getTo().getOutGoing()) {
                     if (shiftEdge.getType() == 1) continue;
                     if (unwantedShifts[dayEdge.getTo().getDay()].isEmpty()) {
-                        assertTrue(shiftEdge.getWeight() == 0); 
+                        assertTrue(shiftEdge.getWeight() == fg.getBaseEdgeWeight()); 
                         continue;
                     }
-                    int prefLvl = getPrefLvl(empNode.getEmp(), dayEdge.getTo().getDay(), 1);
-                    if (prefLvl == 0) {
-                        assertTrue(dayEdge.getWeight() == 0);
+                    Preference pref = getPref(empNode.getEmp(), dayEdge.getTo().getDay(), 1);
+                    if (pref == null) {
+                        assertTrue(dayEdge.getWeight() == fg.getBaseEdgeWeight());
                     } else {
-                        assertTrue(checkWeight(dayEdge.getWeight(), prefLvl));
+                        assertTrue(fg.findWeight(pref) == dayEdge.getWeight());
                     }
                 }
             }
         }
     }
 
-    public int getPrefLvl(Employee emp, int day, int type) throws Exception {
-        int prefLvl = 0;
+    public Preference getPref(Employee emp, int day, int type) throws Exception {
         for (Preference p : emp.getPref()) {
             if (type == 0 && p.getShift() != null) continue;
             if (p.getDate() != null) {
@@ -674,8 +775,7 @@ public class TestSteps {
                     if (prefDay > fg.getDaysInPeriod()) throw new Exception("date not found");
                 }
                 if (prefDay == day) {
-                    prefLvl = p.getPrefLvl();
-                    break;
+                    return p;
                 }
             } else if (p.getDay() != -1) {
                 if (p.getRepeat() != -1) {
@@ -699,14 +799,14 @@ public class TestSteps {
                         switch (p.getRepeat()) {
                             case 1: // weekly
                                 for (int i = firstDay; i < days; i += 7) {
-                                    if (i == day) return p.getPrefLvl();
+                                    if (i == day) return p;
                                 }
                                 break;
                             case 2: // odd weeks
                                 date = date.plusDays(firstDay);
                                 startingWeek = week%2 == 1 ? 0 : 1;
                                 for (int i = firstDay+7*startingWeek; i < days; i += 14) {
-                                    if (i == day) return p.getPrefLvl();
+                                    if (i == day) return p;
                                 }
                                 date = date.minusDays(firstDay);
                                 break;
@@ -714,7 +814,7 @@ public class TestSteps {
                                 date = date.plusDays(firstDay);
                                 startingWeek = week%2 == 0 ? 0 : 1;
                                 for (int i = firstDay+7*startingWeek; i < days; i += 14) {
-                                    if (i == day) return p.getPrefLvl();
+                                    if (i == day) return p;
                                 }
                                 date = date.minusDays(firstDay);
                                 break;
@@ -723,7 +823,7 @@ public class TestSteps {
                                 break;
                             case 5: // monthly
                                 for (int i = firstDay; i < days; i += 28) {
-                                    if (i == day) return p.getPrefLvl();
+                                    if (i == day) return p;
                                 }
                                 break;
                             default:
@@ -734,22 +834,7 @@ public class TestSteps {
 
             }
         }
-        return prefLvl;
-    }
-
-    public boolean checkWeight(int weight, int prefLvl) throws Exception {
-        switch (prefLvl) {
-            case 2:
-                return weight == 1000;
-            case 3:
-                return weight == 250;
-            case 4:
-                return weight == 50;
-            case 5:
-                return weight == 5;
-            default:
-                throw new Exception("Unwanted weight encountered");
-        }
+        return null;
     }
 
 }

@@ -14,8 +14,14 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -28,6 +34,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+
 public class AlgorithmController implements Initializable {
 
     // Buttons
@@ -36,6 +43,8 @@ public class AlgorithmController implements Initializable {
     @FXML
     private Button expGraphButton;
 
+    @FXML
+    private Button toPDFButton;
     // Labels
     @FXML
     private Label costLabel;
@@ -53,6 +62,14 @@ public class AlgorithmController implements Initializable {
     private Label hoursLabel;
     @FXML
     private Label experienceLabel;
+    @FXML
+    private Label shiftLabel;
+    @FXML
+    private Label shiftLabel2;
+    @FXML
+    private Label shiftLabel3;
+    @FXML
+    private Label shiftDateLabel;
     
 
     // ListView
@@ -60,6 +77,16 @@ public class AlgorithmController implements Initializable {
     private ListView<Employee> employeeList;
     @FXML
     private ListView<String> pathList;
+    @FXML
+    private ListView<String> prefList;
+    @FXML
+    private ListView<String> invalidShiftPathList;
+    @FXML
+    private ListView<String> invalidDepPathList;
+    @FXML
+    private ListView<Employee> employeeList2;
+    @FXML
+    private ListView<Integer> shiftDayList;
 
     // TextFields
     @FXML
@@ -67,7 +94,7 @@ public class AlgorithmController implements Initializable {
 
     private FlowGraph fg;
     private Algorithms algo;
-    private Shift[] shifts = {new Shift(7, 19), new Shift(19,7), new Shift(7, 15), new Shift(15, 23), new Shift(23, 7)};
+    private Shift[] shifts = {new Shift(7, 15), new Shift(15, 23), new Shift(23, 7), new Shift(7, 19), new Shift(19, 7)};
     private LocalDate date = LocalDate.now();
     private ArrayList<String> flowPaths = new ArrayList<>();
 
@@ -83,6 +110,7 @@ public class AlgorithmController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Employee> arg0, Employee arg1, Employee arg2) {
                 Employee emp = employeeList.getSelectionModel().getSelectedItem();
+                // shows the standard data
                 nameLabel.setText(emp.getName());
                 idLabel.setText(emp.getID());
                 String deps = "";
@@ -100,9 +128,109 @@ public class AlgorithmController implements Initializable {
                 departmentsLabel.setText(deps);
                 hoursLabel.setText("" + emp.getWeeklyHrs());
                 experienceLabel.setText("" + emp.getExpLvl());
-                // preferencesLabel.setText(emp.getName());
+
+                // shows the data for preferences
+                prefList.getItems().clear();
+                for (Preference p : emp.getPref()) {
+                    String prefData = "Wanted: ";
+                    if (p.getWanted()) {
+                        prefData += "Yes, ";
+                    } else {
+                        prefData += "No, ";
+                    }
+                    prefData += "Preference level: " + p.getPrefLvl() + ", ";
+                    if (p.getDate() != null && p.getShift() != null) {
+                        prefData += "Date: " + p.getDate() + ", "; 
+                    } else if (p.getDate() != null) {
+                        prefData += "Date: " + p.getDate();
+                    }
+                    if (p.getDay() != -1 && (p.getShift() != null || p.getRepeat() != -1)) {
+                        prefData += "Day: ";
+                        switch (p.getDay()) {
+                            case 1:
+                                prefData += "monday, ";
+                                break;
+                            case 2:
+                                 prefData += "tuesday, ";
+                                break;
+                            case 3:
+                                 prefData += "wednesday, ";
+                                break;
+                            case 4:
+                                 prefData += "thursday, ";
+                                break;
+                            case 5:
+                                 prefData += "friday, ";
+                                break;
+                            case 6:
+                                 prefData += "saturday, ";
+                                 break;
+                            case 7:
+                                 prefData += "sunday, ";
+                                 break;
+                            case 8:
+                                 prefData += "monday, ";
+                                 break;
+                            default:
+                                 prefData += "__";
+                                 break;
+                        }  
+                    } else if (p.getDay() != -1) {
+                        prefData += "Day: ";
+                        switch (p.getDay()) {
+                            case 1:
+                                prefData += "monday";
+                            case 2:
+                                 prefData += "tuesday";
+                            case 3:
+                                 prefData += "wednesday";
+                            case 4:
+                                 prefData += "thursday";
+                            case 5:
+                                 prefData += "friday";
+                            case 6:
+                                 prefData += "saturday";
+                            case 7:
+                                 prefData += "sunday";
+                            case 8:
+                                 prefData += "monday";
+                            default:
+                                 prefData += "__";
+                        }  
+                    }
+                    if (p.getShift() != null && p.getRepeat() != -1) {
+                        prefData += "Shift: " + p.getShift() + ", ";
+                    } else if (p.getShift() != null) {
+                        prefData += "Shift: " + p.getShift();
+                    }
+                    if (p.getRepeat() != -1) {
+                        prefData += "Repeat: ";
+                        switch (p.getRepeat()) {
+                            case 1:
+                                prefData += "Weekly";
+                                break;
+                            case 2:
+                                prefData += "Odd weeks";
+                                break;
+                            case 3:
+                                prefData += "Even weeks";
+                                break;
+                            case 4:
+                                prefData += "Every third weeks";
+                                break;
+                            case 5:
+                                prefData += "Monthly";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    prefList.getItems().add(prefData);
+                }
             }
         });
+
+        employeeList2.getItems().addAll(fg.getEmps());
 
         searchPaths.textProperty().addListener((obs, oldVal, newVal) -> {
             String searchText = newVal.toLowerCase();
@@ -128,6 +256,11 @@ public class AlgorithmController implements Initializable {
     }
 
     public void runMinCostAlgorithm() {
+        // Clear up previous results
+        invalidShiftPathList.getItems().clear();
+        invalidDepPathList.getItems().clear();
+        // fg = new FlowGraph(fg.getDaysInPeriod(), shifts, fg.getEmps());
+
         long startTime = System.currentTimeMillis();
         int totalHours = 0;
         for (Edge e : fg.getS().getOutGoing()) {
@@ -142,9 +275,52 @@ public class AlgorithmController implements Initializable {
         flowLabel.setText(results[0] + "");
         costLabel.setText("" + results[1]);
         runTimeLabel.setText((endTime-startTime)/1000.0 + " s");
+        pathList.getItems().clear();
         fg.getPathsWithFlow(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, flowPaths);
         pathList.getItems().addAll(flowPaths);
+        
+        ArrayList<String> shiftRulesBroken = new ArrayList<>();
+        fg.getRuleBreakingShift(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, shiftRulesBroken);
+        invalidShiftPathList.getItems().addAll(shiftRulesBroken);
 
+        ArrayList<String> depRulesBroken = new ArrayList<>();
+        fg.getRuleBreakingDep(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, depRulesBroken);
+        invalidDepPathList.getItems().addAll(depRulesBroken);
+
+        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        employeeList2.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
+            @Override
+            public void changed(ObservableValue<? extends Employee> arg0, Employee arg1, Employee arg2) {
+                shiftDayList.getItems().clear();
+                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
+                List<Integer> uniqueList = new ArrayList<>();
+                for (int i = 0; i < emp.getShifts().length; i++ ) {
+                    if (emp.getShifts()[i].isEmpty()) continue;
+                    uniqueList.add(i);
+                }
+                Collections.sort(uniqueList);
+                shiftDayList.getItems().addAll(uniqueList);
+                
+            }
+        });
+
+        shiftDayList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
+            @Override
+            public void changed(ObservableValue<? extends Integer> arg0, Integer arg1, Integer arg2) {
+                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
+                Integer day = shiftDayList.getSelectionModel().getSelectedItem();
+                if (day != null) {
+                    shiftLabel.setText(emp.getShifts()[day].get(0).toString());
+                    LocalDate shiftDate = fg.getStartDate();
+                    shiftDate = shiftDate.plusDays(day);
+                    shiftDateLabel.setText("Shift on: " + shiftDate.toString());
+                    if (emp.getShifts()[day].size() > 1) shiftLabel2.setText(emp.getShifts()[day].get(1).toString());
+                    if (emp.getShifts()[day].size() > 2) shiftLabel3.setText(emp.getShifts()[day].get(2).toString());
+                    if (emp.getShifts()[day].size() > 3) System.out.println("Somehow there are more than 3 shifts assigned to one day");
+                }
+            }
+        });
+        fg.printRuleViolations();
     }
 
     public void runEdmondsKarpAlgorithm() {
@@ -167,6 +343,61 @@ public class AlgorithmController implements Initializable {
         System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
         flowLabel.setText(results[0] + "");
         costLabel.setText("" + results[1]);
+    }
+
+    public void convertToPDF() {
+        try (PDDocument document = new PDDocument()) {
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 16);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(100, 750);
+                contentStream.showText("Weekly Roster");
+                contentStream.endText();
+
+                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(100, 720);
+                contentStream.showText("Week of Nov 1 - Nov 7, 2024");
+                contentStream.endText();
+
+                // Days of the week headers
+                String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+                int xOffset = 100;
+
+                for (String day : days) {
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(xOffset, 680);
+                    contentStream.showText(day);
+                    if (!day.equals("Sunday")) contentStream.showText(" | ");
+                    contentStream.endText();
+                    xOffset += 80;
+                }
+
+                // Example shift entries (placeholders)
+                xOffset = 100;
+                for (String day : days) {
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(xOffset, 640);
+                    contentStream.showText("09-05");
+                    contentStream.endText();
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(0, -15);
+                    contentStream.showText("05-09");
+                    contentStream.endText();
+                    xOffset += 80;
+                }
+
+                // Add more shift entries as needed
+            }
+
+            document.save("WeeklyRoster.pdf");
+            System.out.println("PDF created successfully.");
+        } catch (IOException e) {
+            System.err.println("Error creating PDF: " + e.getMessage());
+        }
     }
 
 
@@ -207,9 +438,9 @@ public class AlgorithmController implements Initializable {
                             pref.setPrefLvl(Integer.parseInt(line.substring(18).trim()));
                         } else if (line.contains("date:")) {
                             String dateStr = line.substring(6).trim();
-                            int year = 2000 + Integer.parseInt(dateStr.substring(0, 2));
+                            int day = Integer.parseInt(dateStr.substring(0, 2));
                             int month = Integer.parseInt(dateStr.substring(3, 5));
-                            int day = Integer.parseInt(dateStr.substring(6, 8));
+                            int year = 2000 + Integer.parseInt(dateStr.substring(6, 8));
                             pref.setDate(LocalDate.of(year, month, day));
                         } else if (line.contains("day")) {
                             switch (line.substring(5).trim().toLowerCase()) {

@@ -1,5 +1,8 @@
 package app.program.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Employee {
     private static int totalEmployees = 0;
     private int empIndex = -1;
@@ -10,6 +13,7 @@ public class Employee {
     private int weeklyHrs;
     private int expLvl;
     private Preference[] pref;
+    private List<Shift>[] shifts;
 
     public Employee(String name, String id, int[] departments, int weeklyHrs, int expLvl, Preference[] pref) {
         this.name = name;
@@ -25,6 +29,21 @@ public class Employee {
 
     public void addPref(Preference[] pref) {
         this.pref = pref;
+    }
+
+    public void addShift(int day, Shift shift) {
+        if (!shifts[day].contains(shift)) shifts[day].add(shift);
+    }
+
+    public List<Shift>[] getShifts() {
+        return shifts;
+    }
+
+    public void createShifts(int days) {
+        this.shifts = new ArrayList[days];
+        for (int i = 0; i < this.shifts.length; i++) {
+            this.shifts[i] = new ArrayList<>();
+        }
     }
 
     public int getExpLvl() {
