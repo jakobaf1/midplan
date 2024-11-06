@@ -419,7 +419,6 @@ public class TestSteps {
         }
     }
 
-    // Scenario 3: 12 hour shifts are valid
     @Then("every twelve hour shift is valid")
     public void every_twelve_hour_shift_is_valid() {
         fg.clearAssignedShifts();
@@ -449,6 +448,27 @@ public class TestSteps {
             for (int day = 0; day < empShifts.length; day++) {
                 if (empShifts[day].isEmpty()) continue;
                 assertTrue(empShifts[day].size() == 1);
+            }
+        }
+    }
+
+    @Then("twelve hour shifts only have one department")
+    public void twelve_hour_shifts_only_have_one_department() {
+        for (Edge empEdge : fg.getS().getOutGoing()) {
+            Vertex empNode = empEdge.getTo();
+            for (Edge dayEdge : empNode.getOutGoing()) {
+                if (dayEdge.getType() == 1 || dayEdge.getFlow() == 0) continue;
+                int dep = -1;
+                for (Edge shiftEdge : dayEdge.getTo().getOutGoing()) {
+                    if (shiftEdge.getType() == 1 || shiftEdge.getFlow() == 0) continue;
+                    for (Edge timeDepEdge : shiftEdge.getTo().getOutGoing()) {
+                        if (timeDepEdge.getType() == 1 || timeDepEdge.getFlow() == 0) continue;
+                        if (dep == -1) dep = timeDepEdge.getTo().getDep();
+                        if (dep != -1) {
+                            assertTrue(dep == timeDepEdge.getTo().getDep());
+                        }
+                    }
+                }
             }
         }
     }

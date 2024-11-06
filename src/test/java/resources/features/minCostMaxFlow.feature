@@ -19,7 +19,7 @@ Feature: minCostMaxFlow algorithm
         Then all flows distributed are less than or equal to the edge capacity
         And the sum of incoming flow in a node is equal to the sum of flow going out of it
     
-    Scenario: when the algorithm has run, no rules are broken
+    Scenario: when the algorithm has run, no rules are broken (except 4/12 shifts)
         Given the shifts
             | shiftName | startTime | endTime |
             | Shift 1   | 07        | 15      |
@@ -33,3 +33,4 @@ Feature: minCostMaxFlow algorithm
         Then each employee has at least 11 hours between each shift
         And every twelve hour shift is valid
         And only one shift is assigned per day
+        And twelve hour shifts only have one department

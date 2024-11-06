@@ -13,24 +13,27 @@ public class Algorithms {
 
     public Algorithms(FlowGraph fg) {
         this.fg = fg;
-        // this.employeeShifts = new Shift[fg.getEmps().length][fg.getDaysInPeriod()];
-        // this.assignedShifts = new ArrayList[fg.getEmps().length][fg.getDaysInPeriod()];
-        // for (int emp = 0; emp < this.assignedShifts.length; emp++) {
-        //     for (int day = 0; day < this.assignedShifts[0].length; day++) {
-        //         this.assignedShifts[emp][day] = new ArrayList<>();
-        //     }
-        // }
-        // this.deps = new int[fg.getEmps().length][fg.getDaysInPeriod()];
-
-        // TODO: The following is just for the sake of tests, and should probably find a better solution
-        this.assignedShifts = new ArrayList[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
+        this.employeeShifts = new Shift[fg.getEmps().length][fg.getDaysInPeriod()];
+        this.assignedShifts = new ArrayList[fg.getEmps().length][fg.getDaysInPeriod()];
+        this.deps = new int[fg.getEmps().length][fg.getDaysInPeriod()];
         for (int emp = 0; emp < this.assignedShifts.length; emp++) {
             for (int day = 0; day < this.assignedShifts[0].length; day++) {
                 this.assignedShifts[emp][day] = new ArrayList<>();
+                this.deps[emp][day] = -1;
             }
         }
-        this.deps = new int[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
-        this.employeeShifts = new Shift[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
+
+
+        // TODO: The following is just for the sake of tests, and should probably find a better solution
+        // this.assignedShifts = new ArrayList[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
+        // this.deps = new int[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
+        // for (int emp = 0; emp < this.assignedShifts.length; emp++) {
+        //     for (int day = 0; day < this.assignedShifts[0].length; day++) {
+        //         this.assignedShifts[emp][day] = new ArrayList<>();
+        //         this.deps[emp][day] = -1;
+        //     }
+        // }
+        // this.employeeShifts = new Shift[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
     }
 
     // Bellman-Ford
@@ -309,7 +312,7 @@ public class Algorithms {
                 // define the node, which the current edge goes to
                 Vertex toNode = e.getTo();
                 if (e.getCap() - e.getFlow() > 0 && dist[toNode.getVertexIndex()] > dist[node.getVertexIndex()] + e.getWeight() && 
-                checkConditions11Hr(e, emp, day, shift, minFlow)) { //&& sameDep(e, emp, day)) {
+                checkConditions11Hr(e, emp, day, shift, minFlow) && sameDep(e, emp, day)) {
                     dist[toNode.getVertexIndex()] = dist[node.getVertexIndex()] + e.getWeight();
                     parentEdges[toNode.getVertexIndex()] = e;
 
@@ -326,8 +329,6 @@ public class Algorithms {
                         employees[toNode.getVertexIndex()] = emp;
                         days[toNode.getVertexIndex()] = day;
                         shifts[toNode.getVertexIndex()] = node.getShift();
-                        // TODO: can this be done in a better way? I would like for it to only be null if it's completely cancelled out
-                        // TODO: Can be improved by improving the array for shiftassignments. Use list instead and match
                         if (e.getType() == 1 && minFlow >= e.getCap()) {
                             if (assignedShifts[emp.getEmpIndex()][day].size() > 1) {
                                 for (int i = 0; i < assignedShifts[emp.getEmpIndex()][day].size(); i++) {
@@ -337,7 +338,7 @@ public class Algorithms {
                                 assignedShifts[emp.getEmpIndex()][day].remove(0);
                             }
                             // employeeShifts[emp.getEmpIndex()][day] = null;
-                            // deps[emp.getEmpIndex()][day] = -1;
+                            deps[emp.getEmpIndex()][day] = -1;
                         }
                     } else {
                         employees[toNode.getVertexIndex()] = emp;
@@ -637,20 +638,20 @@ public class Algorithms {
                 node = parentEdges[node.getVertexIndex()].getFrm();
             }
             // System.out.println("currently at " + ( totalFlow/((double) k)*100.0) + "%");
-            // markEmployeeShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
-            // this.assignedShifts = new ArrayList[fg.getEmps().length][fg.getDaysInPeriod()];
-            // for (int emp = 0; emp < this.assignedShifts.length; emp++) {
-            //     for (int day = 0; day < this.assignedShifts[0].length; day++) {
-            //         this.assignedShifts[emp][day] = new ArrayList<>();
-            //     }
-            // }
-            // TODO: Find alternative... only necessary for tests
-            this.assignedShifts = new ArrayList[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
+            this.assignedShifts = new ArrayList[fg.getEmps().length][fg.getDaysInPeriod()];
             for (int emp = 0; emp < this.assignedShifts.length; emp++) {
                 for (int day = 0; day < this.assignedShifts[0].length; day++) {
                     this.assignedShifts[emp][day] = new ArrayList<>();
                 }
             }
+            // TODO: Find alternative... only necessary for tests
+            // this.assignedShifts = new ArrayList[fg.getEmps()[0].getTotalEmployees()][fg.getDaysInPeriod()];
+            // for (int emp = 0; emp < this.assignedShifts.length; emp++) {
+            //     for (int day = 0; day < this.assignedShifts[0].length; day++) {
+            //         this.assignedShifts[emp][day] = new ArrayList<>();
+            //         this.deps[emp][day] = -1;
+            //     }
+            // }
             markAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
         }
         int[] results = {totalFlow, totalCost};
@@ -757,6 +758,10 @@ public class Algorithms {
     // Getters
     public Shift[][] getEmployeeShifts() {
         return employeeShifts;
+    }
+
+    public List<Shift>[][] getAssignedShifts() {
+        return assignedShifts;
     }
 
 
