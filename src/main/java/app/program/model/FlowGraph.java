@@ -177,18 +177,8 @@ public class FlowGraph {
         if (e.getPref() == null) return dayPreferences;
         for (Preference p : e.getPref()) {
             if (p.getDay() != -1) {
-                int firstDay = 0;
                 int week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-                int weekDay = date.getDayOfWeek().getValue();
-
-                // find out what day of the week the schefule starts
-                if (p.getDay() == weekDay) {
-                    firstDay = 0;
-                } else if (p.getDay() < weekDay) {
-                    firstDay = p.getDay()+7-weekDay;
-                } else {
-                    firstDay = p.getDay()-weekDay;
-                }
+                int firstDay = firstDay(date, p);
 
                 if (p.getRepeat() != -1) {
                     int startingWeek = 0;
@@ -256,17 +246,7 @@ public class FlowGraph {
         for (Preference p : e.getPref()) {
             if (p.getShift() != null) {
                 if (p.getDay() != -1 && p.getDate() == null) {
-                    int firstDay = 0;
-                    int weekDay = date.getDayOfWeek().getValue();
-
-                    // find out what day of the week the schedule starts
-                    if (p.getDay() == weekDay) {
-                        firstDay = 0;
-                    } else if (p.getDay() < weekDay) {
-                        firstDay = p.getDay()+7-weekDay;
-                    } else {
-                        firstDay = p.getDay()-weekDay;
-                    }
+                    int firstDay = firstDay(date, p);
                     for (int i = firstDay; i < days; i += 7) {
                         shiftPreferences[i].add(p);
                     }  
@@ -292,6 +272,21 @@ public class FlowGraph {
         return shiftPreferences;
     }
 
+    public int firstDay(LocalDate date, Preference p) {
+        int firstDay = 0;
+        int weekDay = date.getDayOfWeek().getValue();
+
+        // find out what day of the week the schedule starts
+        if (p.getDay() == weekDay) {
+            firstDay = 0;
+        } else if (p.getDay() < weekDay) {
+            firstDay = p.getDay()+7-weekDay;
+        } else {
+            firstDay = p.getDay()-weekDay;
+        }
+        return firstDay;
+    }
+        
     public int setDayWeight(List<Preference> dailyPref) {
         for (Preference p : dailyPref) {
             if (p.getDay() != -1) {
@@ -311,6 +306,20 @@ public class FlowGraph {
     }
 
     public int findWeight(Preference p) {
+        // switch (p.getPrefLvl()) {
+        //     case 1:
+        //         return Integer.MAX_VALUE;
+        //     case 2:
+        //         return 1000;
+        //     case 3:
+        //         return 250;
+        //     case 4:
+        //         return 50;
+        //     case 5:
+        //         return 5;
+        //     default:
+        //         return baseEdgeWeight;
+        // }
         switch (p.getPrefLvl()) {
             case 1:
                 return p.getWanted() ? 0 : Integer.MAX_VALUE;
@@ -325,20 +334,6 @@ public class FlowGraph {
             default:
                 return baseEdgeWeight;
         }
-        // switch (p.getPrefLvl()) {
-        //     case 1:
-        //         return p.getWanted() ? -10000 : Integer.MAX_VALUE;
-        //     case 2:
-        //         return p.getWanted() ? -1000 : 1000;
-        //     case 3:
-        //         return p.getWanted() ? -250 : 250;
-        //     case 4:
-        //         return p.getWanted() ? -50 : 50;
-        //     case 5:
-        //         return p.getWanted() ? -5 : 5;
-        //     default:
-        //         return baseEdgeWeight;
-        // }
     }
 
     public String weekdayToString(int day) {

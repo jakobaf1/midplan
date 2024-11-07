@@ -269,7 +269,7 @@ public class AlgorithmController implements Initializable {
         System.out.println("Employee hours add up to a total of: " + totalHours);
         algo = new Algorithms(fg);
         int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
-        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
+        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1] + ", prefsDenied: " + results[2] + ", prefsFulfilled: " + results[3]);
         long endTime = System.currentTimeMillis();
         System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
         flowLabel.setText(results[0] + "");
