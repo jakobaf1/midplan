@@ -19,6 +19,7 @@ public class FlowGraph {
 
     private Shift[] shifts;
     private Employee[] emps;
+    private ArrayList<ArrayList<Edge>> invalidPaths = new ArrayList<>();
 
     public FlowGraph(int periodInWeeks, Shift[] shifts, Employee[] emps) {
         this.periodInWeeks = periodInWeeks;
@@ -39,7 +40,7 @@ public class FlowGraph {
             for (int dep = 0; dep < 2; dep++) {
                 for (int time = 0; time < 3; time++) {
                     // this node signifies the dep_time node (6th layer)
-                    Vertex layer5Node = new Vertex(5, (dep +"_"+time+"_"+day), dep, time);
+                    Vertex layer5Node = new Vertex(5, (dep +"_"+time+"_"+day), dep, time, day);
                     // here it is linked to the sink
                     if (time == 0) {
                         addEdge(layer5Node, t, 6*8, baseEdgeWeight, 0);
@@ -48,7 +49,7 @@ public class FlowGraph {
                     }
 
                     for (int exp = 0; exp < 2; exp++) {
-                        Vertex layer4Node = new Vertex(4, time+"_"+dep+"_"+(exp+1), dep, time, exp+1);
+                        Vertex layer4Node = new Vertex(4, time+"_"+dep+"_"+(exp+1), dep, time, exp+1, day);
                         if (time == 0) {
                             addEdge(layer4Node, layer5Node, (6-exp)*8, baseEdgeWeight, 0);
                         } else {
@@ -84,11 +85,19 @@ public class FlowGraph {
                     date = date.plusDays(1); 
                     continue;
                 }
-                Vertex dayNode = new Vertex(2, weekdayToString(weekday)+"_"+day, day);
+                Vertex dayNode = new Vertex(2, weekdayToString(weekday)+"_"+day, e, day);
                 if (!shiftPref) {
                     addEdge(empNode, dayNode, 12, w, 8);
+                    // could split 12-hr edges up into two and add a (very) slight weight to the 4-hr part, thereby getting more 8 hours
+                    // NOTE: If I do this, then I have to be careful of duplicate paths in my functions, since there is a path for the 8-hr edge and also the 4-hr
+                    // addEdge(empNode, dayNode, 8, w, 8);
+                    // addEdge(empNode, dayNode, 4, w+1, 8);
                 } else {
                     addEdge(empNode, dayNode, 12, baseEdgeWeight, 8);
+                    // could split 12-hr edges up into two and add a (very) slight weight to the 4-hr part, thereby getting more 8 hours
+                    // NOTE: If I do this, then I have to be careful of duplicate paths in my functions, since there is a path for the 8-hr edge and also the 4-hr
+                    // addEdge(empNode, dayNode, 8, baseEdgeWeight, 8);
+                    // addEdge(empNode, dayNode, 4, baseEdgeWeight+1, 8);
                 }
 
                 for (Shift shift : shifts) {
@@ -99,7 +108,7 @@ public class FlowGraph {
                         if (ws == Integer.MAX_VALUE) continue;
                     }
                     
-                    Vertex shiftNode = new Vertex(3, shift.getStartTime() + "-" + shift.getEndTime(), shift);
+                    Vertex shiftNode = new Vertex(3, shift.getStartTime() + "-" + shift.getEndTime(), e, day, shift);
                     addEdge(dayNode, shiftNode, shift.calcHours(), ws, 0);
 
                     int expLvl = e.getExpLvl();
@@ -158,7 +167,7 @@ public class FlowGraph {
         Edge newEdge = new Edge(0, frm, to, cap, weight, lowerBound);
         frm.addOutGoing(newEdge);
         to.addInGoing(newEdge);
-
+        
         // Now to create the backwards edge
         Edge counterEdge = new Edge(1, to, frm, 0, newEdge, -weight, lowerBound);
         to.addOutGoing(counterEdge);
@@ -359,99 +368,6 @@ public class FlowGraph {
         }    
     }
 
-    public Vertex[] makeExperimentalGraph() {
-        Vertex s = new Vertex(0, "source");
-        Vertex t = new Vertex(6, "sink");
-        // employee nodes
-        Vertex e1 = new Vertex(1, "E1", new Employee("E1", "E1", null, 16, 0, null));
-        Vertex e2 = new Vertex(1, "E2", new Employee("E2", "E2", null, 16, 0, null));
-        addEdge(s, e1, e1.getEmp().getWeeklyHrs(), 0, 8);
-        // addEdge(s, e2, e2.getEmp().getWeeklyHrs(), 0, 8);
-        // day nodes emp1
-        Vertex d1e1 = new Vertex(2, "day1", 1);
-        Vertex d2e1 = new Vertex(2, "day2", 2);
-        addEdge(e1, d1e1, 12, 0, 0);
-        addEdge(e1, d2e1, 12, 0, 0);
-        // day nodes emp2
-        Vertex d1e2 = new Vertex(2, "day1", 1);
-        Vertex d2e2 = new Vertex(2, "day2", 2);
-        addEdge(e2, d1e2, 12, 0, 0);
-        addEdge(e2, d2e2, 12, 0, 0);
-
-        // shift nodes
-        // day 1, emp 1
-        Vertex s1 = new Vertex(3, "7-19", new Shift(7, 19));
-        Vertex s2 = new Vertex(3, "7-15", new Shift(7, 15));
-        Vertex s3 = new Vertex(3, "15-23", new Shift(15, 23));
-        addEdge(d1e1, s1, s1.getShift().calcHours(), 0, 8);
-        addEdge(d1e1, s2, s2.getShift().calcHours(), 0, 8);
-        addEdge(d1e1, s3, s3.getShift().calcHours(), 0, 8);
-        // day 2, emp 1
-        Vertex s12 = new Vertex(3, "7-19", new Shift(7, 19));
-        Vertex s22 = new Vertex(3, "7-15", new Shift(7, 15));
-        Vertex s32 = new Vertex(3, "15-23", new Shift(15, 23));
-        addEdge(d2e1, s12, s12.getShift().calcHours(), 0, 8);
-        addEdge(d2e1, s22, s22.getShift().calcHours(), 0, 8);
-        addEdge(d2e1, s32, s32.getShift().calcHours(), 0, 8);
-        
-        // day 1, emp 2
-        Vertex s4 = new Vertex(3, "7-19", new Shift(7, 19));
-        Vertex s5 = new Vertex(3, "7-15", new Shift(7, 15));
-        Vertex s6 = new Vertex(3, "15-23", new Shift(15, 23));
-        addEdge(d1e2, s4, s1.getShift().calcHours(), 0, 8);
-        addEdge(d1e2, s5, s2.getShift().calcHours(), 0, 8);
-        addEdge(d1e2, s6, s3.getShift().calcHours(), 0, 8);
-
-        // day 2, emp 2
-        Vertex s42 = new Vertex(3, "7-19", new Shift(7, 19));
-        Vertex s52 = new Vertex(3, "7-15", new Shift(7, 15));
-        Vertex s62 = new Vertex(3, "15-23", new Shift(15, 23));
-        addEdge(d2e2, s42, s42.getShift().calcHours(), 0, 8);
-        addEdge(d2e2, s52, s52.getShift().calcHours(), 0, 8);
-        addEdge(d2e2, s62, s62.getShift().calcHours(), 0, 8);
-
-        // time of day nodes emp 1
-        Vertex d1t1 = new Vertex(5, "0_0", 0, 0);
-        Vertex d1t2 = new Vertex(5, "0_1", 0, 1);
-        Vertex d2t1 = new Vertex(5, "0_0", 0, 0);
-        Vertex d2t2 = new Vertex(5, "0_1", 0, 1);
-        addEdge(s1, d1t1, 8, 0, 8);
-        addEdge(s1, d1t2, 4, 0, 4);
-        addEdge(s2, d1t1, 8, 0, 8);
-        addEdge(s3, d1t2, 8, 0, 8);
-        addEdge(s12, d2t1, 8, 0, 8);
-        addEdge(s12, d2t2, 4, 0, 4);
-        addEdge(s22, d2t1, 8, 0, 8);
-        addEdge(s32, d2t2, 8, 0, 8);
-
-        // time of day nodes emp 2
-        Vertex d1t3 = new Vertex(5, "0_0", 0, 0);
-        Vertex d1t4 = new Vertex(5, "0_1", 0, 1);
-        Vertex d2t3 = new Vertex(5, "0_0", 0, 0);
-        Vertex d2t4 = new Vertex(5, "0_1", 0, 1);
-        addEdge(s4, d1t3, 8, 0, 8);
-        addEdge(s4, d1t4, 4, 0, 4);
-        addEdge(s5, d1t3, 8, 0, 8);
-        addEdge(s6, d1t4, 8, 0, 8);
-        addEdge(s42, d2t3, 8, 0, 8);
-        addEdge(s42, d2t4, 4, 0, 4);
-        addEdge(s52, d2t3, 8, 0, 8);
-        addEdge(s62, d2t4, 8, 0, 8);
-
-        // link time of day to sink
-        addEdge(d1t1, t, 12, 0, 0);
-        addEdge(d1t2, t, 12, 0, 0);
-        addEdge(d1t3, t, 12, 0, 0);
-        addEdge(d1t4, t, 12, 0, 0);
-        addEdge(d2t1, t, 12, 0, 0);
-        addEdge(d2t2, t, 12, 0, 0);
-        addEdge(d2t3, t, 12, 0, 0);
-        addEdge(d2t4, t, 12, 0, 0);
-
-        Vertex[] v = {s,t};
-        return v;
-    }
-
     // printing statements
     public void printGraphSink() {
         String text = "\t";
@@ -569,7 +485,7 @@ public class FlowGraph {
         if (v == t) {
             String edge = "";
             boolean breaksRule = false;
-            Edge empToShiftEdge = null;
+            Edge empToDayEdge = null;
             for (int i = 0; i < path.size(); i++) {
                 if (i == path.size()-1) {
                     edge += path.get(i);
@@ -577,11 +493,11 @@ public class FlowGraph {
                     edge += path.get(i) + " - " + flows.get(i) + "/" + capacities.get(i) + " -> ";
                 }
                 if (path.get(i).getPurpose() == 1) {
-                    empToShiftEdge = path.get(i).getOutGoing().get(0);
+                    empToDayEdge = path.get(i).getOutGoing().get(0);
                     for (Edge e : path.get(i).getOutGoing()) {
-                        if (e.getTo() == path.get(i+1)) empToShiftEdge = e;
+                        if (e.getTo() == path.get(i+1)) empToDayEdge = e;
                     }
-                    breaksRule = empToShiftEdge.getFlow() == 4;
+                    breaksRule = empToDayEdge.getFlow() == 4;
                 }
             }
             if (breaksRule) flowPath.add(edge);   
@@ -589,6 +505,56 @@ public class FlowGraph {
             for (Edge e : v.getOutGoing()) {
                 if (e.getFlow() > 0 && !visited[e.getTo().getVertexIndex()]) {
                     getRuleBreakingShift(e.getTo(), t, visited, path, flows, e.getFlow(), capacities, e.getCap(), flowPath);
+                }
+            }
+        }
+
+        path.remove(path.size()-1);
+        if (flows.size() > 0) {
+            flows.remove(flows.size()-1);
+            capacities.remove(capacities.size()-1);
+        }
+        visited[v.getVertexIndex()] = false;
+    }
+
+    public void updateInvalidPaths(Vertex v, Vertex t, boolean[] visited, ArrayList<Vertex> path, ArrayList<Integer> flows, int flow, ArrayList<Integer> capacities, int cap, List<Shift>[][] assignedShifts) {
+        visited[v.getVertexIndex()] = true;
+        path.add(v);
+        if (flow != 0) {
+            flows.add(flow);
+        }
+        if (cap > 0) {
+            capacities.add(cap);
+        }
+        
+        if (v == t) {
+            ArrayList<Edge> edges = new ArrayList<>();
+            boolean breaksFlowRule = false;
+            boolean breaksShiftRule = false;
+            Edge edge = null;
+            Employee emp = path.get(1).getEmp();
+            int day = path.get(2).getDay();
+            Shift shift;
+            for (int i = 0; i < path.size()-1; i++) {
+                edge = path.get(i).getOutGoing().get(0);
+                for (Edge e : path.get(i).getOutGoing()) {
+                    if (e.getTo() == path.get(i+1)) edge = e;
+                }
+                edges.add(edge);
+                if (path.get(i).getPurpose() == 1) {
+                    breaksFlowRule = edge.getFlow() == 4;
+                }
+            }
+            if (emp.getShifts()[day].size() > 1) {
+                breaksShiftRule = edges.get(2).getFlow() == 4; // Currently doesn't look for 8/8 hours which might be mistakes (shouldn't happen tho)
+            }
+            if (breaksFlowRule || breaksShiftRule) {
+                invalidPaths.add(edges);
+            }   
+        } else {
+            for (Edge e : v.getOutGoing()) {
+                if (e.getFlow() > 0 && !visited[e.getTo().getVertexIndex()]) {
+                    updateInvalidPaths(e.getTo(), t, visited, path, flows, e.getFlow(), capacities, e.getCap(), assignedShifts);
                 }
             }
         }
@@ -657,11 +623,13 @@ public class FlowGraph {
         }
         
         if (v == t) {
-            String edge = "";
             Employee emp = null;
             int day = -1;
             Shift shift = null;
-            for (Vertex node : path) {
+            Edge edge = null;
+            ArrayList<Edge> edges = new ArrayList<>();
+            for (int i = 0; i < path.size()-1; i++) {
+                Vertex node = path.get(i);
                 if (node.getPurpose() == 1) {
                     emp = node.getEmp();
                 } else if (node.getPurpose() == 2) {
@@ -669,24 +637,36 @@ public class FlowGraph {
                 } else if (node.getPurpose() == 3) {
                     shift = node.getShift();
                 }
+                edge = path.get(i).getOutGoing().get(0);
+                for (Edge e : path.get(i).getOutGoing()) {
+                    if (e.getTo() == path.get(i+1)) edge = e;
+                }
+                edges.add(edge);
             }
             if (emp.getShifts() == null) emp.createShifts(daysInPeriod);
             if (emp.getShifts()[day].isEmpty()) {
-                emp.addShift(day, shift); 
+                emp.addShift(day, shift);
             } else {
                 Shift firstShift = emp.getShifts()[day].remove(0);
                 switch (firstShift.getStartTime()) {
                     case 7:
-                        if (shift.getStartTime() != 15) System.out.println("ERROR OCCURED! First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                        if (shift.getStartTime() != 15) {
+                            System.out.println("ERROR OCCURED! First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                            emp.addShift(day,firstShift);
+                            emp.addShift(day, shift);
+                            break;
+                        }
                         emp.addShift(day, new Shift(firstShift.getStartTime(), shift.getEndTime()-4));
                         break;
                     case 15:
-                        if (shift.getStartTime() == 7) {
+                        if (shift.getStartTime() == 7 && edges.get(2).getFlow() == 8) {
                             emp.addShift(day, new Shift(shift.getStartTime(), firstShift.getEndTime()-4));
-                        } else if (shift.getStartTime() == 23) {
+                        } else if (shift.getStartTime() == 23 && edges.get(2).getFlow() == 8) {
                             emp.addShift(day, new Shift(firstShift.getStartTime()+4, shift.getEndTime()));
                         } else {
-                            System.out.println("ERROR OCCURED, Line 2");
+                            System.out.println("ERROR OCCURED, Line 2, " + " First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                            emp.addShift(day, firstShift);
+                            emp.addShift(day, shift);
                         }
                         break;
                     case 23:
@@ -694,6 +674,8 @@ public class FlowGraph {
                             emp.addShift(day, new Shift(shift.getStartTime()+4, firstShift.getEndTime()));
                         } else {
                             System.out.println("ERROR OCCURED, Line 3");
+                            emp.addShift(day, firstShift);
+                            emp.addShift(day, shift);
                         }
                         break;
                     default:
@@ -761,6 +743,9 @@ public class FlowGraph {
     }
     public Shift[] getShifts() {
         return shifts;
+    }
+    public ArrayList<ArrayList<Edge>> getInvalidPaths() {
+        return invalidPaths;
     }
         
 }

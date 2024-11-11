@@ -26,17 +26,6 @@ public class Vertex {
         this.vertexIndex = totalVertices-1;
     }
 
-    public Vertex(int purpose, String name, int day) {
-        this.purpose = purpose;
-        this.day = day;
-        this.name = name;
-        
-        this.inGoing = new ArrayList<>();
-        this.outGoing = new ArrayList<>();
-        totalVertices++;
-        this.vertexIndex = totalVertices-1;
-    }
-
     public Vertex(int purpose, String name, Employee emp) {
         this.purpose = purpose;
         this.emp = emp;
@@ -48,8 +37,22 @@ public class Vertex {
         this.vertexIndex = totalVertices-1;
     }
 
-    public Vertex(int purpose, String name, Shift shift) {
+    public Vertex(int purpose, String name, Employee emp, int day) {
         this.purpose = purpose;
+        this.emp = emp;
+        this.day = day;
+        this.name = name;
+        
+        this.inGoing = new ArrayList<>();
+        this.outGoing = new ArrayList<>();
+        totalVertices++;
+        this.vertexIndex = totalVertices-1;
+    }
+
+    public Vertex(int purpose, String name, Employee emp, int day, Shift shift) {
+        this.purpose = purpose;
+        this.emp = emp;
+        this.day = day;
         this.shift = shift;
         this.name = name;
 
@@ -59,11 +62,12 @@ public class Vertex {
         this.vertexIndex = totalVertices-1;
     }
 
-    public Vertex(int purpose, String name, int dep, int timeOfDay) {
+    public Vertex(int purpose, String name, int dep, int timeOfDay, int day) {
         this.purpose = purpose;
         this.name = name;
         this.dep = dep;
         this.timeOfDay = timeOfDay;
+        this.day = day;
 
         this.inGoing = new ArrayList<>();
         this.outGoing = new ArrayList<>();
@@ -71,12 +75,13 @@ public class Vertex {
         this.vertexIndex = totalVertices-1;
     }
 
-    public Vertex(int purpose, String name, int dep, int timeOfDay, int exp) {
+    public Vertex(int purpose, String name, int dep, int timeOfDay, int exp, int day) {
         this.purpose = purpose;
         this.name = name;
         this.dep = dep;
         this.timeOfDay = timeOfDay;
         this.expLvl = exp;
+        this.day = day;
 
         this.inGoing = new ArrayList<>();
         this.outGoing = new ArrayList<>();
@@ -129,6 +134,10 @@ public class Vertex {
     }
     public int getExpLvl() {
         return expLvl;
+    }
+
+    public int getTimeOfDay() {
+        return timeOfDay;
     }
     
 

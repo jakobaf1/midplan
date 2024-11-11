@@ -1,11 +1,12 @@
 package app.program.controller;
 import app.program.App;
-import app.program.model.Algorithms;
+import app.program.model.FlowAlgorithms;
 import app.program.model.Edge;
 import app.program.model.Employee;
 import app.program.model.FlowGraph;
 import app.program.model.Preference;
 import app.program.model.Shift;
+import app.program.model.TabuAlgorithms;
 import app.program.model.Vertex;
 
 import java.io.BufferedReader;
@@ -41,7 +42,9 @@ public class AlgorithmController implements Initializable {
     @FXML
     private Button minCostMaxFlowButton;
     @FXML
-    private Button expGraphButton;
+    private Button distTabuButton;
+    // @FXML
+    // private Button expGraphButton;
 
     @FXML
     private Button toPDFButton;
@@ -93,7 +96,7 @@ public class AlgorithmController implements Initializable {
     private TextField searchPaths;
 
     private FlowGraph fg;
-    private Algorithms algo;
+    private FlowAlgorithms algo;
     private Shift[] shifts = {new Shift(7, 15), new Shift(15, 23), new Shift(23, 7), new Shift(7, 19), new Shift(19, 7)};
     private LocalDate date = LocalDate.now();
     private ArrayList<String> flowPaths = new ArrayList<>();
@@ -267,7 +270,7 @@ public class AlgorithmController implements Initializable {
             totalHours += e.getCap();
         }
         System.out.println("Employee hours add up to a total of: " + totalHours);
-        algo = new Algorithms(fg);
+        algo = new FlowAlgorithms(fg);
         int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
         System.out.println("Max flow found: " + results[0] + ", weight: " + results[1] + ", prefsDenied: " + results[2] + ", prefsFulfilled: " + results[3]);
         long endTime = System.currentTimeMillis();
@@ -323,9 +326,15 @@ public class AlgorithmController implements Initializable {
         fg.printRuleViolations();
     }
 
+    public void runDistributiveTabu() {
+        fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, algo.getAssignedShifts());
+        TabuAlgorithms tabuDist = new TabuAlgorithms(fg, fg.getInvalidPaths());
+        tabuDist.gatherInformation();
+    }
+
     public void runEdmondsKarpAlgorithm() {
         long startTime = System.currentTimeMillis();
-        algo = new Algorithms(fg);
+        algo = new FlowAlgorithms(fg);
         int maxFlow = algo.edmondsKarp(fg.getS(), fg.getT());
         System.out.println("Max flow: " + maxFlow);
         long endTime = System.currentTimeMillis();
@@ -333,17 +342,17 @@ public class AlgorithmController implements Initializable {
     }
 
 
-    public void testExpGraph() {
-        algo = new Algorithms(fg);
-        Vertex[] s_t = fg.makeExperimentalGraph();
-        int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), 24, s_t[0], s_t[1]);
-        // int maxFlow = algo.edmondsKarp(s_t[0], s_t[1]);
-        // fg.printPathsWithFlow(s_t[0], s_t[1], new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
-        // System.out.println("Max flow: " + maxFlow);
-        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
-        flowLabel.setText(results[0] + "");
-        costLabel.setText("" + results[1]);
-    }
+    // public void testExpGraph() {
+    //     algo = new FlowAlgorithms(fg);
+    //     Vertex[] s_t = fg.makeExperimentalGraph();
+    //     int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), 24, s_t[0], s_t[1]);
+    //     // int maxFlow = algo.edmondsKarp(s_t[0], s_t[1]);
+    //     // fg.printPathsWithFlow(s_t[0], s_t[1], new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+    //     // System.out.println("Max flow: " + maxFlow);
+    //     System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
+    //     flowLabel.setText(results[0] + "");
+    //     costLabel.setText("" + results[1]);
+    // }
 
     public void convertToPDF() {
         try (PDDocument document = new PDDocument()) {

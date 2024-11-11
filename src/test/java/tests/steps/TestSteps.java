@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import app.program.controller.AlgorithmController;
-import app.program.model.Algorithms;
+import app.program.model.FlowAlgorithms;
 import app.program.model.Edge;
 import app.program.model.Employee;
 import app.program.model.FlowGraph;
@@ -296,11 +296,11 @@ public class TestSteps {
 
 
     ///// For minCostMaxFlow.feature /////
-    private Algorithms algo;
+    private FlowAlgorithms algo;
     // Scenario 1: when flow problem is solved, all flows are valid
     @When("solved using minCostMaxFlow algorithm")
     public void solved_using_minCostMaxFlow_algorithm() {
-        algo = new Algorithms(fg);
+        algo = new FlowAlgorithms(fg);
         int totalEmployeeHours = 0;
         for (Edge e : fg.getS().getOutGoing()) {
             totalEmployeeHours += e.getCap();
