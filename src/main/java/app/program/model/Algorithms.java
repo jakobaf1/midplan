@@ -482,10 +482,12 @@ public class Algorithms {
             while (node != s) {
                 Edge edge = parentEdges[node.getVertexIndex()];
                 // The following only adds cost from edges which aren't "basic"
-                if (edge.getWeight() != fg.getBaseEdgeWeight() && edge.getWeight() != -fg.getBaseEdgeWeight() && Math.abs(edge.getWeight()) > 0 && Math.abs(edge.getWeight()) < fg.getBaseEdgeWeight()) {
-                    totalCost -= edge.getWeight();
+                if (Math.abs(edge.getWeight()) >= 0 && Math.abs(edge.getWeight()) < fg.getBaseEdgeWeight()) {
+                    totalCost -= (1000 - edge.getWeight()); // reflects that prefLvl 1 = 0 represents -1000 in weight and prefLvl 5 = 5 represents -5
+                    prefsFulfilled++;
                 } else if (edge.getWeight() != fg.getBaseEdgeWeight() && edge.getWeight() != -fg.getBaseEdgeWeight()) {
                     totalCost += edge.getWeight();
+                    prefsDenied++;
                 }
                 edge.addFlow(bottleFlow);
                 node = parentEdges[node.getVertexIndex()].getFrm();
