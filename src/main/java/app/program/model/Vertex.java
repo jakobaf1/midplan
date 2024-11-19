@@ -16,6 +16,7 @@ public class Vertex {
     private int dep;
     private int expLvl;
     private String name;
+    private int potential = 0;
 
     public Vertex(int purpose, String name) {
         this.purpose = purpose;
@@ -97,10 +98,14 @@ public class Vertex {
         this.outGoing.add(e);
     }
 
+    public void setPotential(int potential) {
+        this.potential = potential;
+    }
 
 
-
-
+    public int getPotential() {
+        return potential;
+    }
     public ArrayList<Edge> getInGoing() {
         return inGoing;
     }

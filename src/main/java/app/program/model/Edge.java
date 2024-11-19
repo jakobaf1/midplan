@@ -1,7 +1,7 @@
 package app.program.model;
 
 public class Edge {
-    private int totalEdges = 0;
+    private static int totalEdges = 0;
     private int edgeIndex = -1;
     private int type = 0;
     private Vertex frm = null;
@@ -52,6 +52,14 @@ public class Edge {
             this.counterpart.addToCap(flow);
         } else {
             this.counterpart.addFlow(-flow);
+        }
+    }
+
+    public void addFlowSimple(int flow) {
+        if (this.type == 0) {
+            this.flow += flow;
+        } else {
+            this.cap -= flow;
         }
     }
 
@@ -117,6 +125,6 @@ public class Edge {
         if (this.type == 0) {
             return this.frm + " -- (" + this.flow +"/" + this.cap +", w="+this.weight+", lw_b = "+this.lowerBound+" --> "+this.to;
         }
-        return this.frm + " -- (" + this.cap + ") --> " + this.to;
+        return this.frm + " -- (" + this.cap + ", w= " + this.weight + ") --> " + this.to;
     }
 }

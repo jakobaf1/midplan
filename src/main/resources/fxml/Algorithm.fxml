@@ -27,9 +27,9 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="149.66665649414062" minHeight="10.0" prefHeight="127.33331298828125" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="272.0000203450521" minHeight="10.0" prefHeight="272.0000203450521" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="183.3333740234375" minHeight="10.0" prefHeight="150.66668701171875" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
                         <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="189.0" prefWidth="248.0" GridPane.rowIndex="1">
@@ -44,6 +44,11 @@
                                     <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
                                  </VBox.margin>
                               </Button>
+                              <Button fx:id="succesButton" alignment="CENTER" mnemonicParsing="false" onAction="#runFasterSuccessiveShortestPaths" prefHeight="25.0" prefWidth="175.0" text="Successive Shortest Paths" textAlignment="CENTER">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                 </VBox.margin>
+                              </Button>
                               <Button fx:id="distTabuButton" alignment="CENTER" mnemonicParsing="false" onAction="#runDistributiveTabu" prefHeight="25.0" prefWidth="175.0" text="Distributive Tabu" textAlignment="CENTER">
                                  <VBox.margin>
                                     <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -55,7 +60,7 @@
                                  </VBox.margin></Button>
                            </children>
                         </VBox>
-                        <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                        <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="116.0" prefWidth="200.0" GridPane.rowIndex="2">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Runtime" textAlignment="CENTER" wrappingWidth="197.13134765625">
                                  <font>

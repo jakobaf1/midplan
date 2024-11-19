@@ -43,11 +43,174 @@
 # This means that the employee John Doe wants to work thursday nights
 # and wants the 12th of June off
 
-Employee: Employee 01
+Employee: Employee I
 ID: LAB01
 Departments: labor
-Hours: 6
+Hours: 20
 Experience: 1
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: even
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-19
+,
+is_wanted: yes
+preference level: 2
+shifts: 19-07
+,
+]
+
+Employee: Employee J
+ID: LAB02
+Departments: labor
+Hours: 8
+Experience: 2
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: monday
+repeat: monthly
+,
+is_wanted: no
+preference level: 1
+day: monday
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+day: monday
+shifts: 07-19
+,
+is_wanted: yes
+preference level: 1
+day: tuesday
+repeat: monthly
+,
+is_wanted: yes
+preference level: 1
+day: wednesday
+repeat: monthly
+,
+is_wanted: yes
+preference level: 1
+day: thursday
+repeat: monthly
+,
+]
+
+Employee: Employee K
+ID: LAB03
+Departments: labor
+Hours: 33
+Experience: 2
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+shifts: 23-07
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+]
+
+Employee: Employee L
+ID: LAB04
+Departments: labor
+Hours: 33
+Experience: 2
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: even
+,
+]
+
+Employee: Employee M
+ID: LAB05
+Departments: labor
+Hours: 30
+Experience: 1
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+shifts: 23-07
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-19
+,
+]
+
+Employee: Employee N
+ID: LAB06
+Departments: labor
+Hours: 25
+Experience: 2
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: even
+,
+is_wanted: yes
+preference level: 2
+shifts: 15-23
+,
+]
+
+Employee: Employee Q
+ID: LAB07
+Departments: labor
+Hours: 33
+Experience: 2
 Preferences: [
 is_wanted: no
 preference level: 1
@@ -59,837 +222,1327 @@ preference level: 1
 day: sunday
 repeat: odd
 ,
-is_wanted: yes
-preference level: 3
-day: tuesday
-shifts: 07-15
-,
 ]
 
-Employee: Employee 02
-ID: LAB02
-Departments: labor
-Hours: 8
-Experience: 1
-Preferences: [
-is_wanted: no
-preference level: 5
-date: 05-11-24
-,
-]
-
-Employee: Employee 03
-ID: LAB03
-Departments: labor
-Hours: 11
-Experience: 2
-Preferences: [
-is_wanted: no
-preference level: 1
-date: 24-12-24
-,
-]
-
-Employee: Employee 04
-ID: LAB04
-Departments: labor
-Hours: 20
-Experience: 2
-Preferences: [
-is_wanted: no
-preference level: 3
-day: thursday
-repeat: weekly
-,
-]
-
-Employee: Employee 05
-ID: LAB05
-Departments: labor
-Hours: 28
-Experience: 1
-Preferences: [
-is_wanted: no
-preference level: 3
-day: Tuesday
-shifts: 15-23
-repeat: weekly
-,
-]
-
-Employee: Employee 06
-ID: LAB06
-Departments: labor
-Hours: 33
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 3
-date: 07-08-24
-,
-is_wanted: no
-preference level: 5
-day: monday
-,
-is_wanted: no
-preference level: 3
-day: Tuesday
-shifts: 23-07
-repeat: weekly
-repeat_duration: 5
-,
-]
-
-Employee: Employee 07
-ID: LAB07
-Departments: labor
-Hours: 36
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 1
-date: 24-09-24
-,
-is_wanted: yes
-preference level: 3
-shifts: 15-23
-repeat: weekly
-,
-]
-
-Employee: Employee 08
+Employee: Employee P
 ID: LAB08
 Departments: labor
-Hours: 36
+Hours: 37
 Experience: 2
 Preferences: [
-is_wanted: no
+is_wanted: yes
 preference level: 1
-day: Thursday
-shifts: 15-23
-repeat: weekly
-repeat_duration: 4
+day: friday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-19
+,
+is_wanted: yes
+preference level: 2
+shifts: 19-07
 ,
 ]
 
-Employee: Employee 09
+Employee: Employee Q
 ID: LAB09
 Departments: labor
 Hours: 32
 Experience: 2
 Preferences: [
-is_wanted: no
-preference level: 4
-day: Friday
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+is_wanted: yes
+preference level: 3
 shifts: 07-19
+,
+is_wanted: yes
+preference level: 2
+shifts: 23-07
+,
+is_wanted: yes
+preference level: 3
+shifts: 19-07
+,
+]
+
+Employee: Employee R
+ID: LAB10
+Departments: labor
+Hours: 33
+Experience: 2
+Preferences: [
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+,
+]
+
+Employee: Employee S
+ID: LAB11
+Departments: labor
+Hours: 12
+Experience: 2
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: monthly
+,
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: monthly
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: monthly
+,
+]
+
+Employee: Employee T
+ID: LAB12
+Departments: labor
+Hours: 33
+Experience: 2
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: odd
+,
+]
+
+Employee: Employee A
+ID: MAT01
+Departments: maternity
+Hours: 16
+Experience: 1
+Preferences: [
+is_wanted: no
+preference level: 1
+shifts: 19-07
+,
+is_wanted: no
+preference level: 1
+shifts: 23-07
+,
+is_wanted: no
+preference level: 1
+shifts: 15-23
+,
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: odd
+,
+]
+
+Employee: Employee B
+ID: MAT02
+Departments: maternity
+Hours: 32
+Experience: 1
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+shifts: 23-07
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+,
+is_wanted: no
+preference level: 1
+day: Thursday
+shift: 15-23
+]
+
+Employee: Employee C
+ID: MAT03
+Departments: maternity
+Hours: 22
+Experience: 1
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+day: monday 
+shift: 07-15
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+day: tuesday
+shifts: 07-15
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+day: wednesday
+shifts: 07-15
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+day: thursday
+shifts: 07-15
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+day: friday
+shifts: 07-15
+repeat: odd
+,
+]
+
+Employee: Employee D
+ID: MAT04
+Departments: maternity
+Hours: 22
+Experience: 1
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: sunday
 repeat: even
 ,
 ]
 
-Employee: Employee 10
-ID: LAB10
-Departments: labor
-Hours: 36
-Experience: 2
-Preferences: [
-is_wanted: no
-preference level: 2
-date: 19-06-24
-shifts: 19-07
-,
-]
-
-Employee: Employee 11
-ID: LAB11
-Departments: labor
-Hours: 37
-Experience: 2
-Preferences: [
-is_wanted: no
-preference level: 5
-shifts: 15-23
-repeat: weekly
-repeat_duration: 2
-,
-is_wanted: no
-preference level: 1
-shifts: 15-23
-repeat: no
-,
-is_wanted: no
-preference level: 4
-date: 04-05-24
-shifts: 19-07
-repeat: daily
-,
-]
-
-Employee: Employee 12
-ID: LAB12
-Departments: labor
-Hours: 37
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 2
-repeat: odd
-,
-]
-
-Employee: Employee 13
-ID: MAT01
-Departments: maternity
-Hours: 37
-Experience: 1
-Preferences: [
-is_wanted: no
-preference level: 4
-day: Monday
-date: 10-02-24
-shifts: 19-07
-,
-is_wanted: no
-preference level: 5
-day: Wednesday
-shifts: 15-23
-repeat: monthly
-,
-is_wanted: yes
-preference level: 5
-day: Saturday
-repeat: weekly
-,
-]
-
-Employee: Employee 14
-ID: MAT02
-Departments: maternity
-Hours: 26
-Experience: 1
-Preferences: [
-is_wanted: no
-preference level: 2
-date: 17-06-24
-shifts: 23-07
-,
-]
-
-Employee: Employee 15
-ID: MAT03
-Departments: maternity
-Hours: 30
-Experience: 1
-Preferences: [
-is_wanted: no
-preference level: 1
-date: 14-11-24
-,
-]
-
-Employee: Employee 16
-ID: MAT04
-Departments: maternity
-Hours: 12
-Experience: 1
-Preferences: [
-is_wanted: no
-preference level: 4
-date: 13-12-24
-,
-is_wanted: no
-preference level: 3
-day: Sunday
-shifts: 23-07
-repeat: weekly
-,
-is_wanted: no
-preference level: 2
-day: Saturday
-repeat: odd
-repeat_duration: 6
-,
-]
-
-Employee: Employee 17
+Employee: Employee E
 ID: MAT05
 Departments: maternity
-Hours: 6
+Hours: 15
 Experience: 1
 Preferences: [
 is_wanted: yes
-preference level: 2
-day: tuesday
+preference level: 1
+day: saturday
 repeat: weekly
 ,
-]
-
-Employee: Employee 18
-ID: MAT06
-Departments: maternity
-Hours: 10
-Experience: 2
-Preferences: [
 is_wanted: yes
-preference level: 3
-day: Thursday
-shifts: 15-23
-repeat: no
+preference level: 1
+day: sunday
+repeat: weekly
 ,
 is_wanted: no
-preference level: 3
-day: Tuesday
-repeat: weekly
+preference level: 1
+shifts: 23-07
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
 ,
 ]
 
-Employee: Employee 19
+Employee: Employee F
+ID: MAT06
+Departments: maternity
+Hours: 33
+Experience: 2
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: odd
+,
+]
+
+Employee: Employee G
 ID: MAT07
 Departments: maternity
 Hours: 4
 Experience: 2
 Preferences: [
-is_wanted: no
-preference level: 2
-date: 13-09-24
-shifts: 07-15
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: weekly
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: weekly
 ,
 ]
 
-Employee: Employee 20
+Employee: Employee H
 ID: MAT08
 Departments: maternity
-Hours: 4
-Experience: 1
-Preferences: [
-is_wanted: no
-preference level: 2
-day: saturday
-repeat: even
-repeat_duration: 4
-,
-is_wanted: no
-preference level: 2
-day: sunday
-repeat: even
-,
-is_wanted: no
-preference level: 2
-day: Monday
-repeat: weekly
-,
-]
-
-Employee: Employee 21
-ID: BOTH01
-Departments: labor, maternity
-Hours: 18
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 1
-day: wednesday
-repeat: weekly
-,
-is_wanted: no
-preference level: 4
-date: 07-12-24
-,
-is_wanted: yes
-preference level: 1
-date: 01-10-24
-,
-]
-
-Employee: Employee 22
-ID: BOTH02
-Departments: labor, maternity
-Hours: 27
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 4
-day: Monday
-repeat: odd
-,
-]
-
-Employee: Employee 23
-ID: BOTH03
-Departments: labor, maternity
-Hours: 23
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 2
-date: 03-11-24
-shifts: 07-15
-,
-is_wanted: yes
-preference level: 4
-day: Wednesday
-shifts: 19-07
-repeat: odd
-,
-]
-
-Employee: Employee 24
-ID: BOTH04
-Departments: labor, maternity
 Hours: 22
 Experience: 1
 Preferences: [
 is_wanted: no
-preference level: 2
-day: Saturday
-repeat: odd
+preference level: 1
+day: saturday
+repeat: even
 ,
 is_wanted: no
-preference level: 2
-day: Sunday
-repeat: odd
-,
-is_wanted: no
-preference level: 4
-day: Monday
-shifts: 07-19
-repeat: weekly
-,
-]
-
-Employee: Employee 25
-ID: BOTH05
-Departments: labor, maternity
-Hours: 21
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 4
-day: Monday
-repeat: weekly
-,
-is_wanted: no
-preference level: 3
-date: 22-11-24
-,
-]
-
-Employee: Employee 26
-ID: BOTH06
-Departments: labor, maternity
-Hours: 15
-Experience: 2
-Preferences: [
-is_wanted: no
-preference level: 2
-shifts: 07-15
+preference level: 1
+day: sunday
 repeat: even
 ,
 is_wanted: yes
-preference level: 4
-date: 25-11-24
+preference level: 1
+shifts: 15-23
 ,
 ]
 
-Employee: Employee 27
-ID: BOTH07
+Employee: Employee U
+ID: BOTH01
 Departments: labor, maternity
-Hours: 7
+Hours: 37
 Experience: 2
 Preferences: [
-is_wanted: no
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: yes
 preference level: 2
-day: Saturday
 shifts: 07-19
-repeat: odd
+,
+is_wanted: yes
+preference level: 2
+shifts: 19-07
 ,
 ]
 
-Employee: Employee 28
-ID: BOTH08
+Employee: Employee V
+ID: BOTH02
+Departments: labor, maternity
+Hours: 37
+Experience: 1
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-19
+,
+is_wanted: yes
+preference level: 2
+shifts: 19-07
+,
+]
+
+Employee: Employee W
+ID: BOTH03
+Departments: labor, maternity
+Hours: 37
+Experience: 1
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-19
+,
+is_wanted: yes
+preference level: 2
+shifts: 19-07
+,
+]
+
+Employee: Employee X
+ID: BOTH04
 Departments: labor, maternity
 Hours: 33
 Experience: 1
 Preferences: [
 is_wanted: no
 preference level: 1
-date: 01-12-24
+day: Saturday
+repeat: even
+,
+is_wanted: yes
+preference level: 1
+day: Sunday
+repeat: even
 ,
 is_wanted: no
-preference level: 3
-date: 08-06-24
+preference level: 1
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
 shifts: 19-07
 ,
 ]
 
-Employee: Employee 29
+Employee: Employee Y
+ID: BOTH05
+Departments: labor, maternity
+Hours: 33
+Experience: 2
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+shifts: 15-23
+,
+is_wanted: no
+preference level: 2
+shifts: 23-07
+,
+is_wanted: no
+preference level: 1
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+day: monday
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: monday
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+day: tuesday
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: tuesday
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+day: wednesday
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: wednesday
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+day: thursday
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: thursday
+,
+]
+
+Employee: Employee Z
+ID: BOTH06
+Departments: labor, maternity
+Hours: 16
+Experience: 2
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: monthly
+,
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: monthly
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: monthly
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+,
+is_wanted: no
+preference level: 1
+shifts: 23-07
+,
+]
+
+Employee: Employee Æ
+ID: BOTH07
+Departments: labor, maternity
+Hours: 17
+Experience: 2
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+]
+
+Employee: Employee Ø
+ID: BOTH08
+Departments: labor, maternity
+Hours: 25
+Experience: 1
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: Saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+is_wanted: no
+preference level: 1
+shifts: 23-07
+,
+is_wanted: no
+preference level: 1
+shifts: 19-07
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-19
+,
+]
+
+Employee: Employee Å
 ID: BOTH09
 Departments: labor, maternity
-Hours: 32
+Hours: 25
 Experience: 1
 Preferences: [
-is_wanted: no
-preference level: 3
-date: 17-12-24
-shifts: 23-07
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
 ,
-is_wanted: no
-preference level: 3
-date: 22-10-24
-shifts: 23-07
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
 ,
-is_wanted: no
-preference level: 3
-day: Friday
-repeat: weekly
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
 ,
 ]
 
-Employee: Employee 30
+Employee: Employee AA
 ID: BOTH10
 Departments: labor, maternity
-Hours: 19
+Hours: 16
 Experience: 1
 Preferences: [
 is_wanted: no
 preference level: 1
-day: Sunday
-repeat: even
+day: sunday
+repeat: odd
 ,
 is_wanted: no
-preference level: 3
-date: 16-10-24
-,
-is_wanted: yes
 preference level: 1
-day: Friday
+day: saturday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
+day: monday
+repeat: weekly
+shifts: 15-23
+,
+is_wanted: no
+preference level: 1
+day: monday
+shifts: 23-07
+repeat: weekly
+,
+is_wanted: no
+preference level: 1
+day: monday
+shifts: 07-19
 repeat: weekly
 ,
 ]
 
-Employee: Employee 31
+Employee: Employee AB
 ID: BOTH11
 Departments: labor, maternity
-Hours: 30
+Hours: 22
 Experience: 1
 Preferences: [
 is_wanted: no
-preference level: 4
-day: Sunday
+preference level: 1
+day: sunday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
 shifts: 19-07
-repeat: weekly
 ,
 ]
 
-Employee: Employee 32
+Employee: Employee AC
 ID: BOTH12
 Departments: labor, maternity
-Hours: 21
+Hours: 25
 Experience: 1
 Preferences: [
-is_wanted: yes
+is_wanted: no
 preference level: 1
-day: Tuesday
+day: sunday
 repeat: even
 ,
-is_wanted: yes
-preference level: 3
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: tuesday
+shifts: 15-23
+,
+is_wanted: no
+preference level: 1
+day: tuesday
+shifts: 23-07
+,
+is_wanted: no
+preference level: 1
+day: wednesday
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
 shifts: 19-07
 ,
-is_wanted: no
-preference level: 1
-date: 18-11-24
-shifts: 23-07
-,
 ]
 
-Employee: Employee 33
+Employee: Employee AD
 ID: BOTH13
 Departments: labor, maternity
-Hours: 10
+Hours: 37
 Experience: 2
 Preferences: [
-is_wanted: no
-preference level: 3
-day: Thursday
-shifts: 23-07
-repeat: weekly
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
 ,
 is_wanted: yes
 preference level: 1
-day: Sunday
-date: 19-11-24
-repeat: even
+day: saturday
+repeat: tri
 ,
-is_wanted: no
-preference level: 3
-day: Monday
-shifts: 15-23
-repeat: weekly
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
 ,
 ]
 
-Employee: Employee 34
+Employee: Employee AE
 ID: BOTH14
 Departments: labor, maternity
-Hours: 36
+Hours: 33
+Experience: 1
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
+day: sunday
+repeat: odd
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-15
+day: monday
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-15
+day: tuesday
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-15
+day: wednesday
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-15
+day: thursday
+,
+is_wanted: no
+preference level: 2
+shifts: 07-15
+day: friday
+,
+is_wanted: no
+preference level: 2
+shifts: 07-15
+day: saturday
+,
+]
+
+Employee: Employee AF
+ID: BOTH15
+Departments: labor, maternity
+Hours: 8
 Experience: 2
 Preferences: [
 is_wanted: yes
-preference level: 5
-day: sunday
-repeat: weekly
-,
-is_wanted: yes
 preference level: 1
-date: 04-10-24
+day: wednesday
+shifts: 15-23
 ,
 ]
 
-Employee: Employee 35
-ID: BOTH15
-Departments: labor, maternity
-Hours: 14
-Experience: 1
-Preferences: [
-is_wanted: yes
-preference level: 4
-date: 08-11-24
-,
-]
-
-Employee: Employee 36
+Employee: Employee AG
 ID: BOTH16
 Departments: labor, maternity
 Hours: 23
 Experience: 1
 Preferences: [
-is_wanted: yes
+is_wanted: no
 preference level: 1
-date: 03-10-24
-shifts: 07-15
+day: saturday
+repeat: odd
 ,
 is_wanted: no
-preference level: 4
-day: Wednesday
-shifts: 07-19
-repeat: weekly
+preference level: 1
+day: sunday
+repeat: odd
 ,
 ]
 
-Employee: Employee 37
+Employee: Employee AH
 ID: BOTH17
 Departments: labor, maternity
-Hours: 14
+Hours: 33
 Experience: 1
 Preferences: [
 is_wanted: no
-preference level: 4
-day: tuesday
-repeat: weekly
+preference level: 1
+day: saturday
+repeat: odd
 ,
 is_wanted: no
-preference level: 4
+preference level: 1
 day: sunday
-repeat: weekly
+repeat: odd
 ,
 is_wanted: no
-preference level: 2
-day: Monday
-shifts: 15-23
-repeat: weekly
+preference level: 1
+shifts: 19-07
+,
+is_wanted: no
+preference level: 1
+shifts: 23-07
 ,
 ]
 
-Employee: Employee 38
+Employee: Employee AI
 ID: BOTH18
+Departments: labor, maternity
+Hours: 33
+Experience: 1
+Preferences: [
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: monday
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: tuesday
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: wednesday
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: thursday
+,
+is_wanted: no
+preference level: 1
+shifts: 07-19
+day: friday
+,
+]
+
+Employee: Employee AJ
+ID: BOTH19
 Departments: labor, maternity
 Hours: 34
 Experience: 1
 Preferences: [
 is_wanted: no
-preference level: 2
+preference level: 1
 day: saturday
-repeat: weekly
+repeat: even
 ,
 is_wanted: no
-preference level: 2
+preference level: 1
+day: sunday
+repeat: even
+,
+is_wanted: yes
+preference level: 1
+shifts: 07-15
+day: monday
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+shifts: 07-15
+day: tuesday
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+shifts: 07-15
+day: wednesday
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+shifts: 07-15
+day: thursday
+repeat: odd
+,
+is_wanted: yes
+preference level: 1
+shifts: 07-15
+day: friday
+repeat: odd
+,
+]
+
+Employee: Employee AK
+ID: BOTH20
+Departments: labor, maternity
+Hours: 30
+Experience: 2
+Preferences: [
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: odd
+,
+is_wanted: no
+preference level: 1
 day: sunday
 repeat: odd
 ,
-is_wanted: yes
-preference level: 5
-date: 16-10-24
+is_wanted: no
+preference level: 4
+shifts: 23-07
+,
+is_wanted: no
+preference level: 4
+shifts: 19-07
 ,
 ]
 
-Employee: Employee 39
-ID: BOTH19
+Employee: Employee AL
+ID: BOTH21
 Departments: labor, maternity
-Hours: 24
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 1
-date: 01-12-24
-,
-]
-
-Employee: Employee 40
-ID: BOTH20
-Departments: labor, maternity
-Hours: 26
+Hours: 28
 Experience: 2
 Preferences: [
 is_wanted: no
-preference level: 2
-date: 25-11-24
-,
-is_wanted: yes
-preference level: 4
-shifts: 07-19
-repeat: daily
-,
-is_wanted: yes
 preference level: 1
-day: Sunday
-shifts: 07-19
-repeat: weekly
+day: saturday
+repeat: even
 ,
-]
-
-Employee: Employee 41
-ID: BOTH21
-Departments: labor, maternity
-Hours: 37
-Experience: 2
-Preferences: [
-is_wanted: yes
-preference level: 2
-day: Monday
-shifts: 07-19
-repeat: odd
-,
-is_wanted: yes
-preference level: 3
-day: Saturday
+is_wanted: no
+preference level: 1
+day: sunday
 repeat: even
 ,
 ]
 
-Employee: Employee 42
+Employee: Employee AM
 ID: BOTH22
 Departments: labor, maternity
-Hours: 34
+Hours: 33
 Experience: 2
 Preferences: [
 is_wanted: yes
-preference level: 3
-day: Sunday
-repeat: weekly
+preference level: 1
+day: friday
+repeat: tri
 ,
-is_wanted: no
-preference level: 4
-day: Thursday
-repeat: weekly
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: sunday
+repeat: tri
 ,
 ]
 
-Employee: Employee 43
+Employee: Employee AN
 ID: BOTH23
 Departments: labor, maternity
-Hours: 37
+Hours: 34
 Experience: 1
 Preferences: [
-is_wanted: yes
-preference level: 3
-day: Wednesday
-repeat: odd
+is_wanted: no
+preference level: 1
+day: saturday
+repeat: even
 ,
 is_wanted: no
-preference level: 4
-day: Friday
-shifts: 07-19
-repeat: odd
+preference level: 1
+day: sunday
+repeat: even
 ,
 is_wanted: no
-preference level: 5
-day: Wednesday
-shifts: 07-15
-repeat: weekly
+preference level: 1
+day: monday
+shifts: 15-23
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: monday
+shifts: 23-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: monday
+shifts: 19-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: tuesday
+shifts: 15-23
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: tuesday
+shifts: 23-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: tuesday
+shifts: 19-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: wednesday
+shifts: 15-23
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: wednesday
+shifts: 23-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: wednesday
+shifts: 19-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: thursday
+shifts: 15-23
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: thursday
+shifts: 23-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: thursday
+shifts: 19-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: friday
+shifts: 15-23
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: friday
+shifts: 23-07
+repeat: even
+,
+is_wanted: no
+preference level: 1
+day: friday
+shifts: 19-07
+repeat: even
 ,
 ]
 
-Employee: Employee 44
+Employee: Employee AO
 ID: BOTH24
 Departments: labor, maternity
-Hours: 37
+Hours: 33
 Experience: 1
 Preferences: [
-is_wanted: no
+is_wanted: yes
 preference level: 1
 day: Sunday
-repeat: odd
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
+,
+is_wanted: yes
+preference level: 2
+shifts: 07-19
+,
+is_wanted: yes
+preference level: 2
+shifts: 19-07
 ,
 ]
 
-Employee: Employee 45
+Employee: Employee AP
 ID: BOTH25
 Departments: labor, maternity
-Hours: 37
+Hours: 25
 Experience: 2
 Preferences: [
-is_wanted: no
-preference level: 3
-day: Monday
-repeat: weekly
-,
-is_wanted: no
+is_wanted: yes
 preference level: 1
-shifts: 23-07
-repeat: daily
+day: Sunday
+repeat: tri
 ,
 is_wanted: yes
-preference level: 3
-day: Friday
-repeat: weekly
+preference level: 1
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
 ,
 ]
 
-Employee: Employee 46
+Employee: Employee AQ
 ID: BOTH26
 Departments: labor, maternity
-Hours: 37
-Experience: 2
+Hours: 33
+Experience: 1
 Preferences: [
-is_wanted: no
-preference level: 2
-date: 02-11-24
-,
 is_wanted: yes
 preference level: 1
-date: 19-11-24
-,
-]
-
-Employee: Employee 47
-ID: BOTH27
-Departments: labor, maternity
-Hours: 36
-Experience: 2
-Preferences: [
-is_wanted: no
-preference level: 3
 day: Sunday
-repeat: odd
+repeat: tri
 ,
 is_wanted: yes
 preference level: 1
-shifts: 23-07
-repeat: daily
+day: saturday
+repeat: tri
+,
+is_wanted: yes
+preference level: 1
+day: friday
+repeat: tri
 ,
 is_wanted: no
-preference level: 2
-date: 19-10-24
+preference level: 1
+day: monday
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+day: monday
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
+day: monday
+shifts: 15-23
+,
+is_wanted: no
+preference level: 1
+day: tuesday
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+day: tuesday
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
+day: tuesday
+shifts: 15-23
+,
+is_wanted: no
+preference level: 1
+day: thursday
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+day: thursday
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
+day: thursday
+shifts: 15-23
+,
+is_wanted: no
+preference level: 1
+day: friday
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+day: friday
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
+day: friday
+shifts: 15-23
+,
+is_wanted: no
+preference level: 1
+day: saturday
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+day: saturday
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
+day: saturday
+shifts: 15-23
+,
+is_wanted: no
+preference level: 1
+day: sunday
+shifts: 07-15
+,
+is_wanted: no
+preference level: 1
+day: sunday
+shifts: 07-19
+,
+is_wanted: no
+preference level: 1
+day: sunday
+shifts: 15-23
 ,
 ]
 

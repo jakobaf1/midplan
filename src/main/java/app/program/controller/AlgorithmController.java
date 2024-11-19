@@ -100,10 +100,12 @@ public class AlgorithmController implements Initializable {
     private Shift[] shifts = {new Shift(7, 15), new Shift(15, 23), new Shift(23, 7), new Shift(7, 19), new Shift(19, 7)};
     private LocalDate date = LocalDate.now();
     private ArrayList<String> flowPaths = new ArrayList<>();
+    private Shift[][] assignments;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fg = new FlowGraph(8, shifts, readEmployeeFile());
+        // temporary statement:
         fg.generateGraph(date);
         System.out.println("total amount of vertices: " + fg.getS().getTotalVertices());
         System.out.println("total amount of edges: " + fg.getS().getOutGoing().get(0).getTotalEdges());
@@ -262,7 +264,13 @@ public class AlgorithmController implements Initializable {
         // Clear up previous results
         invalidShiftPathList.getItems().clear();
         invalidDepPathList.getItems().clear();
-        // fg = new FlowGraph(fg.getDaysInPeriod(), shifts, fg.getEmps());
+        flowLabel.setText("");
+        costLabel.setText("");
+        runTimeLabel.setText("");
+        flowPaths = new ArrayList<>();
+
+        fg = new FlowGraph(fg.getDaysInPeriod()/7, shifts, fg.getEmps());
+        fg.generateGraph(date);
 
         long startTime = System.currentTimeMillis();
         int totalHours = 0;
@@ -312,6 +320,8 @@ public class AlgorithmController implements Initializable {
             public void changed(ObservableValue<? extends Integer> arg0, Integer arg1, Integer arg2) {
                 Employee emp = employeeList2.getSelectionModel().getSelectedItem();
                 Integer day = shiftDayList.getSelectionModel().getSelectedItem();
+                shiftLabel2.setText("");
+                shiftLabel3.setText("");
                 if (day != null) {
                     shiftLabel.setText(emp.getShifts()[day].get(0).toString());
                     LocalDate shiftDate = fg.getStartDate();
@@ -327,18 +337,81 @@ public class AlgorithmController implements Initializable {
     }
 
     public void runDistributiveTabu() {
-        fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, algo.getAssignedShifts());
+        fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
         TabuAlgorithms tabuDist = new TabuAlgorithms(fg, fg.getInvalidPaths());
-        tabuDist.gatherInformation();
+        assignments = tabuDist.searchSpread();
+        // Shift[][] assignments = tabuDist.searchDist();
+        // for (int day = 0; day < assignments[0].length; day++) {
+            // System.out.println("day: " + day + ", shift: " + assignments[11][day]);
+        // }
     }
 
-    public void runEdmondsKarpAlgorithm() {
+    public void runFasterSuccessiveShortestPaths() {
+        invalidShiftPathList.getItems().clear();
+        invalidDepPathList.getItems().clear();
+        flowLabel.setText("");
+        costLabel.setText("");
+        runTimeLabel.setText("");
+        flowPaths = new ArrayList<>();
+        
+        fg = new FlowGraph(fg.getDaysInPeriod()/7, shifts, fg.getEmps());
+        fg.generateGraph(date);
+
         long startTime = System.currentTimeMillis();
         algo = new FlowAlgorithms(fg);
-        int maxFlow = algo.edmondsKarp(fg.getS(), fg.getT());
-        System.out.println("Max flow: " + maxFlow);
+        int totalHours = 0;
+        for (Edge e : fg.getS().getOutGoing()) {
+            totalHours += e.getCap();
+        }
+        int[] results = algo.fasterSuccessiveShortestPaths(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
         long endTime = System.currentTimeMillis();
         System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
+
+        flowLabel.setText(results[0] + "");
+        // costLabel.setText("" + results[1]);
+        runTimeLabel.setText((endTime-startTime)/1000.0 + " s");
+
+        pathList.getItems().clear();
+        fg.getPathsWithFlow(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, flowPaths);
+        pathList.getItems().addAll(flowPaths);
+
+
+        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        employeeList2.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
+            @Override
+            public void changed(ObservableValue<? extends Employee> arg0, Employee arg1, Employee arg2) {
+                shiftDayList.getItems().clear();
+                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
+                List<Integer> uniqueList = new ArrayList<>();
+                for (int i = 0; i < emp.getShifts().length; i++ ) {
+                    if (emp.getShifts()[i].isEmpty()) continue;
+                    uniqueList.add(i);
+                }
+                Collections.sort(uniqueList);
+                shiftDayList.getItems().addAll(uniqueList);
+                
+            }
+        });
+
+        shiftDayList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
+            @Override
+            public void changed(ObservableValue<? extends Integer> arg0, Integer arg1, Integer arg2) {
+                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
+                Integer day = shiftDayList.getSelectionModel().getSelectedItem();
+                shiftLabel2.setText("");
+                shiftLabel3.setText("");
+                if (day != null) {
+                    shiftLabel.setText(emp.getShifts()[day].get(0).toString());
+                    LocalDate shiftDate = fg.getStartDate();
+                    shiftDate = shiftDate.plusDays(day);
+                    shiftDateLabel.setText("Shift on: " + shiftDate.toString());
+                    if (emp.getShifts()[day].size() > 1) shiftLabel2.setText(emp.getShifts()[day].get(1).toString());
+                    if (emp.getShifts()[day].size() > 2) shiftLabel3.setText(emp.getShifts()[day].get(2).toString());
+                    if (emp.getShifts()[day].size() > 3) System.out.println("Somehow there are more than 3 shifts assigned to one day");
+                }
+            }
+        });
+        fg.printRuleViolations();
     }
 
 
