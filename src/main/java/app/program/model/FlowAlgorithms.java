@@ -2,19 +2,21 @@ package app.program.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Set;
 
 public class FlowAlgorithms {
     private FlowGraph fg;
     private Shift[][] employeeShifts;
     private int[][] deps;
     private List<Shift>[][] assignedShifts;
+
+    private boolean stop = false;
+    private int totalCost = 0;
+    private int prefsFulfilled = 0;
+    private int prefsDenied = 0;
 
     public FlowAlgorithms(FlowGraph fg) {
         this.fg = fg;
@@ -253,6 +255,7 @@ public class FlowAlgorithms {
     // Successive Shortest Path Algorithm: V3 (with 11-hour breaks between shifts)
     public void shortestPaths11Hr(int n, Vertex s, int[] dist, Edge[] parentEdges) {
         int[] minFlows = new int[n];
+        
         for (int i = 0; i < dist.length; i++) {
             dist[i] = Integer.MAX_VALUE;
             parentEdges[i] = null;
@@ -272,10 +275,11 @@ public class FlowAlgorithms {
             Vertex node = q.remove();
             inQ[node.getVertexIndex()] = false;
             
-            // flow allowed to pass through current path
-            int minFlow = minFlows[node.getVertexIndex()];
+            
             
             for (Edge e : node.getOutGoing()) {
+                // flow allowed to pass through current path
+                int minFlow = Math.min(minFlows[node.getVertexIndex()],e.getCap()-e.getFlow());
                 // initialize values for the 11-hour check
                 Employee emp = employees[node.getVertexIndex()];
                 int day = days[node.getVertexIndex()];
@@ -288,22 +292,22 @@ public class FlowAlgorithms {
                     parentEdges[toNode.getVertexIndex()] = e;
 
                     // for the 11-hour criteria
-                    if (node.getPurpose() == 1) {
-                        employees[toNode.getVertexIndex()] = node.getEmp();
+                    if (toNode.getPurpose() == 1) {
+                        employees[toNode.getVertexIndex()] = toNode.getEmp();
                         days[toNode.getVertexIndex()] = day;
                         shifts[toNode.getVertexIndex()] = shift;
-                    } else if (node.getPurpose() == 2) {
-                        employees[toNode.getVertexIndex()] = node.getEmp();
-                        days[toNode.getVertexIndex()] = node.getDay();
+                    } else if (toNode.getPurpose() == 2) {
+                        employees[toNode.getVertexIndex()] = toNode.getEmp();
+                        days[toNode.getVertexIndex()] = toNode.getDay();
                         shifts[toNode.getVertexIndex()] = shift;
-                    } else if (node.getPurpose() == 3) {
-                        employees[toNode.getVertexIndex()] = node.getEmp();
-                        days[toNode.getVertexIndex()] = node.getDay();
-                        shifts[toNode.getVertexIndex()] = node.getShift();
+                    } else if (toNode.getPurpose() == 3) {
+                        employees[toNode.getVertexIndex()] = toNode.getEmp();
+                        days[toNode.getVertexIndex()] = toNode.getDay();
+                        shifts[toNode.getVertexIndex()] = toNode.getShift();
                         if (e.getType() == 1 && minFlow >= e.getCap()) {
                             if (assignedShifts[emp.getEmpIndex()][day].size() > 1) {
                                 for (int i = 0; i < assignedShifts[emp.getEmpIndex()][day].size(); i++) {
-                                    if (assignedShifts[emp.getEmpIndex()][day].get(i).equals(node.getShift())) {
+                                    if (assignedShifts[emp.getEmpIndex()][day].get(i).equals(toNode.getShift())) {
                                         assignedShifts[emp.getEmpIndex()][day].remove(i);
                                     }
                                 }
@@ -419,6 +423,99 @@ public class FlowAlgorithms {
         }
         return true;
     }
+
+    // Successive Shortest Path Algorithm: V3 (with 11-hour breaks between shifts)
+    public void shortestPathsRestrictive(int n, Vertex s, int[] dist, Edge[] parentEdges) {
+        int[] minFlows = new int[n];
+        int[] shiftCaps = new int[n];
+
+        for (int i = 0; i < dist.length; i++) {
+            dist[i] = Integer.MAX_VALUE;
+            parentEdges[i] = null;
+            minFlows[i] = Integer.MAX_VALUE;
+        }
+
+        dist[s.getVertexIndex()] = 0;
+        boolean[] inQ = new boolean[n];
+        
+        Queue<Vertex> q = new LinkedList<>();
+        q.add(s);
+
+        Employee[] employees = new Employee[n];
+        int[] days = new int[n];
+        Shift[] shifts = new Shift[n];
+        while (!q.isEmpty()) {
+            Vertex node = q.remove();
+            inQ[node.getVertexIndex()] = false;
+            
+            
+            for (Edge e : node.getOutGoing()) {
+                // initialize values for the 11-hour check
+                // flow allowed to pass through current path
+                int minFlow = Math.min(minFlows[node.getVertexIndex()],e.getCap()-e.getFlow());
+                Employee emp = employees[node.getVertexIndex()];
+                int day = days[node.getVertexIndex()];
+                Shift shift = shifts[node.getVertexIndex()];
+                int shiftCap = shiftCaps[node.getVertexIndex()];
+                // define the node, which the current edge goes to
+                Vertex toNode = e.getTo();
+                if (e.getCap() - e.getFlow() > 0 && dist[toNode.getVertexIndex()] > dist[node.getVertexIndex()] + e.getWeight() && 
+                checkConditions11Hr(e, emp, day, shift, minFlow) && sameDep(e, emp, day) && minFlow >= shiftCap) {
+                    dist[toNode.getVertexIndex()] = dist[node.getVertexIndex()] + e.getWeight();
+                    parentEdges[toNode.getVertexIndex()] = e;
+
+                    // for the 11-hour criteria
+                    if (toNode.getPurpose() == 1) {
+                        employees[toNode.getVertexIndex()] = toNode.getEmp();
+                        days[toNode.getVertexIndex()] = day;
+                        shifts[toNode.getVertexIndex()] = shift;
+                        shiftCaps[toNode.getVertexIndex()] = shiftCap;
+                    } else if (toNode.getPurpose() == 2) {
+                        employees[toNode.getVertexIndex()] = toNode.getEmp();
+                        days[toNode.getVertexIndex()] = toNode.getDay();
+                        shifts[toNode.getVertexIndex()] = shift;
+                        shiftCaps[toNode.getVertexIndex()] = shiftCap;
+                    } else if (toNode.getPurpose() == 3) {
+                        employees[toNode.getVertexIndex()] = toNode.getEmp();
+                        days[toNode.getVertexIndex()] = toNode.getDay();
+                        shifts[toNode.getVertexIndex()] = toNode.getShift();
+                        shiftCaps[toNode.getVertexIndex()] = e.getCap()-e.getFlow();
+                        if (e.getType() == 1 && minFlow >= e.getCap()) {
+                            if (assignedShifts[emp.getEmpIndex()][day].size() > 1) {
+                                for (int i = 0; i < assignedShifts[emp.getEmpIndex()][day].size(); i++) {
+                                    if (assignedShifts[emp.getEmpIndex()][day].get(i).equals(toNode.getShift())) {
+                                        assignedShifts[emp.getEmpIndex()][day].remove(i);
+                                    }
+                                }
+                            } else if (!assignedShifts[emp.getEmpIndex()][day].isEmpty()) {
+                                assignedShifts[emp.getEmpIndex()][day].remove(0);
+                            }
+                            deps[emp.getEmpIndex()][day] = -1;
+                            shiftCaps[toNode.getVertexIndex()] += e.getCap();
+                        }
+                    } else {
+                        employees[toNode.getVertexIndex()] = emp;
+                        days[toNode.getVertexIndex()] = day;
+                        shifts[toNode.getVertexIndex()] = shift;
+                        shiftCaps[toNode.getVertexIndex()] = shiftCap;
+                    }
+
+                    // updates the amount of flow the path can take
+                    if (e.getType() == 0) {
+                        minFlows[toNode.getVertexIndex()] = minFlow;
+                    } else {
+                        minFlows[toNode.getVertexIndex()] = minFlow;
+                    }
+
+                    if (!inQ[toNode.getVertexIndex()]) {
+                        inQ[toNode.getVertexIndex()] = true;
+                        q.add(toNode);
+                    }
+                }
+            }
+        }
+    }
+
 
     // Breadth-First-Search version 1 (standard)
     public void bfs(Vertex s, Edge[] parentEdges, int[] dist) {
@@ -613,13 +710,13 @@ public class FlowAlgorithms {
         // int[] shiftCaps = new int[n];
         // int[] shiftWeights = new int[n];
         // return spfaDyn(n, s, dist, parentEdges, minFlows, shiftWeights, shiftCaps);
-        // return spfa(n, s, dist, parentEdges);
-        shortestPaths11Hr(n, s, dist, parentEdges);
-        if (dist[fg.getT().getVertexIndex()] == Integer.MAX_VALUE) {
-            return spfa(n, s, dist, parentEdges);
-            // return spfaDyn(n, s, dist, parentEdges, minFlows, shiftWeights, shiftCaps);
-        }
-        return -1;
+        return spfa(n, s, dist, parentEdges);
+        // shortestPaths11Hr(n, s, dist, parentEdges);
+        // if (dist[fg.getT().getVertexIndex()] == Integer.MAX_VALUE) {
+        //     return spfa(n, s, dist, parentEdges);
+        //     // return spfaDyn(n, s, dist, parentEdges, minFlows, shiftWeights, shiftCaps);
+        // }
+        // return -1;
         // negative cycle detection using spfa
         // return spfaNegDetectionDyn(n, s, dist, parentEdges, minFlows, shiftWeights, shiftCaps);
         // return spfaNegDetection(n, s, dist, parentEdges);
@@ -722,31 +819,28 @@ public class FlowAlgorithms {
     }
 
     // Doubt this will ever work. Still here if pursued tho
-    public void elevenHrDijsktra(int n, Vertex s, Vertex t, int[] dist, Edge[] parentEdge) {
+    public void elevenHrDijkstra(int n, Vertex s, Vertex t, int[] dist, Edge[] parentEdge) {
         int[] minFlows = new int[n];
         Employee[] employees = new Employee[n];
         int[] days = new int[n];
         Shift[] shifts = new Shift[n];
+
         for (int i = 0; i < n; i++) {
             dist[i] = Integer.MAX_VALUE;
             parentEdge[i] = null;
             minFlows[i] = Integer.MAX_VALUE;
         }
 
-        // PriorityQueue<Vertex> q = new PriorityQueue<>(Comparator.comparingInt(v -> dist[v.getVertexIndex()]));
-        
-        boolean[] addedToQ = new boolean[n];
-        Queue<Vertex> q = new LinkedList<>();
+        PriorityQueue<Vertex> minHeap = new PriorityQueue<>((v1, v2) -> 
+            Integer.compare(dist[v1.getVertexIndex()], dist[v2.getVertexIndex()])
+        );
 
-        q.add(s);
         dist[s.getVertexIndex()] = 0;
+        minHeap.add(s);
 
-        while (!q.isEmpty()) {
-            // Vertex u = q.remove();
-            Vertex u = minDistInQ(q, dist);
-            q.remove(u);
-            if (u == t) return;
-            int minFlow = minFlows[u.getVertexIndex()];
+        while (!minHeap.isEmpty()) {
+            Vertex u = minHeap.remove();
+
             for (Edge e : u.getOutGoing()) {
                 Vertex v = e.getTo();
                 // if (!addedToQ[v.getVertexIndex()]) {
@@ -754,6 +848,7 @@ public class FlowAlgorithms {
                 //     addedToQ[v.getVertexIndex()] = true;
                 // } 
                 // if (!q.contains(v)) continue;
+                int minFlow = Math.min(minFlows[u.getVertexIndex()], e.getCap()-e.getFlow());
                 Employee emp = employees[u.getVertexIndex()];
                 int day = days[u.getVertexIndex()];
                 Shift shift = shifts[u.getVertexIndex()];
@@ -764,28 +859,25 @@ public class FlowAlgorithms {
                     parentEdge[v.getVertexIndex()] = e;
 
                     // by placing the add to queue here I avoid adding unreachable/unfavorable vertices
-                    if (!addedToQ[v.getVertexIndex()]) {
-                        q.add(v);
-                        addedToQ[v.getVertexIndex()] = true;
-                    }
+                    minHeap.add(v);
 
                     // for the 11-hour criteria
-                    if (u.getPurpose() == 1) {
-                        employees[v.getVertexIndex()] = u.getEmp();
+                    if (v.getPurpose() == 1) {
+                        employees[v.getVertexIndex()] = v.getEmp();
                         days[v.getVertexIndex()] = day;
                         shifts[v.getVertexIndex()] = shift;
-                    } else if (u.getPurpose() == 2) {
-                        employees[v.getVertexIndex()] = u.getEmp();
-                        days[v.getVertexIndex()] = u.getDay();
+                    } else if (v.getPurpose() == 2) {
+                        employees[v.getVertexIndex()] = v.getEmp();
+                        days[v.getVertexIndex()] = v.getDay();
                         shifts[v.getVertexIndex()] = shift;
-                    } else if (u.getPurpose() == 3) {
-                        employees[v.getVertexIndex()] = u.getEmp();
-                        days[v.getVertexIndex()] = u.getDay();
-                        shifts[v.getVertexIndex()] = u.getShift();
+                    } else if (v.getPurpose() == 3) {
+                        employees[v.getVertexIndex()] = v.getEmp();
+                        days[v.getVertexIndex()] = v.getDay();
+                        shifts[v.getVertexIndex()] = v.getShift();
                         if (e.getType() == 1 && minFlow >= e.getCap()) {
                             if (assignedShifts[emp.getEmpIndex()][day].size() > 1) {
                                 for (int i = 0; i < assignedShifts[emp.getEmpIndex()][day].size(); i++) {
-                                    if (assignedShifts[emp.getEmpIndex()][day].get(i).equals(u.getShift())) {
+                                    if (assignedShifts[emp.getEmpIndex()][day].get(i).equals(v.getShift())) {
                                         assignedShifts[emp.getEmpIndex()][day].remove(i);
                                     }
                                 }
@@ -802,10 +894,84 @@ public class FlowAlgorithms {
 
                     // updates the amount of flow the path can take
                     if (e.getType() == 0) {
+                        minFlows[v.getVertexIndex()] = minFlow;
+                    } else {
+                        minFlows[v.getVertexIndex()] = minFlow;
+                    }
+
+                    // updates the amount of flow the path can take
+                    if (e.getType() == 0) {
                         minFlows[v.getVertexIndex()] = Math.min(minFlow, e.getCap()-e.getFlow());
                     } else {
                         minFlows[v.getVertexIndex()] = Math.min(minFlow, e.getCap());
                     }
+                }
+                
+            }
+        }
+
+    }
+    public void dijkstraDyn(int n, Vertex s, Vertex t, int[] dist, Edge[] parentEdge) {
+        int[] minFlows = new int[n];
+        int[] shiftCaps = new int[n];
+        // int[] shiftWeights = new int[n];
+        for (int i = 0; i < dist.length; i++) {
+            dist[i] = Integer.MAX_VALUE;
+            parentEdge[i] = null;
+            minFlows[i] = Integer.MAX_VALUE;
+            shiftCaps[i] = -1;
+            // shiftWeights[i] = -1;
+        }
+
+        PriorityQueue<Vertex> minHeap = new PriorityQueue<>((v1, v2) -> 
+            Integer.compare(dist[v1.getVertexIndex()], dist[v2.getVertexIndex()])
+        );
+
+        dist[s.getVertexIndex()] = 0;
+        minHeap.add(s);
+
+        while (!minHeap.isEmpty()) {
+            Vertex u = minHeap.remove();
+
+            for (Edge e : u.getOutGoing()) {
+                Vertex v = e.getTo();
+                // if (!addedToQ[v.getVertexIndex()]) {
+                //     q.add(v);
+                //     addedToQ[v.getVertexIndex()] = true;
+                // } 
+                // if (!q.contains(v)) continue;
+
+                int minFlow = Math.min(minFlows[u.getVertexIndex()], e.getCap()-e.getFlow());
+                int reducedCost = dist[u.getVertexIndex()] + e.getWeight() + u.getPotential() - v.getPotential();
+                if (v.getPurpose() == 3 && minFlow < (e.getCap()-e.getFlow())) {
+                    reducedCost += 10000;
+                } else if (shiftCaps[u.getVertexIndex()] != -1 && minFlow < shiftCaps[u.getVertexIndex()]) {
+                    reducedCost += 10000;
+                }
+                
+                if (reducedCost < dist[v.getVertexIndex()] && e.getCap() - e.getFlow() > 0) {
+                    dist[v.getVertexIndex()] = reducedCost;
+                    parentEdge[v.getVertexIndex()] = e;
+
+                    // by placing the add to queue here I avoid adding unreachable/unfavorable vertices
+                    minHeap.add(v);
+
+                    // updates the amount of flow the path can take
+                    if (e.getType() == 0) {
+                        minFlows[v.getVertexIndex()] = Math.min(minFlow, e.getCap()-e.getFlow());
+                    } else {
+                        minFlows[v.getVertexIndex()] = Math.min(minFlow, e.getCap());
+                    }
+
+                    // updates the weight and capacity for the shift used on the current path
+                    if (v.getPurpose() == 3) {
+                        shiftCaps[v.getVertexIndex()] = e.getCap()-e.getFlow();
+                        // shiftWeights[v.getVertexIndex()] = reducedCost;
+                    } else if (v.getPurpose() > 3) {
+                        shiftCaps[v.getVertexIndex()] = shiftCaps[u.getVertexIndex()];
+                        // shiftWeights[v.getVertexIndex()] = shiftWeights[u.getVertexIndex()];
+                    }
+
                 }
                 
             }
@@ -819,38 +985,42 @@ public class FlowAlgorithms {
             parentEdge[i] = null;
         }
 
-        // PriorityQueue<Vertex> q = new PriorityQueue<>(Comparator.comparingInt(v -> dist[v.getVertexIndex()]));
         
-        boolean[] addedToQ = new boolean[n];
-        Queue<Vertex> q = new LinkedList<>();
+        // boolean[] addedToQ = new boolean[n];
+        PriorityQueue<Vertex> minHeap = new PriorityQueue<>((v1, v2) -> 
+            Integer.compare(dist[v1.getVertexIndex()], dist[v2.getVertexIndex()])
+        );
 
-        q.add(s);
         dist[s.getVertexIndex()] = 0;
+        minHeap.add(s);
 
-        while (!q.isEmpty()) {
-            // Vertex u = q.remove();
-            Vertex u = minDistInQ(q, dist);
-            q.remove(u);
-            if (u == t) return;
+        while (!minHeap.isEmpty()) {
+            Vertex u = minHeap.remove();
 
             for (Edge e : u.getOutGoing()) {
                 Vertex v = e.getTo();
-                // if (!addedToQ[v.getVertexIndex()]) {
-                //     q.add(v);
-                //     addedToQ[v.getVertexIndex()] = true;
-                // } 
-                // if (!q.contains(v)) continue;
                 
                 int reducedCost = dist[u.getVertexIndex()] + e.getWeight() + u.getPotential() - v.getPotential();
+                // if (v.toString().equals("( 15-23 )") && v.getEmp().getName().equals("Employee W") && v.getDay() == 28) {
+                //     System.out.println("Reduced cost found to be: " + reducedCost + ", found from edge " + e);
+                // }
                 if (reducedCost < dist[v.getVertexIndex()] && e.getCap() - e.getFlow() > 0) {
+                    if (reducedCost < 0) {
+                        System.out.println("edge " + e + " has led to negative reducedCost: " + reducedCost);
+                        System.out.println("calculation is: " + dist[u.getVertexIndex()] + "+" + e.getWeight() + "+" + u.getPotential() + "-" + v.getPotential());
+                        stop = true;
+                        // return;
+                    }
+                    if (parentEdge[v.getVertexIndex()] != null && parentEdge[v.getVertexIndex()].getFrm() == s) System.out.println("overwriting s: " + parentEdge[v.getVertexIndex()] + " with dist: " + dist[v.getVertexIndex()] + " with edge: " + e + " and new dist: " + reducedCost);
                     dist[v.getVertexIndex()] = reducedCost;
                     parentEdge[v.getVertexIndex()] = e;
 
                     // by placing the add to queue here I avoid adding unreachable/unfavorable vertices
-                    if (!addedToQ[v.getVertexIndex()]) {
-                        q.add(v);
-                        addedToQ[v.getVertexIndex()] = true;
-                    }
+                    // if (!addedToQ[v.getVertexIndex()]) {
+                    // minHeap.remove(v);
+                    minHeap.add(v);
+                        // addedToQ[v.getVertexIndex()] = true;
+                    // }
                 }
                 
             }
@@ -867,7 +1037,7 @@ public class FlowAlgorithms {
                 minDist = dist[v.getVertexIndex()];
                 minDistNode = v;
             }
-            if (minDist == 0) return minDistNode;
+            if (minDist <= 0) return minDistNode;
         }
         return minDistNode;
     }
@@ -878,12 +1048,29 @@ public class FlowAlgorithms {
         int[] dist = new int[n];
         Edge[] parentEdges = new Edge[n];
 
+        boolean switchedAlg = false;
+
         while (b > 0) {
-            int vertexInNegCycle = bellmanFord(n, s, dist, parentEdges);
-            if (vertexInNegCycle != -1 ) System.out.println("Neg cycle found at " + (totalFlow-b) + " flow");
-            b -= augment(s, t, parentEdges, vertexInNegCycle);
 
+            if (!switchedAlg) shortestPaths11Hr(n, s, dist, parentEdges);
+            if (switchedAlg || dist[t.getVertexIndex()] == Integer.MAX_VALUE) {
+                if (!switchedAlg) {
+                    switchedAlg = true;
+                    System.out.println("switched to BF at " + (totalFlow-b) + " flow");
+                }
+                int vertexInNegCycle = bellmanFord(n, s, dist, parentEdges);
+                if (vertexInNegCycle != -1 ) System.out.println("Neg cycle found at " + (totalFlow-b) + " flow");
+                b -= augment(s, t, parentEdges, vertexInNegCycle);
+            }
+            if (!switchedAlg) b -= augment(s, t, parentEdges, -1);
+            
 
+            this.assignedShifts = new ArrayList[fg.getEmps().length][fg.getDaysInPeriod()];
+            for (int emp = 0; emp < this.assignedShifts.length; emp++) {
+                for (int day = 0; day < this.assignedShifts[0].length; day++) {
+                    this.assignedShifts[emp][day] = new ArrayList<>();
+                }
+            }
             markAssignedShifts(s, t, new boolean[t.getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
         }
         if (b != 0) totalFlow -= b;
@@ -892,68 +1079,68 @@ public class FlowAlgorithms {
     }
 
     public int[] fasterSuccessiveShortestPaths(int n, int b, Vertex s, Vertex t) {
-        int totalCost = 0;
+        totalCost = 0;
         int totalFlow = b;
         int[] dist = new int[n];
         Edge[] parentEdges = new Edge[n];
-        boolean switched = false;
+
+        ArrayList<Vertex> allVertices = new ArrayList<>();
+        Queue<Vertex> q = new LinkedList<>();
+        boolean[] nodesVisited = new boolean[s.getTotalVertices()];
+
+        q.add(s);
+        nodesVisited[s.getVertexIndex()] = true;
+
+        // store all vertices in a list
+        while (!q.isEmpty()) {
+            Vertex node = q.remove();
+            allVertices.add(node);
+
+            for (Edge e : node.getOutGoing()) {
+                int v = e.getTo().getVertexIndex();
+                if (!nodesVisited[v]) {
+                    nodesVisited[v] = true;
+                    q.add(e.getTo());
+                }
+            }
+        }
 
         while (b > 0) {
             
             // run shortest paths
-            shortestPaths11Hr(n, s, dist, parentEdges);
-            if (dist[t.getVertexIndex()] == Integer.MAX_VALUE) {
-                if (!switched) {
-                    System.out.println("Switched to dijkstra with " + (b) + " flow left to distribute");
-                    switched = true;
-                }
-                dijkstra(n, s, t, dist, parentEdges);
-                // weight manipulation shouldn't work either, since it can cause negative cycles
-                // elevenHrDijsktra(n, s, t, dist, parentEdges); // shouldn't work, still ruins backtracking
-                if (dist[t.getVertexIndex()] == Integer.MAX_VALUE) break;
+            dijkstra(n, s, t, dist, parentEdges);
+            if (dist[t.getVertexIndex()] == Integer.MAX_VALUE || -dist[t.getVertexIndex()] == Integer.MAX_VALUE) break;
 
-                // update vertex potentials
-                Queue<Vertex> q = new LinkedList<>();
-                boolean[] nodesVisited = new boolean[s.getTotalVertices()];
-
-                q.add(s);
-
-                while (!q.isEmpty()) {
-                    Vertex node = q.remove();
-                    nodesVisited[node.getVertexIndex()] = true;
-
-                    for (Edge e : node.getOutGoing()) {
-                        int v = e.getTo().getVertexIndex();
-                        if (!nodesVisited[v]) {
-                            e.getTo().setPotential(dist[v]);
-                            q.add(e.getTo());
-                        }
-                    }
-                }
+            // update vertex potentials
+            for (int i = 0; i < allVertices.size(); i++) {
+                Vertex node = allVertices.get(i);
+                node.setPotential(dist[node.getVertexIndex()]);
             }
-            
             
             // augment flow
             b -= augment(s, t, parentEdges, -1);
-            // System.out.println("Flow is at: " + (totalFlow-b));
             
-            this.assignedShifts = new ArrayList[fg.getEmps().length][fg.getDaysInPeriod()];
-            for (int emp = 0; emp < this.assignedShifts.length; emp++) {
-                for (int day = 0; day < this.assignedShifts[0].length; day++) {
-                    this.assignedShifts[emp][day] = new ArrayList<>();
-                }
-            }
-            markAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+            // int val = augment(s, t, parentEdges, -1);
+            // if (stop) break;
+            // if (val != -100) {
+            //     b -= val;
+            // } else {
+            //     break;
+            // }
+            // System.out.println("Flow is at: " + (totalFlow-b));
         }
-        if (b != 0) totalFlow -= b;
-        int[] results = {totalFlow, totalCost};
+        totalFlow -= b;
+
+        markAssignedShifts(s, t, new boolean[t.getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        int[] results = {totalFlow, totalCost, prefsDenied, prefsFulfilled};
         return results;
     }
 
     public int augment(Vertex s, Vertex t, Edge[] parentEdges, int vertexInNegCycle) {
         int minFlow = Integer.MAX_VALUE;
-
+        
         if (vertexInNegCycle == -1) {
+
             Vertex node = t;
             while (node != s) {
                 Edge edge = parentEdges[node.getVertexIndex()];
@@ -964,18 +1151,20 @@ public class FlowAlgorithms {
             node = t;
             while (node != s) {
                 Edge edge = parentEdges[node.getVertexIndex()];
-                edge.addFlow(minFlow); // maybe this should also be "addFlowSimple()" instead
+                // add weight to total
+                if (Math.abs(edge.getWeight()) >= 0 && Math.abs(edge.getWeight()) < fg.getBaseEdgeWeight()) {
+                    totalCost -= (1000 - edge.getWeight()); // reflects that prefLvl 1 = 0 represents -1000 in weight and prefLvl 5 = 5 represents -5
+                    prefsFulfilled++;
+                } else if (edge.getWeight() != fg.getBaseEdgeWeight() && edge.getWeight() != -fg.getBaseEdgeWeight()) {
+                    totalCost += (edge.getWeight()-fg.getBaseEdgeWeight());
+                    prefsDenied++;
+                }
+
+                edge.addFlow(minFlow);
+                // if (stop) System.out.println("added flow to " + edge);
                 node = parentEdges[node.getVertexIndex()].getFrm();
             }
 
-            if (minFlow == 0) {
-                node = t;
-                while (node != s) {
-                    Edge edge = parentEdges[node.getVertexIndex()];
-                    System.out.println(edge);
-                    node = parentEdges[node.getVertexIndex()].getFrm();
-                }
-            }
             return minFlow;
         } else {
             ArrayList<Edge> path = new ArrayList<>();
@@ -1001,9 +1190,9 @@ public class FlowAlgorithms {
 
     public int[] minCostFlow(int n, int k, Vertex s, Vertex t) {
         int totalFlow = 0;
-        int totalCost = 0;
-        int prefsDenied = 0;
-        int prefsFulfilled = 0;
+        totalCost = 0;
+        prefsDenied = 0;
+        prefsFulfilled = 0;
         int[] dist = new int[n];
         for (int i = 0; i < dist.length; i++) {
             dist[i] = Integer.MAX_VALUE;
@@ -1012,8 +1201,8 @@ public class FlowAlgorithms {
         Edge[] parentEdges = new Edge[n];
 
         while (totalFlow < k) {
-            shortestPathsV1(n, s, dist, parentEdges);
-            // shortestPaths11Hr(n, s, dist, parentEdges); 
+            // shortestPathsV1(n, s, dist, parentEdges);
+            shortestPaths11Hr(n, s, dist, parentEdges); 
             // if (dist[t.getVertexIndex()] == Integer.MAX_VALUE) {
             //     for (int i = 0; i < dist.length; i++) {
             //         dist[i] = Integer.MAX_VALUE;

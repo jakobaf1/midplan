@@ -1,12 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: tests.runner.CucumberTest
 -------------------------------------------------------------------------------
-Tests run: 13, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.700 s <<< FAILURE! -- in tests.runner.CucumberTest
-minCostMaxFlow algorithm.when the algorithm has run, no rules are broken (except 4/12 shifts) -- Time elapsed: 1.234 s <<< FAILURE!
-java.lang.AssertionError
-	at org.junit.Assert.fail(Assert.java:87)
-	at org.junit.Assert.assertTrue(Assert.java:42)
-	at org.junit.Assert.assertTrue(Assert.java:53)
-	at app.program/tests.steps.TestSteps.each_employee_has_at_least_hours_between_each_shift(TestSteps.java:404)
-	at ✽.each employee has at least 11 hours between each shift(file:///C:/Users/jakob/Documents/DTU/3_year/Bachelor/midplan/src/test/java/resources/features/minCostMaxFlow.feature:33)
-
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.386 s -- in tests.runner.CucumberTest

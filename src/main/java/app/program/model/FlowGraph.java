@@ -24,6 +24,9 @@ public class FlowGraph {
     private Employee[] emps;
     private ArrayList<ArrayList<Edge>> invalidPaths = new ArrayList<>();
 
+    int shiftViolations = 0;
+    int assignedShiftErrors = 0;
+
     public FlowGraph(int periodInWeeks, Shift[] shifts, Employee[] emps) {
         this.periodInWeeks = periodInWeeks;
         this.shifts = shifts;
@@ -81,7 +84,7 @@ public class FlowGraph {
             for (int day = 0; day < daysInPeriod; day++) {
                 int weekday = date.getDayOfWeek().getValue();
                 // now I check whether the employee has any preferences for shifts on this day
-                boolean shiftPref = !shiftPreferences[day].isEmpty();
+                boolean shiftPref = shiftPreferences[day].size() == dayPreferences[day].size();
                 int w = setDayWeight(dayPreferences[day]);
                 //  if the employee is required to not work this day, it is skipped and no edge is drawn
                 if (w == Integer.MAX_VALUE && !shiftPref) {
@@ -89,22 +92,25 @@ public class FlowGraph {
                     continue;
                 }
                 Vertex dayNode = new Vertex(2, weekdayToString(weekday)+"_"+day, e, day);
+                Edge empToDay = null;
                 // Edge fourHour;
                 if (!shiftPref) {
                     addEdge(empNode, dayNode, 12, w, 8);
                     // could split 12-hr edges up into two and add a (very) slight weight to the 4-hr part, thereby getting more 8 hours
-                    // addEdge(empNode, dayNode, 8, w, 8);
+                    // empToDay = addEdge(empNode, dayNode, 8, w, 8);
                     // fourHour = addEdge(empNode, dayNode, 4, baseEdgeWeight+5, 8);
                 } else {
                     addEdge(empNode, dayNode, 12, baseEdgeWeight, 8);
                     // could split 12-hr edges up into two and add a (very) slight weight to the 4-hr part, thereby getting more 8 hours
-                    // addEdge(empNode, dayNode, 8, baseEdgeWeight, 8);
+                    // empToDay = addEdge(empNode, dayNode, 8, baseEdgeWeight, 8);
                     // fourHour = addEdge(empNode, dayNode, 4, baseEdgeWeight+5, 8);
                 }
 
                 // ArrayList<Integer> twelveHourShiftWeights = new ArrayList<>();
-                Edge dayEdge = null, eveEdge = null, nightEdge = null, twelveHourEdge = null;
+                Edge dayEdge = null, nightEdge = null, twelveHourEdge = null;
                 Vertex dayShiftNode = null, eveShiftNode = null, nightShiftNode = null;
+                boolean twelveHourShifts = false;
+                // Vertex twelveHourNode = null;
                 for (Shift shift : shifts) {
                     int ws = baseEdgeWeight;
                     if (shiftPref) {
@@ -131,7 +137,8 @@ public class FlowGraph {
                                 break;
                             case 15:
                                 eveShiftNode = new Vertex(3, shift.getStartTime() + "-" + shift.getEndTime(), e, day, shift);
-                                eveEdge = addEdge(dayNode, eveShiftNode, shift.calcHours(), ws, 0);
+                                addEdge(dayNode, eveShiftNode, shift.calcHours(), ws, 0);
+                                twelveHourEdge = addEdge(dayNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
                                 for (int dep : e.getDepartments()) {
                                     addEdge(eveShiftNode, sharedNodes[day][6*dep+(expLvl-1)+2], 8, baseEdgeWeight, 8);
                                 }
@@ -146,61 +153,103 @@ public class FlowGraph {
                             default:
                                 break;
                         }
-                    } else {
-                        // twelveHourShiftWeights.add(ws);
+                    } else { 
+                        // Scenario with edge from employee node to eve shift node (or adding an extra 12-hr node for the day)
+                        // if (eveShiftNode == null) break;
+                        // if (twelveHourNode == null) {
+                        //     twelveHourNode = new Vertex(2, "twelve_"+day, e, day);
+                        //     addEdge(empNode, twelveHourNode, 4, empToDay.getWeight(), 4);
+                        // }
+                        // int twelveHourWeight = setShiftWeight(shiftPreferences[day], shift);
+                        // switch (shift.getStartTime()) {
+                        //     case 7:
+                        //         if (dayShiftNode == null) break;
+                        //         if (twelveHourWeight == baseEdgeWeight) {
+                        //             twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
+                        //         } else if (twelveHourWeight < dayEdge.getWeight()) {
+                        //             dayEdge.setWeight(twelveHourWeight);
+                        //             dayEdge.getCounterpart().setWeight(-dayEdge.getWeight());
+                        //             twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
+                        //         } else {
+                        //             twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
+                        //         }
+                        //         break;
+                        //     case 19:
+                        //         if (nightShiftNode == null) break;
+                        //         if (twelveHourWeight == baseEdgeWeight && twelveHourEdge != null) {
+                        //             break;
+                        //         } else if (twelveHourWeight == baseEdgeWeight) {
+                        //             twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
+                        //         } else if (twelveHourWeight < nightEdge.getWeight()) {
+                        //             nightEdge.setWeight(twelveHourWeight);
+                        //             nightEdge.getCounterpart().setWeight(-nightEdge.getWeight());
+                        //             if (twelveHourEdge == null) {
+                        //                 twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
+                        //             } else if (twelveHourWeight < twelveHourEdge.getWeight()) {
+                        //                 twelveHourEdge.setWeight(twelveHourWeight);
+                        //                 twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
+                        //             }
+                        //         } else {
+                        //             if (twelveHourEdge == null) {
+                        //                 twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
+                        //             } else if (twelveHourWeight < twelveHourEdge.getWeight()) {
+                        //                 twelveHourEdge.setWeight(twelveHourWeight);
+                        //                 twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
+                        //             }
+                        //         }
+
+                        //         break;
+                        //     default:
+                        //         break;
+                        // }
+                        //// Case where I add an edge from day to eveshift of cap 4 ////
                         if (eveShiftNode == null) break;
                         int twelveHourWeight = setShiftWeight(shiftPreferences[day], shift);
+                        if (twelveHourWeight == Integer.MAX_VALUE) continue;
                         switch (shift.getStartTime()) {
                             case 7:
                                 if (dayShiftNode == null) break;
-                                if (twelveHourWeight == baseEdgeWeight) {
-                                    twelveHourEdge = addEdge(dayNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
-                                } else if (dayEdge.getWeight() == baseEdgeWeight && twelveHourWeight < baseEdgeWeight) {
+                                if (dayEdge.getWeight() == baseEdgeWeight && twelveHourWeight < baseEdgeWeight) {
                                     dayEdge.setWeight(twelveHourWeight);
                                     dayEdge.getCounterpart().setWeight(-dayEdge.getWeight());
-                                    twelveHourEdge = addEdge(dayNode, eveShiftNode, 4, twelveHourWeight, 4);
+                                    twelveHourEdge.setWeight(twelveHourWeight);
                                 } else {
-                                    twelveHourEdge = addEdge(dayNode, eveShiftNode, 4, twelveHourWeight, 4);
+                                    twelveHourEdge.setWeight(twelveHourWeight);
                                 }
-                                // TODO: The else statement might need to be improved upon to handle more special cases
+                                twelveHourShifts = true;
                                 break;
                             case 19:
                                 if (nightShiftNode == null) break;
                                 if (twelveHourWeight == baseEdgeWeight && twelveHourEdge != null) {
                                     break;
-                                } else if (twelveHourWeight == baseEdgeWeight) {
-                                    twelveHourEdge = addEdge(dayNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
                                 } else if (nightEdge.getWeight() == baseEdgeWeight && twelveHourWeight < baseEdgeWeight) {
                                     nightEdge.setWeight(twelveHourWeight);
                                     nightEdge.getCounterpart().setWeight(-nightEdge.getWeight());
-                                    if (twelveHourEdge == null) {
-                                        twelveHourEdge = addEdge(dayNode, eveShiftNode, 4, twelveHourWeight, 4);
-                                    } else if (twelveHourWeight < twelveHourEdge.getWeight()) {
+                                    if (twelveHourWeight < twelveHourEdge.getWeight()) {
                                         twelveHourEdge.setWeight(twelveHourWeight);
-                                        twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
                                     }
                                 } else {
-                                    if (twelveHourEdge == null) {
-                                        twelveHourEdge = addEdge(dayNode, eveShiftNode, 4, twelveHourWeight, 4);
-                                    } else if (twelveHourWeight < twelveHourEdge.getWeight()) {
+                                    if (twelveHourWeight < twelveHourEdge.getWeight()) {
                                         twelveHourEdge.setWeight(twelveHourWeight);
-                                        twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
                                     }
                                 }
+                                twelveHourShifts = true;
                                 break;
                             default:
                                 break;
                         }
-                        
                     }
-                    // if (twelveHourShiftWeights.size() == 1 && twelveHourShiftWeights.get(0) != baseEdgeWeight) {
-                    //     fourHour.setWeight(twelveHourShiftWeights.get(0));
-                    //     fourHour.getCounterpart().setWeight(-fourHour.getWeight());
-                    // } else if (twelveHourShiftWeights.size() == 2 && twelveHourShiftWeights.get(0) != baseEdgeWeight && twelveHourShiftWeights.get(1) != baseEdgeWeight) {
-                    //     fourHour.setWeight((twelveHourShiftWeights.get(0)+twelveHourShiftWeights.get(1))/2);
-                    //     fourHour.getCounterpart().setWeight(-fourHour.getWeight());
-                    // }
-                    // if there are no weights for 12-hours then they aren't wanted at preference level 1, and shouldn't have an edge
+                }
+                // in order to mimic the weight required to reach the shiftnode, the weight for the day edge is added
+                // if (twelveHourEdge != null) {
+                    // twelveHourEdge.setWeight(twelveHourEdge.getWeight() + empToDay.getWeight());
+                    // twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
+                    // System.out.println("Made the 12-hour edge: " + twelveHourEdge + ", for emp: " + e + " on day: " + day);
+                // }
+                if (!twelveHourShifts) {
+                    twelveHourEdge = null;
+                } else if (twelveHourEdge != null) {
+                    twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
                 }
                 date = date.plusDays(1);
             }
@@ -303,7 +352,6 @@ public class FlowGraph {
         return dayPreferences;
     }
 
-    // TODO: Update so shifts adhere to day as well. E.g. want to model "day shifts are wanted in odd weeks" (think its done)
     // for storing the preferences of an employee based on shift
     public List<Preference>[] prefShifts(Employee e, LocalDate date, int days) {
         List<Preference>[] shiftPreferences = new ArrayList[days];
@@ -440,7 +488,7 @@ public class FlowGraph {
         
     public int setDayWeight(List<Preference> dailyPref) {
         for (Preference p : dailyPref) {
-            if (p.getDay() != -1) {
+            if (p.getDay() != -1 && p.getShift() == null) {
                 return findWeight(p);
             }
         }
@@ -475,13 +523,13 @@ public class FlowGraph {
             case 1:
                 return p.getWanted() ? 0 : Integer.MAX_VALUE;
             case 2:
-                return p.getWanted() ? 100 : 1900;
+                return p.getWanted() ? 5 : 1995;
             case 3:
-                return p.getWanted() ? 500 : 1500;
+                return p.getWanted() ? 750 : 1250;
             case 4:
-                return p.getWanted() ? 850 : 1150;
-            case 5:
                 return p.getWanted() ? 950 : 1050;
+            case 5:
+                return p.getWanted() ? 995 : 1005;
             default:
                 return baseEdgeWeight;
         }
@@ -566,9 +614,11 @@ public class FlowGraph {
                     int endTime = emps[i].getShifts()[j-1].get(0).getEndTime();
                     int startTime = emps[i].getShifts()[j].get(0).getStartTime();
                     if (endTime == 7 && startTime-endTime < 11) {
-                        System.out.println("Emp: " + emps[i] + ", Is in violation of shift: " + emps[i].getShifts()[j-1].get(0) + " on day " + (j-1) + ", Shift: " + emps[i].getShifts()[j].get(0) + ", on day: " + j);
+                        // System.out.println("Emp: " + emps[i] + ", Is in violation of shift: " + emps[i].getShifts()[j-1].get(0) + " on day " + (j-1) + ", Shift: " + emps[i].getShifts()[j].get(0) + ", on day: " + j);
+                        shiftViolations++;
                     } else if (24-endTime+startTime < 11) {
-                        System.out.println("Emp: " + emps[i] + ", Is in violation of shift: " + emps[i].getShifts()[j-1].get(0) + " on day " + (j-1) + ", Shift: " + emps[i].getShifts()[j].get(0) + ", on day: " + j);
+                        // System.out.println("Emp: " + emps[i] + ", Is in violation of shift: " + emps[i].getShifts()[j-1].get(0) + " on day " + (j-1) + ", Shift: " + emps[i].getShifts()[j].get(0) + ", on day: " + j);
+                        shiftViolations++;
                     }
                 }
             }
@@ -589,11 +639,18 @@ public class FlowGraph {
 
         if (v == t) {
             String edge = "";
+            Edge newEdge = null;
             for (int i = 0; i < path.size(); i++) {
                 if (i == path.size()-1) {
                     edge += path.get(i);
                 } else {
-                    edge += path.get(i) + " - " + flows.get(i) + "/" + capacities.get(i) + " -> ";
+                    for (Edge e : path.get(i).getOutGoing()) {
+                        if (e.getTo() == path.get(i+1) && flows.get(i) == e.getFlow()) {
+                            newEdge = e;
+                            break;
+                        }
+                    }
+                    edge += path.get(i) + " - " + flows.get(i) + "/" + capacities.get(i) + ", w= " + newEdge.getWeight() + " -> ";
                 }
             }
             flowPath.add(edge);
@@ -660,7 +717,7 @@ public class FlowGraph {
         visited[v.getVertexIndex()] = false;
     }
 
-    public void updateInvalidPaths(Vertex v, Vertex t, boolean[] visited, ArrayList<Vertex> path, ArrayList<Integer> flows, int flow, ArrayList<Integer> capacities, int cap) {
+    public void updateInvalidPaths(Vertex v, Vertex t, boolean[] visited, ArrayList<Vertex> path, ArrayList<Integer> flows, int flow, ArrayList<Integer> capacities, int cap, int purpose) {
         visited[v.getVertexIndex()] = true;
         path.add(v);
         if (flow != 0) {
@@ -692,10 +749,10 @@ public class FlowGraph {
             boolean shiftRule = (dayBeforeEndTime == -1 || shift.validShift(shift.getStartTime(), dayBeforeEndTime));
             
             // handles cases where edges have been misused (e.g. 4/8 shift edge)
-            if (edges.get(2).getCap() - edges.get(2).getFlow() != 0) {
+            if (edges.get(1).getFlow() == 4 && purpose == 1) {
                 // System.out.println("found edge " + edges.get(2) + " to be invalid for employee: " + emp);
                 invalidPaths.add(edges);
-            } else if (!shiftRule) { // handles if the break between shifts is not obeyed
+            } else if (!shiftRule && purpose == 2) { // handles if the break between shifts is not obeyed
                 // System.out.println("found shift from edge " + edges.get(2) + " to be invalid for employee: " + emp);
                 invalidPaths.add(edges);
             }
@@ -705,7 +762,7 @@ public class FlowGraph {
             for (Edge e : v.getOutGoing()) {
                 if (e.getFlow() > 0 && !visited[e.getTo().getVertexIndex()]) {
                     // if ((v.getPurpose() == 2 || v.getPurpose() == 3) && flow != e.getFlow() ) continue;
-                    updateInvalidPaths(e.getTo(), t, visited, path, flows, e.getFlow(), capacities, e.getCap());
+                    updateInvalidPaths(e.getTo(), t, visited, path, flows, e.getFlow(), capacities, e.getCap(), purpose);
                 }
             }
         }
@@ -764,7 +821,6 @@ public class FlowGraph {
         }
     }
 
-    // TODO: Fix this one. Sometimes it reads 23-7 shift twice from one path (seems to always happen when 23-7 is involved)
     public void getAssignedShifts(Vertex v, Vertex t, boolean[] visited, ArrayList<Vertex> path, ArrayList<Integer> flows, int flow, ArrayList<Integer> capacities, int cap) {
         visited[v.getVertexIndex()] = true;
         path.add(v);
@@ -802,7 +858,8 @@ public class FlowGraph {
                 switch (firstShift.getStartTime()) {
                     case 7:
                         if (shift.getStartTime() != 15) {
-                            System.out.println("ERROR OCCURED! First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                            // System.out.println("ERROR OCCURED! First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                            assignedShiftErrors++;
                             emp.addShift(day,firstShift);
                             emp.addShift(day, shift);
                             break;
@@ -815,7 +872,8 @@ public class FlowGraph {
                         } else if (shift.getStartTime() == 23 && edges.get(2).getFlow() == 8) {
                             emp.addShift(day, new Shift(firstShift.getStartTime()+4, shift.getEndTime()));
                         } else {
-                            System.out.println("ERROR OCCURED, Line 2, " + " First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                            // System.out.println("ERROR OCCURED, Line 2, " + " First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                            assignedShiftErrors++;
                             emp.addShift(day, firstShift);
                             emp.addShift(day, shift);
                         }
@@ -824,13 +882,15 @@ public class FlowGraph {
                         if (shift.getStartTime() == 15) {
                             emp.addShift(day, new Shift(shift.getStartTime()+4, firstShift.getEndTime()));
                         } else {
-                            System.out.println("ERROR OCCURED, Line 3" + " First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                            // System.out.println("ERROR OCCURED, Line 3" + " First shift: " + firstShift + ", new shift: " + shift + ". On day " + day + ", for emp: " + emp);
+                            assignedShiftErrors++;
                             emp.addShift(day, firstShift);
                             emp.addShift(day, shift);
                         }
                         break;
                     default:
-                        System.out.println("Completely unexpected happenings");
+                        // System.out.println("Completely unexpected happenings");
+                        assignedShiftErrors++;
                         break;
                 }
             }
@@ -898,5 +958,16 @@ public class FlowGraph {
     public ArrayList<ArrayList<Edge>> getInvalidPaths() {
         return invalidPaths;
     }
-        
+
+    public void clearInvalidPaths() {
+        invalidPaths = new ArrayList<>();
+    }
+     
+    public int getShiftViolations() {
+        return shiftViolations;
+    }
+
+    public int getAssignedShiftErrors() {
+        return assignedShiftErrors;
+    }
 }

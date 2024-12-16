@@ -147,6 +147,27 @@ public class TestSteps {
         assertTrue(fg != null && fg.getS() != null);
     }
 
+    @Then("print the whole graph")
+    public void print_the_whole_graph() {
+        for (Edge toEmp : fg.getS().getOutGoing()) {
+            // if (toEmp.getType() == 1) continue;
+            for (Edge toDay : toEmp.getTo().getOutGoing()) {
+                if (toDay.getType() == 1) continue;
+                if (!(toDay.getFrm().getEmp().getName().equals("Employee P") || toDay.getFrm().getEmp().getName().equals("Employee V") ||toDay.getFrm().getEmp().getName().equals("Employee Ø"))) continue;
+                System.out.println("has edge " + toDay);
+                for (Edge toShift : toDay.getTo().getOutGoing()) {
+                    // if (toShift.getType() == 1) continue;
+                    System.out.println("has edge " + toShift);
+                    for (Edge fromShift : toShift.getTo().getOutGoing()) {
+                        if (fromShift.getType() == 0) continue;
+                        System.out.println("Backwards edge: " + fromShift);
+                    }
+                }
+            }
+
+        }
+    }
+
     @Then("all the employees are in the graph")
     public void all_the_employees_are_in_the_graph() {
         Vertex s = fg.getS();
@@ -382,7 +403,7 @@ public class TestSteps {
     @Given("the employees from the data file")
     public void the_employees_from_the_data_file() {
         employees = AlgorithmController.readEmployeeFile();
-        assertTrue(employees != null && employees.length == 47);
+        assertTrue(employees != null && employees.length == 46);
     }
 
     @Then("each employee has at least {int} hours between each shift")
@@ -533,7 +554,7 @@ public class TestSteps {
                 shift = new Shift(Integer.parseInt(startEndTimes.get(0)), Integer.parseInt(startEndTimes.get(1)));
             }
 
-            Preference newPref = new Preference(wanted.equals("yes"), prefLvl, date, day, shift, repeat, 0);
+            Preference newPref = new Preference(wanted.toLowerCase().equals("yes"), prefLvl, date, day, shift, repeat, 0);
             if (emps.contains(name)) {
                 for (int j = 0; j < emps.size(); j++) {
                     if (emps.get(j).equals(name)) {
@@ -855,6 +876,18 @@ public class TestSteps {
             }
         }
         return null;
+    }
+
+    @When("solved using the FasterSuccessiveShortestPaths algorithm")
+    public void solved_using_the_FasterSuccessiveShortestPaths_algorithm() {
+        algo = new FlowAlgorithms(fg);
+        int totalEmployeeHours = 0;
+        for (Edge e : fg.getS().getOutGoing()) {
+            totalEmployeeHours += e.getCap();
+        }
+        int[] results = algo.fasterSuccessiveShortestPaths(fg.getS().getTotalVertices(), totalEmployeeHours, fg.getS(), fg.getT());
+
+        assertTrue(results[0] != 0);
     }
 
 }

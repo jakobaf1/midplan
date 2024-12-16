@@ -293,6 +293,7 @@ public class AlgorithmController implements Initializable {
         ArrayList<String> shiftRulesBroken = new ArrayList<>();
         fg.getRuleBreakingShift(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, shiftRulesBroken);
         invalidShiftPathList.getItems().addAll(shiftRulesBroken);
+        System.out.println("Amount of 4/12 shifts: " + shiftRulesBroken.size());
 
         ArrayList<String> depRulesBroken = new ArrayList<>();
         fg.getRuleBreakingDep(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, depRulesBroken);
@@ -334,16 +335,32 @@ public class AlgorithmController implements Initializable {
             }
         });
         fg.printRuleViolations();
+        System.out.println("Assigned shift errors: " + fg.getAssignedShiftErrors() + ", shiftViolations: " + fg.getShiftViolations() + ", Amount of 4/12 shifts: " + shiftRulesBroken.size());
+
     }
 
     public void runDistributiveTabu() {
-        fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
-        TabuAlgorithms tabuDist = new TabuAlgorithms(fg, fg.getInvalidPaths());
-        assignments = tabuDist.searchSpread();
-        // Shift[][] assignments = tabuDist.searchDist();
-        // for (int day = 0; day < assignments[0].length; day++) {
-            // System.out.println("day: " + day + ", shift: " + assignments[11][day]);
-        // }
+        fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, 1);
+        TabuAlgorithms tabu = new TabuAlgorithms(fg, fg.getInvalidPaths());
+
+        long startTime = System.currentTimeMillis();
+        assignments = tabu.searchSpread();
+        long endTime = System.currentTimeMillis();
+        System.out.println("runtime of spread: " + (endTime-startTime)/1000.0 + " s");
+
+        tabu.setAssignments(assignments);
+        startTime = System.currentTimeMillis();
+        assignments = tabu.searchDist();
+        endTime = System.currentTimeMillis();
+        System.out.println("runtime of Distribution: " + (endTime-startTime)/1000.0 + " s");
+        tabu.setAssignments(assignments);
+        assignments = tabu.searchSpread();
+
+        tabu.setAssignments(assignments);
+        assignments = tabu.searchDist();
+        tabu.setAssignments(assignments);
+        // assignments = tabu.searchSpread();
+        tabu.printShiftAssignments(assignments);
     }
 
     public void runFasterSuccessiveShortestPaths() {
@@ -363,12 +380,16 @@ public class AlgorithmController implements Initializable {
         for (Edge e : fg.getS().getOutGoing()) {
             totalHours += e.getCap();
         }
+        
+        // algorithm call
         int[] results = algo.fasterSuccessiveShortestPaths(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
+
         long endTime = System.currentTimeMillis();
         System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
+        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1] + ", prefsDenied: " + results[2] + ", prefsFulfilled: " + results[3]);
 
         flowLabel.setText(results[0] + "");
-        // costLabel.setText("" + results[1]);
+        costLabel.setText("" + results[1]);
         runTimeLabel.setText((endTime-startTime)/1000.0 + " s");
 
         pathList.getItems().clear();
@@ -393,6 +414,10 @@ public class AlgorithmController implements Initializable {
             }
         });
 
+        ArrayList<String> shiftRulesBroken = new ArrayList<>();
+        fg.getRuleBreakingShift(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, shiftRulesBroken);
+        invalidShiftPathList.getItems().addAll(shiftRulesBroken);
+
         shiftDayList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
             @Override
             public void changed(ObservableValue<? extends Integer> arg0, Integer arg1, Integer arg2) {
@@ -412,6 +437,7 @@ public class AlgorithmController implements Initializable {
             }
         });
         fg.printRuleViolations();
+        System.out.println("Assigned shift errors: " + fg.getAssignedShiftErrors() + ", shiftViolations: " + fg.getShiftViolations() + ", Amount of 4/12 shifts: " + shiftRulesBroken.size());
     }
 
 
