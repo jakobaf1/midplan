@@ -1,4 +1,4 @@
-# Feature: Checking whether preferences are handled
+Feature: Checking whether preferences are handled
 
 #     Scenario: Graph has no edges to nodes representing prefLvl 1 and not wanted
 #     Given the shifts
@@ -106,3 +106,29 @@
 #         | E5           | No     | 2       | null     | sunday   | null  | 1      |    
 #     When the graph for a scheduling period of 8 weeks is created
 #     Then edge weights properly reflect the preference level
+
+    Scenario: Employees have preferences which are denied in tabu search
+    Given the shifts
+        | shiftName | startTime | endTime |
+        | Shift 1   | 07        | 15      |
+        | Shift 2   | 07        | 19      |
+        | Shift 3   | 15        | 23      |
+        | Shift 4   | 19        | 07      |
+        | Shift 5   | 23        | 07      |
+    And the employees
+        | employeeName | employeeID | departments | weeklyHrs | expLvl |
+        | E1           | E1         | 0, 1        | 37        | 1      | 
+        | E2           | E2         | 0           | 16        | 2      |
+        | E3           | E3         | 1           | 42        | 2      | 
+        | E4           | E4         | 0, 1        | 20        | 2      | 
+        | E5           | E5         | 0, 1        | 37        | 1      | 
+    And preferences for each
+        | employeeName | wanted | prefLvl | date     |   day    | shift | repeat |
+        | E1           | No     | 1       | null     | sunday   | null  | 2      |
+        | E1           | No     | 1       | null     | saturday | null  | 2      |
+        | E2           | No     | 1       | null     | null     | 7-15  | -1     |
+        | E3           | No     | 1       | null     | sunday   | null  | 1      |
+        | E5           | No     | 1       | null     | sunday   | null  | 1      |
+    When the graph for a scheduling period of 2 weeks is created
+    And employees are assigned a shift which is unwanted
+    Then a hard constraint penalty is applied to the objective value

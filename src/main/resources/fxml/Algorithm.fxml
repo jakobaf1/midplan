@@ -39,137 +39,477 @@
                                     <Font size="18.0" />
                                  </font>
                               </Text>
-                              <Button fx:id="minCostMaxFlowButton" alignment="CENTER" mnemonicParsing="false" onAction="#runMinCostAlgorithm" prefHeight="25.0" prefWidth="175.0" text="MinCost-MaxFlow" textAlignment="CENTER">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
-                                 </VBox.margin>
-                              </Button>
-                              <Button fx:id="succesButton" alignment="CENTER" mnemonicParsing="false" onAction="#runFasterSuccessiveShortestPaths" prefHeight="25.0" prefWidth="175.0" text="Successive Shortest Paths" textAlignment="CENTER">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                                 </VBox.margin>
-                              </Button>
-                              <Button fx:id="distTabuButton" alignment="CENTER" mnemonicParsing="false" onAction="#runDistributiveTabu" prefHeight="25.0" prefWidth="175.0" text="Distributive Tabu" textAlignment="CENTER">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                                 </VBox.margin>
-                              </Button>
-                              <Button fx:id="toPDFButton" alignment="CENTER" mnemonicParsing="false" onAction="#convertToPDF" prefHeight="25.0" prefWidth="178.0" text="Save Roster as PDF" textAlignment="CENTER">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                                 </VBox.margin></Button>
                            </children>
                         </VBox>
-                        <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="116.0" prefWidth="200.0" GridPane.rowIndex="2">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Runtime" textAlignment="CENTER" wrappingWidth="197.13134765625">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" top="20.0" />
-                                 </VBox.margin>
-                              </Text>
-                              <Label fx:id="runTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
-                                 <font>
-                                    <Font size="24.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets top="20.0" />
-                                 </VBox.margin>
-                              </Label>
-                           </children>
-                        </VBox>
-                        <VBox minWidth="180.0" prefHeight="189.0" prefWidth="240.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Results" textAlignment="CENTER" wrappingWidth="199.13134765625">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Text>
-                              <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="32.0" prefWidth="180.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Flow:" textAlignment="CENTER" wrappingWidth="87.13134765625">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Text>
-                                    <Label fx:id="flowLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
-                                       <font>
-                                          <Font name="System Bold" size="18.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="10.0" right="10.0" top="20.0" />
-                                 </VBox.margin>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="180.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cost:" wrappingWidth="55.13134765625">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Text>
-                                    <Label fx:id="costLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
-                                       <font>
-                                          <Font name="System Bold" size="18.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                                 </VBox.margin>
-                              </HBox>
-                           </children>
-                        </VBox>
+                        <Button fx:id="toPDFButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#convertToPDF" prefHeight="25.0" prefWidth="178.0" text="Save Roster as PDF" textAlignment="CENTER" />
                      </children>
                   </GridPane>
-                  <TabPane layoutY="15.0" prefHeight="565.0" prefWidth="818.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane layoutY="-1.0" prefHeight="611.0" prefWidth="818.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                      <Tab text="All Paths">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="822.0">
-                                 <children>
-                                    <ListView fx:id="pathList" layoutX="8.0" layoutY="31.0" prefHeight="485.0" prefWidth="788.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-                                    <TextField fx:id="searchPaths" layoutX="649.0" layoutY="2.0" promptText="Search" />
-                                 </children></AnchorPane>
-                        </content>
-                      </Tab>
-                        <Tab text="Invalid paths">
+                        <Tab text="Solution">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="451.0">
                                  <children>
-                                    <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="537.0" prefWidth="798.0">
+                                    <VBox prefHeight="580.0" prefWidth="799.0">
                                        <children>
-                                          <Label alignment="CENTER" prefHeight="29.0" prefWidth="239.0" text="Partial shift assignments" textAlignment="CENTER">
-                                             <font>
-                                                <Font name="System Bold" size="18.0" />
-                                             </font>
+                                          <HBox prefHeight="236.0" prefWidth="799.0">
+                                             <children>
+                                                <VBox prefHeight="148.0" prefWidth="259.0">
+                                                   <children>
+                                                      <Label fx:id="flowLabel1" prefHeight="42.0" prefWidth="172.0" text="Flow Algorithm" textAlignment="CENTER" wrapText="true">
+                                                         <font>
+                                                            <Font name="System Bold" size="18.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="69.0" prefWidth="237.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Flow:" textAlignment="CENTER" wrappingWidth="87.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <Label fx:id="flowLabel" prefHeight="42.0" prefWidth="172.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="18.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cost:" wrappingWidth="93.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <Label fx:id="costLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="18.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="254.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Runtime:" wrappingWidth="122.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <Label fx:id="runTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="177.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font size="24.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox prefHeight="216.0" prefWidth="325.0">
+                                                   <children>
+                                                      <VBox prefHeight="116.0" prefWidth="247.0">
+                                                         <children>
+                                                            <Label fx:id="flowLabel11" prefHeight="42.0" prefWidth="172.0" text="Tabu Search" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="18.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="254.0">
+                                                               <children>
+                                                                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Runtime:" wrappingWidth="122.13134765625">
+                                                                     <font>
+                                                                        <Font size="18.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                                  <Label fx:id="runTimeTabuLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="177.0" textAlignment="CENTER" wrapText="true">
+                                                                     <font>
+                                                                        <Font size="24.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="69.0" prefWidth="237.0">
+                                                               <children>
+                                                                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total weight:" textAlignment="CENTER" wrappingWidth="105.13134765625">
+                                                                     <font>
+                                                                        <Font size="18.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                                  <Label fx:id="totalWeightLabel" prefHeight="42.0" prefWidth="172.0" textAlignment="CENTER" wrapText="true">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="18.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                                               <children>
+                                                                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mismatched Hours weight:" wrappingWidth="226.13134765625">
+                                                                     <font>
+                                                                        <Font size="18.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                                  <Label fx:id="mismatchedHoursLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="18.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                                               <children>
+                                                                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Resting Time Weight:" wrappingWidth="226.13134765625">
+                                                                     <font>
+                                                                        <Font size="18.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                                  <Label fx:id="restingTimeLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="18.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                                               <children>
+                                                                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Preference Weight:" wrappingWidth="226.13134765625">
+                                                                     <font>
+                                                                        <Font size="18.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                                  <Label fx:id="preferenceCostLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="18.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                                               <children>
+                                                                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Department weight: " wrappingWidth="226.13134765625">
+                                                                     <font>
+                                                                        <Font size="18.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                                  <Label fx:id="departmentWeightLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="18.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                                               <children>
+                                                                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Spreaded Weight: " wrappingWidth="153.13134765625">
+                                                                     <font>
+                                                                        <Font size="18.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                                  <Label fx:id="spreadedWeightLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="18.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox prefHeight="216.0" prefWidth="193.0">
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total Runtime" textAlignment="CENTER" wrappingWidth="188.13134765625">
+                                                         <font>
+                                                            <Font size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Label fx:id="runTimeTotalLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="56.0" prefWidth="190.0" textAlignment="CENTER" wrapText="true">
+                                                         <font>
+                                                            <Font size="24.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <VBox prefHeight="117.0" prefWidth="284.0">
+                                                   <children>
+                                                      <Label alignment="CENTER" prefHeight="17.0" prefWidth="275.0" text="Flow Algorithms" textAlignment="CENTER">
+                                                         <font>
+                                                            <Font size="18.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button fx:id="minCostMaxFlowButton" alignment="CENTER" mnemonicParsing="false" onAction="#runMinCostAlgorithm" prefHeight="25.0" prefWidth="311.0" text="MinCost-MaxFlow" textAlignment="CENTER">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                      <Button fx:id="succesButton" alignment="CENTER" mnemonicParsing="false" onAction="#runFasterSuccessiveShortestPaths" prefHeight="25.0" prefWidth="254.0" text="Successive Shortest Paths" textAlignment="CENTER">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </VBox>
+                                                <VBox prefHeight="117.0" prefWidth="277.0">
+                                                   <children>
+                                                      <Label alignment="CENTER" prefHeight="17.0" prefWidth="262.0" text="Tabu Search">
+                                                         <font>
+                                                            <Font size="18.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button fx:id="fullTabuButton" alignment="CENTER" mnemonicParsing="false" onAction="#runDistributiveTabu" prefHeight="25.0" prefWidth="256.0" text="Full Tabu" textAlignment="CENTER">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                      <Button fx:id="tabuSpreadButton" alignment="CENTER" mnemonicParsing="false" onAction="#tabuSpread" prefHeight="25.0" prefWidth="258.0" text="Tabu Spread" textAlignment="CENTER">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                      <Button fx:id="tabuDistButton" alignment="CENTER" mnemonicParsing="false" onAction="#tabuDist" prefHeight="25.0" prefWidth="258.0" text="Tabu Dist" textAlignment="CENTER">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </VBox>
+                                                <VBox prefHeight="127.0" prefWidth="234.0">
+                                                   <children>
+                                                      <Label alignment="CENTER" prefHeight="17.0" prefWidth="279.0" text="Other">
+                                                         <font>
+                                                            <Font size="18.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Button fx:id="fullAlgorithmButton" alignment="CENTER" mnemonicParsing="false" onAction="#runFullAlgorithm" prefHeight="25.0" prefWidth="178.0" text="Full Algorithm" textAlignment="CENTER">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                      <HBox prefHeight="25.0" prefWidth="212.0">
+                                                         <children>
+                                                            <Button fx:id="switchModelButton" alignment="CENTER" mnemonicParsing="false" onAction="#switchModel" prefHeight="25.0" prefWidth="109.0" text="8-hr" textAlignment="CENTER">
+                                                               <HBox.margin>
+                                                                  <Insets right="5.0" />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                            <Button fx:id="switchModel12Button" alignment="CENTER" mnemonicParsing="false" onAction="#switchModel" prefHeight="25.0" prefWidth="101.0" text="12-hr" textAlignment="CENTER">
+                                                               <HBox.margin>
+                                                                  <Insets left="5.0" />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                      <Button fx:id="resetButton" alignment="CENTER" mnemonicParsing="false" onAction="#switchModel" prefHeight="25.0" prefWidth="178.0" text="Reset" textAlignment="CENTER">
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                         </VBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </VBox>
+                                             </children>
                                              <VBox.margin>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                                              </VBox.margin>
-                                          </Label>
-                                          <ListView fx:id="invalidShiftPathList" prefHeight="217.0" prefWidth="789.0">
+                                          </HBox>
+                                          <HBox prefHeight="116.0" prefWidth="760.0">
+                                             <children>
+                                                <VBox prefHeight="116.0" prefWidth="382.0">
+                                                   <children>
+                                                      <Label fx:id="flowLabel12" prefHeight="27.0" prefWidth="808.0" text="Final Results:" textAlignment="CENTER" wrapText="true">
+                                                         <font>
+                                                            <Font name="System Bold" size="18.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="27.0" prefWidth="526.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hard Constraints Broken:" wrappingWidth="236.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <Label fx:id="hcBrokenLabel" prefHeight="42.0" prefWidth="172.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="18.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Soft Constraints Broken: " wrappingWidth="277.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                               <HBox.margin>
+                                                                  <Insets />
+                                                               </HBox.margin>
+                                                            </Text>
+                                                            <Label fx:id="scBrokenLabel" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="18.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="254.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Preferences Fulfilled: " wrappingWidth="238.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <Label fx:id="prefsFulfilledLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="177.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font size="24.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox prefHeight="116.0" prefWidth="381.0">
+                                                   <children>
+                                                      <Label fx:id="flowLabel121" prefHeight="27.0" prefWidth="808.0" text="Final Results:" textAlignment="CENTER" wrapText="true">
+                                                         <font>
+                                                            <Font name="System Bold" size="18.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="27.0" prefWidth="526.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hours mismatched:" wrappingWidth="236.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <Label fx:id="hcBrokenLabel1" prefHeight="42.0" prefWidth="172.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="18.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Largest lacking hours:" wrappingWidth="277.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                               <HBox.margin>
+                                                                  <Insets />
+                                                               </HBox.margin>
+                                                            </Text>
+                                                            <Label fx:id="scBrokenLabel1" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="18.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="254.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Largest Hours in Abundance:" wrappingWidth="238.13134765625">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                            <Label fx:id="prefsFulfilledLabel1" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="177.0" textAlignment="CENTER" wrapText="true">
+                                                               <font>
+                                                                  <Font size="24.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                             </children>
                                              <VBox.margin>
                                                 <Insets left="10.0" right="10.0" />
                                              </VBox.margin>
-                                          </ListView>
-                                          <Label alignment="CENTER" prefHeight="29.0" prefWidth="336.0" text="Conflicting department assignments" textAlignment="CENTER">
-                                             <font>
-                                                <Font name="System Bold" size="18.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                             </VBox.margin>
-                                          </Label>
-                                          <ListView fx:id="invalidDepPathList" prefHeight="185.0" prefWidth="774.0">
-                                             <VBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </VBox.margin>
-                                          </ListView>
+                                          </HBox>
                                        </children>
                                     </VBox>
+                                 </children></AnchorPane>
+                           </content>
+                        </Tab>
+                      <Tab text="Flow Algorithm">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="822.0">
+                                 <children>
+                                    <HBox prefHeight="62.0" prefWidth="800.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="69.0" prefWidth="237.0">
+                                             <children>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Flow:" textAlignment="CENTER" wrappingWidth="87.13134765625">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Text>
+                                                <Label fx:id="flowLabel1" prefHeight="42.0" prefWidth="172.0" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets left="5.0" right="5.0" />
+                                             </HBox.margin>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="114.0" prefWidth="249.0">
+                                             <children>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cost:" wrappingWidth="55.13134765625">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Text>
+                                                <Label fx:id="costLabel1" prefHeight="54.0" prefWidth="322.0" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets left="5.0" right="5.0" />
+                                             </HBox.margin>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="254.0">
+                                             <children>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Runtime:" wrappingWidth="74.13134765625">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Text>
+                                                <Label fx:id="runTimeLabel1" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="177.0" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="24.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets left="5.0" right="5.0" />
+                                             </HBox.margin>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                       </padding>
+                                    </HBox>
+                                    <ListView fx:id="pathList" layoutX="8.0" layoutY="102.0" prefHeight="460.0" prefWidth="790.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="102.0" />
+                                    <TextField fx:id="searchPaths" layoutX="651.0" layoutY="76.0" promptText="Search" />
+                                 </children></AnchorPane>
+                        </content>
+                      </Tab>
+                        <Tab text="Tabu Search">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="451.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="537.0" prefWidth="798.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -181,7 +521,7 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="451.0">
                                  <children>
-                                    <HBox layoutX="14.0" prefHeight="536.0" prefWidth="783.0">
+                                    <HBox layoutX="14.0" prefHeight="586.0" prefWidth="783.0">
                                        <children>
                                           <VBox prefHeight="536.0" prefWidth="251.0">
                                              <children>
@@ -229,14 +569,64 @@
                                                 <Insets left="10.0" right="10.0" />
                                              </HBox.margin>
                                           </VBox>
+                                          <VBox prefHeight="547.0" prefWidth="281.0">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="30.0" prefWidth="241.0">
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Preferences: " textAlignment="CENTER" wrappingWidth="281.13134765625">
+                                                         <font>
+                                                            <Font name="System Bold" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </HBox>
+                                                <ListView fx:id="prefList1" prefHeight="551.0" prefWidth="275.0" />
+                                             </children>
+                                          </VBox>
                                        </children>
                                     </HBox>
                                  </children></AnchorPane>
                         </content>
                       </Tab>
-                        <Tab text="Invalid Shift Assignments">
+                        <Tab text="Invalid Shifts">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="451.0" />
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="451.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" minWidth="180.0" prefHeight="537.0" prefWidth="798.0">
+                                       <children>
+                                          <Label alignment="CENTER" prefHeight="29.0" prefWidth="239.0" text="Partial shift assignments" textAlignment="CENTER">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <ListView fx:id="invalidShiftPathList" prefHeight="217.0" prefWidth="789.0">
+                                             <VBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </VBox.margin>
+                                          </ListView>
+                                          <Label alignment="CENTER" prefHeight="29.0" prefWidth="336.0" text="Conflicting department assignments" textAlignment="CENTER">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <ListView fx:id="invalidDepPathList" prefHeight="185.0" prefWidth="774.0">
+                                             <VBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </VBox.margin>
+                                          </ListView>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </AnchorPane>
                            </content>
                         </Tab>
                     </tabs>

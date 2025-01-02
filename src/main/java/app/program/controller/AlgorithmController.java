@@ -42,10 +42,15 @@ public class AlgorithmController implements Initializable {
     @FXML
     private Button minCostMaxFlowButton;
     @FXML
-    private Button distTabuButton;
-    // @FXML
-    // private Button expGraphButton;
-
+    private Button fullTabuButton;
+    @FXML
+    private Button switchModelButton;
+    @FXML
+    private Button tabuSpreadButton;
+    @FXML
+    private Button tabuDistButton;
+    @FXML
+    private Button fullAlgorithmButton;
     @FXML
     private Button toPDFButton;
     // Labels
@@ -73,7 +78,28 @@ public class AlgorithmController implements Initializable {
     private Label shiftLabel3;
     @FXML
     private Label shiftDateLabel;
-    
+    @FXML
+    private Label runTimeTabuLabel;
+    @FXML
+    private Label totalWeightLabel;
+    @FXML
+    private Label mismatchedHoursLabel;
+    @FXML
+    private Label restingTimeLabel;
+    @FXML
+    private Label preferenceCostLabel;
+    @FXML
+    private Label departmentWeightLabel;
+    @FXML
+    private Label spreadedWeightLabel;
+    @FXML
+    private Label runTimeTotalLabel;
+    @FXML
+    private Label hcBrokenLabel;
+    @FXML
+    private Label scBrokenLabel;
+    @FXML
+    private Label prefsFulfilledLabel;
 
     // ListView
     @FXML
@@ -97,11 +123,349 @@ public class AlgorithmController implements Initializable {
 
     private FlowGraph fg;
     private FlowAlgorithms algo;
+    private TabuAlgorithms tabu;
     private Shift[] shifts = {new Shift(7, 15), new Shift(15, 23), new Shift(23, 7), new Shift(7, 19), new Shift(19, 7)};
     private LocalDate date = LocalDate.now();
     private ArrayList<String> flowPaths = new ArrayList<>();
     private Shift[][] assignments;
+    private boolean twelveHour = true;
 
+
+    public void runFullAlgorithm() {
+        runTimeLabel.setText("");
+        long startTime = System.currentTimeMillis();
+        runFasterSuccessiveShortestPaths();
+        runDistributiveTabu();
+        long endTime = System.currentTimeMillis();
+        System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
+        runTimeTotalLabel.setText((endTime-startTime)/1000.0 + " s");
+        totalWeightLabel.setText("" + tabu.objectiveFunctionSpread(assignments));
+        mismatchedHoursLabel.setText("" + tabu.calcAssignedHoursPenalty(assignments));
+        restingTimeLabel.setText("" + tabu.calc11HrPenalty(assignments));
+        preferenceCostLabel.setText("" + tabu.calcPreferencePenalty(assignments));
+        departmentWeightLabel.setText("" + tabu.calcDepPenalty(assignments));
+        spreadedWeightLabel.setText("" + tabu.calcEmpWeeklyHoursPenalty(assignments));
+        int[] prefData = tabu.getPrefData();
+
+        hcBrokenLabel.setText("" + prefData[0]);
+        scBrokenLabel.setText("" + prefData[1]);
+        prefsFulfilledLabel.setText("" + prefData[2]);
+
+    }
+
+    public void runMinCostAlgorithm() {
+        // Clear up previous results
+        invalidShiftPathList.getItems().clear();
+        invalidDepPathList.getItems().clear();
+        flowLabel.setText("");
+        costLabel.setText("");
+        runTimeLabel.setText("");
+        flowPaths = new ArrayList<>();
+
+        fg = new FlowGraph(fg.getDaysInPeriod()/7, shifts, fg.getEmps());
+        fg.generateGraph(date);
+
+        long startTime = System.currentTimeMillis();
+        int totalHours = 0;
+        for (Edge e : fg.getS().getOutGoing()) {
+            totalHours += e.getCap();
+        }
+        System.out.println("Employee hours add up to a total of: " + totalHours);
+        algo = new FlowAlgorithms(fg);
+        int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
+        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1] + ", prefsDenied: " + results[2] + ", prefsFulfilled: " + results[3]);
+        long endTime = System.currentTimeMillis();
+        System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
+        flowLabel.setText(results[0] + "");
+        costLabel.setText("" + results[1]);
+        runTimeLabel.setText((endTime-startTime)/1000.0 + " s");
+        pathList.getItems().clear();
+        fg.getPathsWithFlow(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, flowPaths);
+        pathList.getItems().addAll(flowPaths);
+        
+        ArrayList<String> shiftRulesBroken = new ArrayList<>();
+        fg.getRuleBreakingShift(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, shiftRulesBroken);
+        invalidShiftPathList.getItems().addAll(shiftRulesBroken);
+        System.out.println("Amount of 4/12 shifts: " + shiftRulesBroken.size());
+
+        ArrayList<String> depRulesBroken = new ArrayList<>();
+        fg.getRuleBreakingDep(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, depRulesBroken);
+        invalidDepPathList.getItems().addAll(depRulesBroken);
+
+        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        employeeList2.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
+            @Override
+            public void changed(ObservableValue<? extends Employee> arg0, Employee arg1, Employee arg2) {
+                shiftDayList.getItems().clear();
+                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
+                List<Integer> uniqueList = new ArrayList<>();
+                for (int i = 0; i < emp.getShifts().length; i++ ) {
+                    if (emp.getShifts()[i].isEmpty()) continue;
+                    uniqueList.add(i);
+                }
+                Collections.sort(uniqueList);
+                shiftDayList.getItems().addAll(uniqueList);
+                
+            }
+        });
+
+        shiftDayList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
+            @Override
+            public void changed(ObservableValue<? extends Integer> arg0, Integer arg1, Integer arg2) {
+                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
+                Integer day = shiftDayList.getSelectionModel().getSelectedItem();
+                shiftLabel2.setText("");
+                shiftLabel3.setText("");
+                if (day != null) {
+                    shiftLabel.setText(emp.getShifts()[day].get(0).toString());
+                    LocalDate shiftDate = fg.getStartDate();
+                    shiftDate = shiftDate.plusDays(day);
+                    shiftDateLabel.setText("Shift on: " + shiftDate.toString());
+                    if (emp.getShifts()[day].size() > 1) shiftLabel2.setText(emp.getShifts()[day].get(1).toString());
+                    if (emp.getShifts()[day].size() > 2) shiftLabel3.setText(emp.getShifts()[day].get(2).toString());
+                    if (emp.getShifts()[day].size() > 3) System.out.println("Somehow there are more than 3 shifts assigned to one day");
+                }
+            }
+        });
+        fg.printRuleViolations();
+        System.out.println("Assigned shift errors: " + fg.getAssignedShiftErrors() + ", shiftViolations: " + fg.getShiftViolations() + ", Amount of 4/12 shifts: " + shiftRulesBroken.size());
+
+    }
+
+    public void runDistributiveTabu() {
+        fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, 1);
+        tabu = new TabuAlgorithms(fg, fg.getInvalidPaths(), false);
+
+        long startTime = System.currentTimeMillis();
+        assignments = tabu.searchSpread();
+        long endTime = System.currentTimeMillis();
+        System.out.println("runtime of spread: " + (endTime-startTime)/1000.0 + " s");
+
+        tabu.setAssignments(assignments);
+        startTime = System.currentTimeMillis();
+        assignments = tabu.searchDist();
+        endTime = System.currentTimeMillis();
+        System.out.println("runtime of Distribution: " + (endTime-startTime)/1000.0 + " s");
+        tabu.setAssignments(assignments);
+        assignments = tabu.searchSpread();
+
+        tabu.setAssignments(assignments);
+        assignments = tabu.searchDist();
+        tabu.setAssignments(assignments);
+        // assignments = tabu.searchSpread();
+        // tabu.printShiftAssignments(assignments);
+        tabu.saveShiftAssignmentsToFile(assignments);
+
+        int hours = tabu.calcAssignedHoursPenalty(assignments);
+        int elevhr = tabu.calc11HrPenalty(assignments);
+        int prefs = tabu.calcPreferencePenalty(assignments);
+        int dep = tabu.calcDepPenalty(assignments);
+        int spread = tabu.calcEmpWeeklyHoursPenalty(assignments);
+        System.out.println("Penalties: ");
+        System.out.println("assignedHours: " + hours + ", 11hr: " + elevhr + ", prefs: " + prefs + ", deps: " + dep + ", spread: " + spread);
+        int[] prefData = tabu.getPrefData();
+        System.out.println("Preference data: Hard constraints broken: " + prefData[0] + ", soft constraints broken: " + prefData[1] + ", preferences fulfilled: " + prefData[2]);
+
+        // System.out.println("Preferences for " + fg.getEmps()[0]);
+        // List<Preference>[] dailyPreferences = fg.prefDays(fg.getEmps()[0], fg.getStartDate(), fg.getDaysInPeriod());
+        // List<Preference>[] shiftPreferences = fg.prefShifts(fg.getEmps()[0], fg.getStartDate(), fg.getDaysInPeriod());
+        // for (int day = 0; day < dailyPreferences.length; day++) {
+        //     if (!dailyPreferences[day].isEmpty()) {
+        //         for (Preference p : dailyPreferences[day]) {
+        //             System.out.println("preference on day: " + day + ", " + p);
+        //         }
+        //     }
+        //     if (!shiftPreferences[day].isEmpty()) {
+        //         for (Preference p : shiftPreferences[day]) {
+        //             System.out.println("(Shifts) preference on day: " + day + ", " + p);
+        //         }
+        //     }
+        // }
+    }
+
+    public void runFasterSuccessiveShortestPaths() {
+        invalidShiftPathList.getItems().clear();
+        invalidDepPathList.getItems().clear();
+        flowLabel.setText("");
+        costLabel.setText("");
+        runTimeLabel.setText("");
+        flowPaths = new ArrayList<>();
+        
+        fg = new FlowGraph(fg.getDaysInPeriod()/7, shifts, fg.getEmps());
+        fg.generateGraph(date);
+
+        long startTime = System.currentTimeMillis();
+        algo = new FlowAlgorithms(fg);
+        int totalHours = 0;
+        for (Edge e : fg.getS().getOutGoing()) {
+            totalHours += e.getCap();
+        }
+        
+        // algorithm call
+        int[] results = algo.fasterSuccessiveShortestPaths(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
+        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1] + ", prefsDenied: " + results[2] + ", prefsFulfilled: " + results[3]);
+
+        flowLabel.setText(results[0] + "");
+        costLabel.setText("" + results[1]);
+        runTimeLabel.setText((endTime-startTime)/1000.0 + " s");
+
+        pathList.getItems().clear();
+        fg.getPathsWithFlow(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, flowPaths);
+        pathList.getItems().addAll(flowPaths);
+
+
+        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+        employeeList2.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
+            @Override
+            public void changed(ObservableValue<? extends Employee> arg0, Employee arg1, Employee arg2) {
+                shiftDayList.getItems().clear();
+                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
+                List<Integer> uniqueList = new ArrayList<>();
+                for (int i = 0; i < emp.getShifts().length; i++ ) {
+                    if (emp.getShifts()[i].isEmpty()) continue;
+                    uniqueList.add(i);
+                }
+                Collections.sort(uniqueList);
+                shiftDayList.getItems().addAll(uniqueList);
+                
+            }
+        });
+
+        ArrayList<String> shiftRulesBroken = new ArrayList<>();
+        fg.getRuleBreakingShift(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, shiftRulesBroken);
+        invalidShiftPathList.getItems().addAll(shiftRulesBroken);
+
+        shiftDayList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
+            @Override
+            public void changed(ObservableValue<? extends Integer> arg0, Integer arg1, Integer arg2) {
+                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
+                Integer day = shiftDayList.getSelectionModel().getSelectedItem();
+                shiftLabel2.setText("");
+                shiftLabel3.setText("");
+                if (day != null) {
+                    shiftLabel.setText(emp.getShifts()[day].get(0).toString());
+                    LocalDate shiftDate = fg.getStartDate();
+                    shiftDate = shiftDate.plusDays(day);
+                    shiftDateLabel.setText("Shift on: " + shiftDate.toString());
+                    if (emp.getShifts()[day].size() > 1) shiftLabel2.setText(emp.getShifts()[day].get(1).toString());
+                    if (emp.getShifts()[day].size() > 2) shiftLabel3.setText(emp.getShifts()[day].get(2).toString());
+                    if (emp.getShifts()[day].size() > 3) System.out.println("Somehow there are more than 3 shifts assigned to one day");
+                }
+            }
+        });
+        fg.printRuleViolations();
+        System.out.println("Assigned shift errors: " + fg.getAssignedShiftErrors() + ", shiftViolations: " + fg.getShiftViolations() + ", Amount of 4/12 shifts: " + shiftRulesBroken.size());
+    }
+
+    public void switchModel() {
+        if (twelveHour) {
+            System.out.println("Switched to 8-hr version");
+            shifts = new Shift[3];
+            shifts[0] = new Shift(7, 15);
+            shifts[1] = new Shift(15, 23);
+            shifts[2] = new Shift(23, 7);
+        } else {
+            System.out.println("Switched to 12-hr version");
+            shifts = new Shift[5];
+            shifts[0] = new Shift(7, 15);
+            shifts[1] = new Shift(15, 23);
+            shifts[2] = new Shift(23, 7);
+            shifts[3] = new Shift(7, 19);
+            shifts[4] = new Shift(19, 7);
+        }
+        
+
+    }
+    
+    public void tabuSpread() {
+        if (tabu == null) tabu = new TabuAlgorithms(fg, fg.getInvalidPaths(), false);
+        long startTime = System.currentTimeMillis();
+        assignments = tabu.searchSpread();
+        long endTime = System.currentTimeMillis();
+        System.out.println("runtime of spread: " + (endTime-startTime)/1000.0 + " s");
+        // tabu.printShiftAssignments(assignments);
+        tabu.saveShiftAssignmentsToFile(assignments);
+    }
+
+    public void tabuDist() {
+        if (tabu == null)  tabu = new TabuAlgorithms(fg, fg.getInvalidPaths(), false);
+        long startTime = System.currentTimeMillis();
+        assignments = tabu.searchDist();
+        long endTime = System.currentTimeMillis();
+        System.out.println("runtime of dist: " + (endTime-startTime)/1000.0 + " s");
+        // tabu.printShiftAssignments(assignments);
+        tabu.saveShiftAssignmentsToFile(assignments);
+    }
+
+    // public void testExpGraph() {
+    //     algo = new FlowAlgorithms(fg);
+    //     Vertex[] s_t = fg.makeExperimentalGraph();
+    //     int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), 24, s_t[0], s_t[1]);
+    //     // int maxFlow = algo.edmondsKarp(s_t[0], s_t[1]);
+    //     // fg.printPathsWithFlow(s_t[0], s_t[1], new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
+    //     // System.out.println("Max flow: " + maxFlow);
+    //     System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
+    //     flowLabel.setText(results[0] + "");
+    //     costLabel.setText("" + results[1]);
+    // }
+
+    public void convertToPDF() {
+        try (PDDocument document = new PDDocument()) {
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 16);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(100, 750);
+                contentStream.showText("Weekly Roster");
+                contentStream.endText();
+
+                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(100, 720);
+                contentStream.showText("Week of Nov 1 - Nov 7, 2024");
+                contentStream.endText();
+
+                // Days of the week headers
+                String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+                int xOffset = 100;
+
+                for (String day : days) {
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(xOffset, 680);
+                    contentStream.showText(day);
+                    if (!day.equals("Sunday")) contentStream.showText(" | ");
+                    contentStream.endText();
+                    xOffset += 80;
+                }
+
+                // Example shift entries (placeholders)
+                xOffset = 100;
+                for (String day : days) {
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(xOffset, 640);
+                    contentStream.showText("09-05");
+                    contentStream.endText();
+                    contentStream.beginText();
+                    contentStream.newLineAtOffset(0, -15);
+                    contentStream.showText("05-09");
+                    contentStream.endText();
+                    xOffset += 80;
+                }
+
+                // Add more shift entries as needed
+            }
+
+            document.save("WeeklyRoster.pdf");
+            System.out.println("PDF created successfully.");
+        } catch (IOException e) {
+            System.err.println("Error creating PDF: " + e.getMessage());
+        }
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fg = new FlowGraph(8, shifts, readEmployeeFile());
@@ -254,260 +618,6 @@ public class AlgorithmController implements Initializable {
         // fg.printRuleViolations(algo.getEmployeeShifts());
         // fg.printShiftAssignments(algo.getEmployeeShifts());        
     }
-
-    @FXML
-    private void switchToEmployeeData() throws IOException {
-        App.setRoot("employeeData");
-    }
-
-    public void runMinCostAlgorithm() {
-        // Clear up previous results
-        invalidShiftPathList.getItems().clear();
-        invalidDepPathList.getItems().clear();
-        flowLabel.setText("");
-        costLabel.setText("");
-        runTimeLabel.setText("");
-        flowPaths = new ArrayList<>();
-
-        fg = new FlowGraph(fg.getDaysInPeriod()/7, shifts, fg.getEmps());
-        fg.generateGraph(date);
-
-        long startTime = System.currentTimeMillis();
-        int totalHours = 0;
-        for (Edge e : fg.getS().getOutGoing()) {
-            totalHours += e.getCap();
-        }
-        System.out.println("Employee hours add up to a total of: " + totalHours);
-        algo = new FlowAlgorithms(fg);
-        int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
-        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1] + ", prefsDenied: " + results[2] + ", prefsFulfilled: " + results[3]);
-        long endTime = System.currentTimeMillis();
-        System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
-        flowLabel.setText(results[0] + "");
-        costLabel.setText("" + results[1]);
-        runTimeLabel.setText((endTime-startTime)/1000.0 + " s");
-        pathList.getItems().clear();
-        fg.getPathsWithFlow(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, flowPaths);
-        pathList.getItems().addAll(flowPaths);
-        
-        ArrayList<String> shiftRulesBroken = new ArrayList<>();
-        fg.getRuleBreakingShift(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, shiftRulesBroken);
-        invalidShiftPathList.getItems().addAll(shiftRulesBroken);
-        System.out.println("Amount of 4/12 shifts: " + shiftRulesBroken.size());
-
-        ArrayList<String> depRulesBroken = new ArrayList<>();
-        fg.getRuleBreakingDep(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, depRulesBroken);
-        invalidDepPathList.getItems().addAll(depRulesBroken);
-
-        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
-        employeeList2.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
-            @Override
-            public void changed(ObservableValue<? extends Employee> arg0, Employee arg1, Employee arg2) {
-                shiftDayList.getItems().clear();
-                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
-                List<Integer> uniqueList = new ArrayList<>();
-                for (int i = 0; i < emp.getShifts().length; i++ ) {
-                    if (emp.getShifts()[i].isEmpty()) continue;
-                    uniqueList.add(i);
-                }
-                Collections.sort(uniqueList);
-                shiftDayList.getItems().addAll(uniqueList);
-                
-            }
-        });
-
-        shiftDayList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
-            @Override
-            public void changed(ObservableValue<? extends Integer> arg0, Integer arg1, Integer arg2) {
-                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
-                Integer day = shiftDayList.getSelectionModel().getSelectedItem();
-                shiftLabel2.setText("");
-                shiftLabel3.setText("");
-                if (day != null) {
-                    shiftLabel.setText(emp.getShifts()[day].get(0).toString());
-                    LocalDate shiftDate = fg.getStartDate();
-                    shiftDate = shiftDate.plusDays(day);
-                    shiftDateLabel.setText("Shift on: " + shiftDate.toString());
-                    if (emp.getShifts()[day].size() > 1) shiftLabel2.setText(emp.getShifts()[day].get(1).toString());
-                    if (emp.getShifts()[day].size() > 2) shiftLabel3.setText(emp.getShifts()[day].get(2).toString());
-                    if (emp.getShifts()[day].size() > 3) System.out.println("Somehow there are more than 3 shifts assigned to one day");
-                }
-            }
-        });
-        fg.printRuleViolations();
-        System.out.println("Assigned shift errors: " + fg.getAssignedShiftErrors() + ", shiftViolations: " + fg.getShiftViolations() + ", Amount of 4/12 shifts: " + shiftRulesBroken.size());
-
-    }
-
-    public void runDistributiveTabu() {
-        fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, 1);
-        TabuAlgorithms tabu = new TabuAlgorithms(fg, fg.getInvalidPaths());
-
-        long startTime = System.currentTimeMillis();
-        assignments = tabu.searchSpread();
-        long endTime = System.currentTimeMillis();
-        System.out.println("runtime of spread: " + (endTime-startTime)/1000.0 + " s");
-
-        tabu.setAssignments(assignments);
-        startTime = System.currentTimeMillis();
-        assignments = tabu.searchDist();
-        endTime = System.currentTimeMillis();
-        System.out.println("runtime of Distribution: " + (endTime-startTime)/1000.0 + " s");
-        tabu.setAssignments(assignments);
-        assignments = tabu.searchSpread();
-
-        tabu.setAssignments(assignments);
-        assignments = tabu.searchDist();
-        tabu.setAssignments(assignments);
-        // assignments = tabu.searchSpread();
-        tabu.printShiftAssignments(assignments);
-    }
-
-    public void runFasterSuccessiveShortestPaths() {
-        invalidShiftPathList.getItems().clear();
-        invalidDepPathList.getItems().clear();
-        flowLabel.setText("");
-        costLabel.setText("");
-        runTimeLabel.setText("");
-        flowPaths = new ArrayList<>();
-        
-        fg = new FlowGraph(fg.getDaysInPeriod()/7, shifts, fg.getEmps());
-        fg.generateGraph(date);
-
-        long startTime = System.currentTimeMillis();
-        algo = new FlowAlgorithms(fg);
-        int totalHours = 0;
-        for (Edge e : fg.getS().getOutGoing()) {
-            totalHours += e.getCap();
-        }
-        
-        // algorithm call
-        int[] results = algo.fasterSuccessiveShortestPaths(fg.getS().getTotalVertices(), totalHours, fg.getS(), fg.getT());
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("runtime: " + (endTime-startTime)/1000.0 + " s");
-        System.out.println("Max flow found: " + results[0] + ", weight: " + results[1] + ", prefsDenied: " + results[2] + ", prefsFulfilled: " + results[3]);
-
-        flowLabel.setText(results[0] + "");
-        costLabel.setText("" + results[1]);
-        runTimeLabel.setText((endTime-startTime)/1000.0 + " s");
-
-        pathList.getItems().clear();
-        fg.getPathsWithFlow(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, flowPaths);
-        pathList.getItems().addAll(flowPaths);
-
-
-        fg.getAssignedShifts(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
-        employeeList2.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Employee>() {
-            @Override
-            public void changed(ObservableValue<? extends Employee> arg0, Employee arg1, Employee arg2) {
-                shiftDayList.getItems().clear();
-                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
-                List<Integer> uniqueList = new ArrayList<>();
-                for (int i = 0; i < emp.getShifts().length; i++ ) {
-                    if (emp.getShifts()[i].isEmpty()) continue;
-                    uniqueList.add(i);
-                }
-                Collections.sort(uniqueList);
-                shiftDayList.getItems().addAll(uniqueList);
-                
-            }
-        });
-
-        ArrayList<String> shiftRulesBroken = new ArrayList<>();
-        fg.getRuleBreakingShift(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, shiftRulesBroken);
-        invalidShiftPathList.getItems().addAll(shiftRulesBroken);
-
-        shiftDayList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Integer>() {
-            @Override
-            public void changed(ObservableValue<? extends Integer> arg0, Integer arg1, Integer arg2) {
-                Employee emp = employeeList2.getSelectionModel().getSelectedItem();
-                Integer day = shiftDayList.getSelectionModel().getSelectedItem();
-                shiftLabel2.setText("");
-                shiftLabel3.setText("");
-                if (day != null) {
-                    shiftLabel.setText(emp.getShifts()[day].get(0).toString());
-                    LocalDate shiftDate = fg.getStartDate();
-                    shiftDate = shiftDate.plusDays(day);
-                    shiftDateLabel.setText("Shift on: " + shiftDate.toString());
-                    if (emp.getShifts()[day].size() > 1) shiftLabel2.setText(emp.getShifts()[day].get(1).toString());
-                    if (emp.getShifts()[day].size() > 2) shiftLabel3.setText(emp.getShifts()[day].get(2).toString());
-                    if (emp.getShifts()[day].size() > 3) System.out.println("Somehow there are more than 3 shifts assigned to one day");
-                }
-            }
-        });
-        fg.printRuleViolations();
-        System.out.println("Assigned shift errors: " + fg.getAssignedShiftErrors() + ", shiftViolations: " + fg.getShiftViolations() + ", Amount of 4/12 shifts: " + shiftRulesBroken.size());
-    }
-
-
-    // public void testExpGraph() {
-    //     algo = new FlowAlgorithms(fg);
-    //     Vertex[] s_t = fg.makeExperimentalGraph();
-    //     int[] results = algo.minCostFlow(fg.getS().getTotalVertices(), 24, s_t[0], s_t[1]);
-    //     // int maxFlow = algo.edmondsKarp(s_t[0], s_t[1]);
-    //     // fg.printPathsWithFlow(s_t[0], s_t[1], new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0);
-    //     // System.out.println("Max flow: " + maxFlow);
-    //     System.out.println("Max flow found: " + results[0] + ", weight: " + results[1]);
-    //     flowLabel.setText(results[0] + "");
-    //     costLabel.setText("" + results[1]);
-    // }
-
-    public void convertToPDF() {
-        try (PDDocument document = new PDDocument()) {
-            PDPage page = new PDPage();
-            document.addPage(page);
-
-            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
-                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 16);
-                contentStream.beginText();
-                contentStream.newLineAtOffset(100, 750);
-                contentStream.showText("Weekly Roster");
-                contentStream.endText();
-
-                contentStream.setFont(PDType1Font.HELVETICA, 12);
-                contentStream.beginText();
-                contentStream.newLineAtOffset(100, 720);
-                contentStream.showText("Week of Nov 1 - Nov 7, 2024");
-                contentStream.endText();
-
-                // Days of the week headers
-                String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-                int xOffset = 100;
-
-                for (String day : days) {
-                    contentStream.beginText();
-                    contentStream.newLineAtOffset(xOffset, 680);
-                    contentStream.showText(day);
-                    if (!day.equals("Sunday")) contentStream.showText(" | ");
-                    contentStream.endText();
-                    xOffset += 80;
-                }
-
-                // Example shift entries (placeholders)
-                xOffset = 100;
-                for (String day : days) {
-                    contentStream.beginText();
-                    contentStream.newLineAtOffset(xOffset, 640);
-                    contentStream.showText("09-05");
-                    contentStream.endText();
-                    contentStream.beginText();
-                    contentStream.newLineAtOffset(0, -15);
-                    contentStream.showText("05-09");
-                    contentStream.endText();
-                    xOffset += 80;
-                }
-
-                // Add more shift entries as needed
-            }
-
-            document.save("WeeklyRoster.pdf");
-            System.out.println("PDF created successfully.");
-        } catch (IOException e) {
-            System.err.println("Error creating PDF: " + e.getMessage());
-        }
-    }
-
 
     public static Employee[] readEmployeeFile() {
         ArrayList<Employee> empList = new ArrayList<>();

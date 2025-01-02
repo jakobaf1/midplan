@@ -95,14 +95,14 @@ public class FlowGraph {
                 Edge empToDay = null;
                 // Edge fourHour;
                 if (!shiftPref) {
-                    addEdge(empNode, dayNode, 12, w, 8);
+                    // addEdge(empNode, dayNode, 12, w, 8);
                     // could split 12-hr edges up into two and add a (very) slight weight to the 4-hr part, thereby getting more 8 hours
-                    // empToDay = addEdge(empNode, dayNode, 8, w, 8);
+                    empToDay = addEdge(empNode, dayNode, 8, w, 8);
                     // fourHour = addEdge(empNode, dayNode, 4, baseEdgeWeight+5, 8);
                 } else {
-                    addEdge(empNode, dayNode, 12, baseEdgeWeight, 8);
+                    // addEdge(empNode, dayNode, 12, baseEdgeWeight, 8);
                     // could split 12-hr edges up into two and add a (very) slight weight to the 4-hr part, thereby getting more 8 hours
-                    // empToDay = addEdge(empNode, dayNode, 8, baseEdgeWeight, 8);
+                    empToDay = addEdge(empNode, dayNode, 8, baseEdgeWeight, 8);
                     // fourHour = addEdge(empNode, dayNode, 4, baseEdgeWeight+5, 8);
                 }
 
@@ -110,13 +110,13 @@ public class FlowGraph {
                 Edge dayEdge = null, nightEdge = null, twelveHourEdge = null;
                 Vertex dayShiftNode = null, eveShiftNode = null, nightShiftNode = null;
                 boolean twelveHourShifts = false;
-                // Vertex twelveHourNode = null;
+                Vertex twelveHourNode = null;
                 for (Shift shift : shifts) {
                     int ws = baseEdgeWeight;
-                    if (shiftPref) {
-                        ws = setShiftWeight(shiftPreferences[day], shift);
-                        if (ws == Integer.MAX_VALUE) continue;
-                    }
+                    // if (shiftPref) {
+                    ws = setShiftWeight(shiftPreferences[day], shift);
+                    if (ws == Integer.MAX_VALUE) continue;
+                    // }
                     if (shift.calcHours() <= 8) {
                         int expLvl = e.getExpLvl();
                         // switch case to connect the correct the right nodes
@@ -155,107 +155,105 @@ public class FlowGraph {
                         }
                     } else { 
                         // Scenario with edge from employee node to eve shift node (or adding an extra 12-hr node for the day)
-                        // if (eveShiftNode == null) break;
-                        // if (twelveHourNode == null) {
-                        //     twelveHourNode = new Vertex(2, "twelve_"+day, e, day);
-                        //     addEdge(empNode, twelveHourNode, 4, empToDay.getWeight(), 4);
-                        // }
-                        // int twelveHourWeight = setShiftWeight(shiftPreferences[day], shift);
-                        // switch (shift.getStartTime()) {
-                        //     case 7:
-                        //         if (dayShiftNode == null) break;
-                        //         if (twelveHourWeight == baseEdgeWeight) {
-                        //             twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
-                        //         } else if (twelveHourWeight < dayEdge.getWeight()) {
-                        //             dayEdge.setWeight(twelveHourWeight);
-                        //             dayEdge.getCounterpart().setWeight(-dayEdge.getWeight());
-                        //             twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
-                        //         } else {
-                        //             twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
-                        //         }
-                        //         break;
-                        //     case 19:
-                        //         if (nightShiftNode == null) break;
-                        //         if (twelveHourWeight == baseEdgeWeight && twelveHourEdge != null) {
-                        //             break;
-                        //         } else if (twelveHourWeight == baseEdgeWeight) {
-                        //             twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
-                        //         } else if (twelveHourWeight < nightEdge.getWeight()) {
-                        //             nightEdge.setWeight(twelveHourWeight);
-                        //             nightEdge.getCounterpart().setWeight(-nightEdge.getWeight());
-                        //             if (twelveHourEdge == null) {
-                        //                 twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
-                        //             } else if (twelveHourWeight < twelveHourEdge.getWeight()) {
-                        //                 twelveHourEdge.setWeight(twelveHourWeight);
-                        //                 twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
-                        //             }
-                        //         } else {
-                        //             if (twelveHourEdge == null) {
-                        //                 twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
-                        //             } else if (twelveHourWeight < twelveHourEdge.getWeight()) {
-                        //                 twelveHourEdge.setWeight(twelveHourWeight);
-                        //                 twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
-                        //             }
-                        //         }
-
-                        //         break;
-                        //     default:
-                        //         break;
-                        // }
-                        //// Case where I add an edge from day to eveshift of cap 4 ////
                         if (eveShiftNode == null) break;
+                        if (twelveHourNode == null) {
+                            twelveHourNode = new Vertex(2, "twelve_"+day, e, day);
+                            addEdge(empNode, twelveHourNode, 4, empToDay.getWeight(), 4);
+                        }
                         int twelveHourWeight = setShiftWeight(shiftPreferences[day], shift);
-                        if (twelveHourWeight == Integer.MAX_VALUE) continue;
                         switch (shift.getStartTime()) {
                             case 7:
                                 if (dayShiftNode == null) break;
-                                if (dayEdge.getWeight() == baseEdgeWeight && twelveHourWeight < baseEdgeWeight) {
+                                if (twelveHourWeight == baseEdgeWeight) {
+                                    twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
+                                } else if (twelveHourWeight < dayEdge.getWeight()) {
                                     dayEdge.setWeight(twelveHourWeight);
                                     dayEdge.getCounterpart().setWeight(-dayEdge.getWeight());
-                                    twelveHourEdge.setWeight(twelveHourWeight);
+                                    twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
                                 } else {
-                                    twelveHourEdge.setWeight(twelveHourWeight);
+                                    twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
                                 }
-                                twelveHourShifts = true;
                                 break;
                             case 19:
                                 if (nightShiftNode == null) break;
                                 if (twelveHourWeight == baseEdgeWeight && twelveHourEdge != null) {
                                     break;
-                                } else if (nightEdge.getWeight() == baseEdgeWeight && twelveHourWeight < baseEdgeWeight) {
+                                } else if (twelveHourWeight == baseEdgeWeight) {
+                                    twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, baseEdgeWeight+5, 4);
+                                } else if (twelveHourWeight < nightEdge.getWeight()) {
                                     nightEdge.setWeight(twelveHourWeight);
                                     nightEdge.getCounterpart().setWeight(-nightEdge.getWeight());
-                                    if (twelveHourWeight < twelveHourEdge.getWeight()) {
+                                    if (twelveHourEdge == null) {
+                                        twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
+                                    } else if (twelveHourWeight < twelveHourEdge.getWeight()) {
                                         twelveHourEdge.setWeight(twelveHourWeight);
+                                        twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
                                     }
                                 } else {
-                                    if (twelveHourWeight < twelveHourEdge.getWeight()) {
+                                    if (twelveHourEdge == null) {
+                                        twelveHourEdge = addEdge(twelveHourNode, eveShiftNode, 4, twelveHourWeight, 4);
+                                    } else if (twelveHourWeight < twelveHourEdge.getWeight()) {
                                         twelveHourEdge.setWeight(twelveHourWeight);
+                                        twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
                                     }
                                 }
-                                twelveHourShifts = true;
+
                                 break;
                             default:
                                 break;
                         }
+                        //// Case where I add an edge from day to eveshift of cap 4 ////
+                    //     if (eveShiftNode == null) break;
+                    //     int twelveHourWeight = setShiftWeight(shiftPreferences[day], shift);
+                    //     if (twelveHourWeight == Integer.MAX_VALUE) continue;
+                    //     switch (shift.getStartTime()) {
+                    //         case 7:
+                    //             if (dayShiftNode == null) break;
+                    //             if (dayEdge.getWeight() == baseEdgeWeight && twelveHourWeight < baseEdgeWeight) {
+                    //                 dayEdge.setWeight(twelveHourWeight);
+                    //                 dayEdge.getCounterpart().setWeight(-dayEdge.getWeight());
+                    //                 twelveHourEdge.setWeight(twelveHourWeight);
+                    //             } else {
+                    //                 twelveHourEdge.setWeight(twelveHourWeight);
+                    //             }
+                    //             twelveHourShifts = true;
+                    //             break;
+                    //         case 19:
+                    //             if (nightShiftNode == null) break;
+                    //             if (twelveHourWeight == baseEdgeWeight && twelveHourEdge != null) {
+                    //                 break;
+                    //             } else if (nightEdge.getWeight() == baseEdgeWeight && twelveHourWeight < baseEdgeWeight) {
+                    //                 nightEdge.setWeight(twelveHourWeight);
+                    //                 nightEdge.getCounterpart().setWeight(-nightEdge.getWeight());
+                    //                 if (twelveHourWeight < twelveHourEdge.getWeight()) {
+                    //                     twelveHourEdge.setWeight(twelveHourWeight);
+                    //                 }
+                    //             } else {
+                    //                 if (twelveHourWeight < twelveHourEdge.getWeight()) {
+                    //                     twelveHourEdge.setWeight(twelveHourWeight);
+                    //                 }
+                    //             }
+                    //             twelveHourShifts = true;
+                    //             break;
+                    //         default:
+                    //             break;
+                    //     }
                     }
                 }
                 // in order to mimic the weight required to reach the shiftnode, the weight for the day edge is added
                 // if (twelveHourEdge != null) {
-                    // twelveHourEdge.setWeight(twelveHourEdge.getWeight() + empToDay.getWeight());
-                    // twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
-                    // System.out.println("Made the 12-hour edge: " + twelveHourEdge + ", for emp: " + e + " on day: " + day);
+                //     twelveHourEdge.setWeight(twelveHourEdge.getWeight() + empToDay.getWeight());
+                //     twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
+                //     // System.out.println("Made the 12-hour edge: " + twelveHourEdge + ", for emp: " + e + " on day: " + day);
                 // }
-                if (!twelveHourShifts) {
-                    twelveHourEdge = null;
-                } else if (twelveHourEdge != null) {
-                    twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
-                }
+                // if (!twelveHourShifts) {
+                //     twelveHourEdge = null;
+                // } else if (twelveHourEdge != null) {
+                //     twelveHourEdge.getCounterpart().setWeight(-twelveHourEdge.getWeight());
+                // }
                 date = date.plusDays(1);
             }
 
-        
-        
         
         }
 
@@ -300,6 +298,7 @@ public class FlowGraph {
                             break;
                         case 2: // odd weeks
                             date = date.plusDays(firstDay);
+                            week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
                             startingWeek = week%2 == 1 ? 0 : 1;
                             for (int i = firstDay+7*startingWeek; i < days; i += 14) {
                                 dayPreferences[i].add(p);
@@ -308,6 +307,7 @@ public class FlowGraph {
                             break;
                         case 3: // even weeks
                             date = date.plusDays(firstDay);
+                            week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
                             startingWeek = week%2 == 0 ? 0 : 1;
                             for (int i = firstDay+7*startingWeek; i < days; i += 14) {
                                 dayPreferences[i].add(p);
@@ -318,6 +318,14 @@ public class FlowGraph {
                             for (int i = firstDay+7*(triWeeklyRequests%2); i < days; i += 21) {
                                 dayPreferences[i].add(p);
                             }
+                            // for (int i = firstDay+7*(triWeeklyRequests%2); i < days; i += 7) {
+                            //     if ((i-(firstDay+7*(triWeeklyRequests%2)))%21 == 0) continue;
+                            //     Preference alteredPref = p;
+                            //     alteredPref.setWanted(false);
+                            //     dayPreferences[i].add(alteredPref);
+                            //     System.out.println("Emp: " + e + ", day " + i +", Just added preference: " + alteredPref);
+                            //     System.out.println("Emp: " + e + ", day " + i +", Used to be: " + p);
+                            // }
                             triWeeklyUpdated = true;
                             break;
                         case 5: // monthly
@@ -339,7 +347,7 @@ public class FlowGraph {
             if (p.getDate() != null) {
                 int dayIndex = 0;
                 for (int i = 0; i < days; i++) {
-                    if (p.getDate() == date) {
+                    if (p.getDate().equals(date)) {
                         dayPreferences[dayIndex].add(p);
                         date = date.minusDays(dayIndex);
                         break;
@@ -375,6 +383,7 @@ public class FlowGraph {
                             break;
                         case 2: // odd weeks
                             date = date.plusDays(firstDay);
+                            week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
                             startingWeek = week%2 == 1 ? 0 : 1;
                             for (int i = firstDay+7*startingWeek; i < days; i += 14) {
                                 shiftPreferences[i].add(p);
@@ -383,6 +392,7 @@ public class FlowGraph {
                             break;
                         case 3: // even weeks
                             date = date.plusDays(firstDay);
+                            week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
                             startingWeek = week%2 == 0 ? 0 : 1;
                             for (int i = firstDay+7*startingWeek; i < days; i += 14) {
                                 shiftPreferences[i].add(p);
@@ -423,6 +433,7 @@ public class FlowGraph {
                             break;
                         case 2: // odd weeks
                             date = date.plusDays(firstDay);
+                            week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
                             startingWeek = week%2 == 1 ? 0 : 1;
                             for (int i = firstDay+7*startingWeek; i < days; i += 14) {
                                 shiftPreferences[i].add(p);
@@ -431,6 +442,7 @@ public class FlowGraph {
                             break;
                         case 3: // even weeks
                             date = date.plusDays(firstDay);
+                            week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
                             startingWeek = week%2 == 0 ? 0 : 1;
                             for (int i = firstDay+7*startingWeek; i < days; i += 14) {
                                 shiftPreferences[i].add(p);
@@ -454,7 +466,7 @@ public class FlowGraph {
                 } else {
                     int dayIndex = 0;
                     for (int i = 0; i < days; i++) {
-                        if (p.getDate() == date) {
+                        if (p.getDate().equals(date)) {
                             shiftPreferences[dayIndex].add(p);
                             date = date.minusDays(dayIndex);
                             break;
@@ -696,7 +708,7 @@ public class FlowGraph {
                     for (Edge e : path.get(i).getOutGoing()) {
                         if (e.getTo() == path.get(i+1)) empToDayEdge = e;
                     }
-                    breaksRule = empToDayEdge.getFlow() == 4;
+                    breaksRule = empToDayEdge.getFlow() != empToDayEdge.getCap();
                 }
             }
             if (breaksRule) flowPath.add(edge);   
@@ -749,7 +761,7 @@ public class FlowGraph {
             boolean shiftRule = (dayBeforeEndTime == -1 || shift.validShift(shift.getStartTime(), dayBeforeEndTime));
             
             // handles cases where edges have been misused (e.g. 4/8 shift edge)
-            if (edges.get(1).getFlow() == 4 && purpose == 1) {
+            if (edges.get(1).getFlow() != edges.get(1).getCap() && purpose == 1) {
                 // System.out.println("found edge " + edges.get(2) + " to be invalid for employee: " + emp);
                 invalidPaths.add(edges);
             } else if (!shiftRule && purpose == 2) { // handles if the break between shifts is not obeyed

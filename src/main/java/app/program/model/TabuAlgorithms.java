@@ -1,5 +1,10 @@
 package app.program.model;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,6 +16,10 @@ public class TabuAlgorithms {
     private DistTuple iniTuple;
     private int totalEmpHoursLeft;
 
+    private int hardConstraintsBroken = 0;
+    private int softConstraintsBroken = 0;
+    private int prefsFulfilled = 0;
+
     private Employee[] emps;
     private Shift[][] initialShiftAssignments;
     private int initialObjVal;
@@ -19,22 +28,45 @@ public class TabuAlgorithms {
 
     Random randomGenerator = new Random();
 
+    private int impossibleHours;
+
     private FlowGraph fg;
     private ArrayList<ArrayList<Edge>> invalidPaths;
 
-    public TabuAlgorithms(FlowGraph fg, ArrayList<ArrayList<Edge>> invalidPaths) {
+    boolean eightHour = false;
+
+    private  List<List<Preference>[]> allEmpDayPrefs = new ArrayList<>();
+    private List<List<Preference>[]> allEmpShiftPrefs = new ArrayList<>();
+
+    public TabuAlgorithms(FlowGraph fg, ArrayList<ArrayList<Edge>> invalidPaths, boolean eightHour) {
         this.fg = fg;
         this.invalidPaths = invalidPaths;
         System.out.println("invalid Shifts: " + invalidPaths.size());
         this.iniEmpHoursLeft = new int[fg.getEmps().length];
         this.iniMatHoursLeft = new int[fg.getDaysInPeriod()][2][3];
         this.iniLabHoursLeft = new int[fg.getDaysInPeriod()][2][3];
+        this.eightHour = eightHour;
 
         this.emps = fg.getEmps();
         this.initialShiftAssignments = new Shift[emps.length][fg.getDaysInPeriod()];
         this.initialObjVal = 0;
+        for (int emp = 0; emp < emps.length; emp++) {
+            allEmpDayPrefs.add(fg.prefDays(emps[emp], fg.getStartDate(), fg.getDaysInPeriod()));
+            allEmpShiftPrefs.add(fg.prefShifts(emps[emp], fg.getStartDate(), fg.getDaysInPeriod()));
+        }
         gatherInformation();
         this.iniTuple = new DistTuple(initialShiftAssignments, iniEmpHoursLeft, iniLabHoursLeft, iniMatHoursLeft);
+
+        int hoursWanted = 0;
+        int hoursAvailable = 0;
+        for (Edge e : fg.getT().getInGoing()) {
+            hoursWanted += e.getCap();
+        }
+        for (Edge e : fg.getS().getOutGoing()) {
+            hoursAvailable += e.getCap();
+        }
+        impossibleHours = hoursWanted-hoursAvailable;
+        System.out.println("Hours wanted: " + hoursWanted + ", Hours available: " + hoursAvailable + ", impossibleHours: " + impossibleHours);
     }
 
 
@@ -46,14 +78,13 @@ public class TabuAlgorithms {
         objectiveVal += calcAssignedHoursPenalty(assignments);
         objectiveVal += calc11HrPenalty(assignments);
         objectiveVal += calcPreferencePenalty(assignments);
+        objectiveVal += calcDepPenalty(assignments);
         return objectiveVal;
     }
 
-    // TODO: Need to make sure that this updates the changes it makes as well as is secure (doesn't give away too many shift hours)
-    // TODO: also just needs to actually do something :)
     public ArrayList<DistTuple> findNeighborDist(DistTuple values) {
         ArrayList<DistTuple> neighbors = new ArrayList<>();
-        int maxSize = 60;
+        int maxSize = 100;
 
         for (int i = 0; i < maxSize; i++) {
             DistTuple neighbor = copyTuple(values);
@@ -68,9 +99,9 @@ public class TabuAlgorithms {
                 while(values.assignments[emp][day] == null) {day = randomGenerator.nextInt(values.assignments[0].length);  runs++; if (runs > 400) break;}
                 if (runs > 400) continue;
                 if (values.assignments[emp][day].calcHours() == 8) {
-                    // TODO: this doesn't work, because the constraint from having less hours will mean higher objective value
                     while(shift.calcHours() != 12) {shift = fg.getShifts()[randomGenerator.nextInt(fg.getShifts().length)];}
                 } else {
+                    // TODO: look into whether this should also give an additional 8-hr assignment
                     while(shift.calcHours() != 8) {shift = fg.getShifts()[randomGenerator.nextInt(fg.getShifts().length)];}
                 }
             } else {
@@ -91,8 +122,7 @@ public class TabuAlgorithms {
         DistTuple currentSolution = iniTuple;
         List<DistTuple> tabuList = new ArrayList<>();
 
-        // TODO: should probably set this to be a timer instead, so the iterations are based on how long the program has been running
-        int maxIterations = 2000;
+        int maxIterations = 1000;
         for (int i = 0; i < maxIterations; i++) {
             ArrayList<DistTuple> neighbors = findNeighborDist(currentSolution);
             DistTuple bestNeighbor = null;
@@ -126,17 +156,8 @@ public class TabuAlgorithms {
                 bestSolution = copyTuple(bestNeighbor);
             }
         }
-        int mismatchedHours = 0;
-        for (int emp = 0; emp < bestSolution.assignments.length; emp++) {
-            int empHoursLeft = emps[emp].getWeeklyHrs()*(fg.getDaysInPeriod()/7);
-            for (int day = 0; day < bestSolution.assignments[0].length; day++) {
-                if (bestSolution.assignments[emp][day] != null) empHoursLeft -= bestSolution.assignments[emp][day].calcHours();
-            }
-            if (empHoursLeft > 0) mismatchedHours += empHoursLeft; // apply penalty to objective value if hours are unassigned
-            if (empHoursLeft < 0) mismatchedHours += (-empHoursLeft); // apply penalty to objective value if too many hours are assigned
-        }
-        System.out.println("Final objective value for distribution: " + objectiveFunctionDist(bestSolution.assignments, bestSolution.empHoursLeft));
-        System.out.println("Total hours mismatched: " + mismatchedHours);
+        
+        System.out.println("Objective value for distribution: " + objectiveFunctionDist(bestSolution.assignments, bestSolution.empHoursLeft));
 
         return bestSolution.assignments;
     }
@@ -155,6 +176,7 @@ public class TabuAlgorithms {
         // the following adds the preference weights as well as the general constraint break penalties
         objectiveVal += calcPreferencePenalty(assignments);        
         objectiveVal += calcAssignedHoursPenalty(assignments);
+        objectiveVal += calcDepPenalty(assignments);
         return objectiveVal;
     }
     
@@ -173,8 +195,9 @@ public class TabuAlgorithms {
             int day2 = randomGenerator.nextInt(assignments[0].length);
 
             int runs = 0;
-            while ((assignments[emp1][day1] == null || assignments[emp2][day2] == null) || (day1 == day2)) {
-                day1 = randomGenerator.nextInt(assignments[0].length);
+            while ((assignments[emp1][day1] == null && assignments[emp2][day2] == null) || (day1 == day2)) {
+                if (assignments[emp1][day1] == null) day1 = randomGenerator.nextInt(assignments[0].length);
+                if (assignments[emp2][day2] == null) day2 = randomGenerator.nextInt(assignments[0].length);
                 runs++;
                 if (runs > 250) break;
             }
@@ -196,8 +219,7 @@ public class TabuAlgorithms {
         Shift[][] currentSolution = copyMatrix(bestSolution);
         ArrayList<Shift[][]> tabuList = new ArrayList<>();
 
-        // TODO: should probably set this to be a timer instead, so the iterations are based on how long the program has been running
-        int maxIterations = 2000;
+        int maxIterations = 3000;
         for (int i = 0; i < maxIterations; i++) {
             ArrayList<Shift[][]> neighbors = findNeighborSpread(currentSolution);
             Shift[][] bestNeighbor = null;
@@ -234,8 +256,197 @@ public class TabuAlgorithms {
         System.out.println("Final objective value for spread: " + objectiveFunctionSpread(bestSolution));
         int weeklyPenalty = calcEmpWeeklyHoursPenalty(bestSolution);
         
-        System.out.println("The penalty for spread is: " + weeklyPenalty + ", and preference penalty is: " + calcPreferencePenalty(bestSolution)/5);
+        System.out.println("The penalty for spread is: " + weeklyPenalty + ", and preference penalty is: " + calcPreferencePenalty(bestSolution));
         return bestSolution;
+    }
+
+    // public int objectiveFunctionSwap(Shift[][] assignments) {
+    //     return calc11HrPenalty(assignments) + calcEmpWeeklyHoursPenalty(assignments) + calcPreferencePenalty(assignments); 
+    // }
+
+    // public ArrayList<Shift[][]> findNeighborSwap(Shift[][] assignments) {
+    //     // Find neighbors by swapping shifts on different days between employees
+    //     ArrayList<Shift[][]> neighbors = new ArrayList<>();
+    //     int maxSize = 60;
+    //     Shift[][] neighbor = copyMatrix(assignments);
+
+    //     for (int i = 0; i < maxSize; i++) {
+    //         int emp1 = randomGenerator.nextInt(assignments.length);
+    //         int emp2 = randomGenerator.nextInt(assignments.length);
+    //         while (emps[emp2].getDepartments() != emps[emp1].getDepartments()) {emp2 = randomGenerator.nextInt(assignments.length);}
+
+    //         int day1 = randomGenerator.nextInt(assignments[0].length);
+    //         int day2 = randomGenerator.nextInt(assignments[0].length);
+
+    //         int runs = 0;
+    //         while ((assignments[emp1][day1] == null || assignments[emp2][day2] == null) || (day1 == day2)) {
+    //             if (assignments[emp1][day1] == null) day1 = randomGenerator.nextInt(assignments[0].length);
+    //             if (assignments[emp2][day2] == null) day2 = randomGenerator.nextInt(assignments[0].length);
+    //             runs++;
+    //             if (runs > 250) break;
+    //         }
+    //         if (runs > 250) continue;
+    //         Shift temp = neighbor[emp1][day1];
+    //         neighbor[emp1][day1] = neighbor[emp2][day2];
+    //         neighbor[emp2][day2] = temp;
+
+    //         neighbors.add(neighbor);
+
+    //         neighbor = copyMatrix(assignments);
+    //     }
+    //     return neighbors;
+    // }
+
+    // public Shift[][] searchSwap() {
+    //     Shift[][] bestSolution = copyMatrix(initialShiftAssignments);
+    //     Shift[][] currentSolution = copyMatrix(bestSolution);
+    //     ArrayList<Shift[][]> tabuList = new ArrayList<>();
+
+    //     int maxIterations = 4000;
+    //     for (int i = 0; i < maxIterations; i++) {
+    //         ArrayList<Shift[][]> neighbors = findNeighborSwap(currentSolution);
+    //         Shift[][] bestNeighbor = null;
+    //         int bestObjectiveValue = Integer.MAX_VALUE;
+
+    //         for (Shift[][] neighbor : neighbors) {
+    //             if (!tabuList.contains(neighbor)) {
+    //                 int newObjVal = objectiveFunctionSwap(neighbor);
+    //                 if (newObjVal < bestObjectiveValue) {
+    //                     bestNeighbor = copyMatrix(neighbor);
+    //                     bestObjectiveValue = newObjVal;
+    //                     // System.out.println("new best objective val: " + bestObjectiveValue);
+    //                 }
+    //             }
+    //         }
+
+    //         if (bestNeighbor == null) {
+    //             System.out.println("broke SWAP after " + i + " iterations");
+    //             break;
+    //         }
+
+    //         currentSolution = copyMatrix(bestSolution);
+    //         tabuList.add(bestNeighbor);
+
+    //         // again I need a field "maxTabuSize" for maximum size of tabuList instead of "10000"
+    //         if (tabuList.size() > 10000) {
+    //             tabuList.remove(0);
+    //         }
+
+    //         if (objectiveFunctionSwap(bestNeighbor) < objectiveFunctionSwap(bestSolution)) {
+    //             bestSolution = copyMatrix(bestNeighbor);
+    //         }
+    //     }
+    //     System.out.println("Final objective value for swap: " + objectiveFunctionSwap(bestSolution));
+    //     int weeklyPenalty = calcEmpWeeklyHoursPenalty(bestSolution);
+        
+    //     System.out.println("The penalty for spread is: " + weeklyPenalty + ", and preference penalty is: " + calcPreferencePenalty(bestSolution));
+    //     return bestSolution;
+    // }
+
+    public int[][] assignDepartments(Shift[][] assignments) {
+        int[][] deps = new int[assignments.length][assignments[0].length];
+        // int hoursNeededDay = 48;
+        // int hoursNeededElse = 32;
+        for (int emp = 0; emp < assignments.length; emp++) {
+            for (int day = 0; day < assignments[0].length; day++) {
+                deps[emp][day] = -1;
+            }
+        }
+        // int[][][] givenHours = new int[assignments[0].length][2][3]; // Specifies day/department/timeOfDay
+        int[][][] neededHours = new int[assignments[0].length][2][3];
+        for (int day = 0; day < assignments[0].length; day++) {
+            ArrayList<int[]> hours = getDepHours(assignments, day);
+            int[] labHours = hours.get(0);
+            neededHours[day][0][0] = 48-labHours[0];
+            neededHours[day][0][1] = 32-labHours[1];
+            neededHours[day][0][2] = 32-labHours[2];
+
+            int[] matHours = hours.get(1);
+            neededHours[day][1][0] = 48-matHours[0];
+            neededHours[day][1][1] = 32-matHours[1];
+            neededHours[day][1][2] = 32-matHours[2];
+            
+        }
+        for (int emp = 0; emp < assignments.length; emp++) {
+            for (int day = 0; day < assignments[0].length; day++) {
+                if (assignments[emp][day] != null) {
+                    if (emps[emp].getDepartments().length > 1) {
+                        // ArrayList<int[]> hours = getDepHours(assignments, day);
+                        switch (assignments[emp][day].getStartTime()) {
+                            case 7:
+                                if (assignments[emp][day].calcHours() == 8) {
+                                    if (neededHours[day][0][0] - assignments[emp][day].calcHours() >= 0 && neededHours[day][1][0] < neededHours[day][0][0]) {
+                                        deps[emp][day] = 0;
+                                        // givenHours[day][0][0] += assignments[emp][day].calcHours();
+                                        neededHours[day][0][0] -= assignments[emp][day].calcHours();
+                                    } else if (neededHours[day][1][0] - assignments[emp][day].calcHours()>= 0) {
+                                        deps[emp][day] = 1;
+                                        // givenHours[day][1][0] += assignments[emp][day].calcHours();
+                                        neededHours[day][1][0] -= assignments[emp][day].calcHours();
+                                    } 
+                                } else {
+                                    if (neededHours[day][0][0] - 8 >= 0 && neededHours[day][0][1] - 4 >= 0 && neededHours[day][1][0] < neededHours[day][0][0]) {
+                                        deps[emp][day] = 0;
+                                        // givenHours[day][0][0] += 8;
+                                        // givenHours[day][0][1] += 4;
+                                        neededHours[day][0][0] -= 8;
+                                        neededHours[day][0][1] -= 4;
+                                    } else if (neededHours[day][1][0] - 8 >= 0 && neededHours[day][1][1] - 4 >= 0) {
+                                        deps[emp][day] = 1;
+                                        // givenHours[day][1][0] += 8;
+                                        // givenHours[day][1][1] += 4;
+                                        neededHours[day][1][0] -= 8;
+                                        neededHours[day][1][1] -= 4;
+                                    } 
+                                }
+                                break;
+                            case 15:
+                                if (neededHours[day][0][1] - assignments[emp][day].calcHours() >= 0 && neededHours[day][1][1] < neededHours[day][0][1]) {
+                                    deps[emp][day] = 0;
+                                    neededHours[day][0][1] -= assignments[emp][day].calcHours();
+                                } else if (neededHours[day][1][1] - assignments[emp][day].calcHours() >= 0) {
+                                    deps[emp][day] = 1;
+                                    neededHours[day][1][1] -= assignments[emp][day].calcHours();
+                                }
+                                break;
+                            case 19:
+                                if (neededHours[day][0][2] - 8 >= 0 && neededHours[day][0][1] - 4 >= 0 && neededHours[day][1][1] < neededHours[day][0][1]) {
+                                    deps[emp][day] = 0;
+                                    // givenHours[day][0][1] += 4;
+                                    // givenHours[day][0][2] += 8;
+                                    neededHours[day][0][1] -= 4;
+                                    neededHours[day][0][2] -= 8;
+
+                                } else if (neededHours[day][1][2] - 8 >= 0 && neededHours[day][1][1] - 4 >= 0) {
+                                    deps[emp][day] = 1;
+                                    // givenHours[day][1][1] += 4;
+                                    // givenHours[day][1][2] += 8;
+                                    neededHours[day][1][1] -= 4;
+                                    neededHours[day][1][2] -= 8;
+                                } 
+                                break;
+                            case 23:
+                                if (neededHours[day][0][2] - assignments[emp][day].calcHours() >= 0 && neededHours[day][1][2] < neededHours[day][0][2]) {
+                                    deps[emp][day] = 0;
+                                    // givenHours[day][0][2] += assignments[emp][day].calcHours();
+                                    neededHours[day][0][2] -= assignments[emp][day].calcHours();
+                                } else if (neededHours[day][1][2] - assignments[emp][day].calcHours() >= 0) {
+                                    deps[emp][day] = 1;
+                                    // givenHours[day][1][2] += assignments[emp][day].calcHours();
+                                    neededHours[day][1][2] -= assignments[emp][day].calcHours();
+                                }
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                    } else {
+                        deps[emp][day] = emps[emp].getDepartments()[0];
+                    }
+                }
+            }
+        }
+        return deps;
     }
 
     //////////// Helper functions //////////////
@@ -261,48 +472,80 @@ public class TabuAlgorithms {
 
     public int calcPreferencePenalty(Shift[][] assignments) {
         int penalty = 0;
+        int hardConstraints = 0;
+        int softConstraints = 0;
+        int fulfilled = 0;
+
         for (int emp = 0; emp < assignments.length; emp++) {
-            List<Preference>[] empDayPrefs = fg.prefDays(emps[emp], fg.getStartDate(), assignments[0].length);
-            List<Preference>[] empShiftPrefs = fg.prefShifts(emps[emp], fg.getStartDate(), assignments[0].length);
+            List<Preference>[] empDayPrefs = allEmpDayPrefs.get(emp);
+            List<Preference>[] empShiftPrefs = allEmpShiftPrefs.get(emp);
             for (int day = 0; day < assignments[0].length; day++) {
                 if (assignments[emp][day] == null) continue;
-                int dayBeforeEndTime = -1;
-                if (day != 0 && assignments[emp][day-1] != null) dayBeforeEndTime = assignments[emp][day-1].getEndTime();
-                boolean shiftRule = (dayBeforeEndTime == -1 || assignments[emp][day].validShift(assignments[emp][day].getStartTime(), dayBeforeEndTime));
-                if (!shiftRule) penalty += hardConstraintPenalty;
                 if (empDayPrefs[day].isEmpty() && empShiftPrefs[day].isEmpty()) continue;
-                if (!empDayPrefs[day].isEmpty() && empShiftPrefs[day].isEmpty()) { // For preferences regarding days
-                    
-                    // since the employee must have a shift assignment on this day, the weight should be added
-                    int w = fg.setDayWeight(empDayPrefs[day]);
-                    if (w == Integer.MAX_VALUE) {
-                        penalty += hardConstraintPenalty;
-                    } else if (Math.abs(w) >= 0 && Math.abs(w) < fg.getBaseEdgeWeight()) {
-                        penalty -= (1000 - w); // reflects that prefLvl 1 = 0 represents -1000 in weight and prefLvl 5 = 5 represents -5
-                    } else if (w != fg.getBaseEdgeWeight() && w != -fg.getBaseEdgeWeight()) {
-                        penalty += (w-fg.getBaseEdgeWeight());
-                    }
-                } else {
-                    // check the preferences vs. the given shift assignment
-                    int ws = fg.setShiftWeight(empShiftPrefs[day], assignments[emp][day]);
-                    if (ws == Integer.MAX_VALUE) {
-                        penalty += hardConstraintPenalty;
-                    } else if (Math.abs(ws) >= 0 && Math.abs(ws) < fg.getBaseEdgeWeight()) {
-                        penalty -= (1000 - ws); // reflects that prefLvl 1 = 0 represents -1000 in weight and prefLvl 5 = 5 represents -5
-                    } else if (ws != fg.getBaseEdgeWeight() && ws != -fg.getBaseEdgeWeight()) {
-                        penalty += (ws-fg.getBaseEdgeWeight());
+                for (Preference dailyPref : empDayPrefs[day]) {
+                    if (dailyPref.getShift() == null) {
+                        // since the employee must have a shift assignment on this day, the weight should be added
+                        int w = fg.setDayWeight(empDayPrefs[day]);
+                        if (w == Integer.MAX_VALUE) {
+                            if (w == Integer.MAX_VALUE) penalty += hardConstraintPenalty;
+                            // else penalty -= hardConstraintPenalty/5;
+                            hardConstraints++;
+                        } else if (Math.abs(w) >= 0 && Math.abs(w) < fg.getBaseEdgeWeight()) {
+                            penalty -= (1000 - w); // reflects that prefLvl 1 = 0 represents -1000 in weight and prefLvl 5 = 5 represents -5
+                            fulfilled++;
+                        } else if (w != fg.getBaseEdgeWeight() && w != -fg.getBaseEdgeWeight()) {
+                            penalty += (w-fg.getBaseEdgeWeight());
+                            softConstraints++;
+                        }
+                    } else if (assignments[emp][day].equals(dailyPref.getShift())) {
+                        int ws = fg.setShiftWeight(empShiftPrefs[day], assignments[emp][day]);
+                        if (ws == Integer.MAX_VALUE) {
+                            if (ws == Integer.MAX_VALUE) penalty += hardConstraintPenalty;
+                            // else penalty -= hardConstraintPenalty/5;
+                            hardConstraints++;
+                        } else if (Math.abs(ws) >= 0 && Math.abs(ws) < fg.getBaseEdgeWeight()) {
+                            penalty -= (1000 - ws); // reflects that prefLvl 1 = 0 represents -1000 in weight and prefLvl 5 = 5 represents -5
+                            fulfilled++;
+                        } else if (ws != fg.getBaseEdgeWeight() && ws != -fg.getBaseEdgeWeight()) {
+                            penalty += (ws-fg.getBaseEdgeWeight());
+                            softConstraints++;
+                        }
                     }
                 }
+                for (Preference shiftPref : empShiftPrefs[day]) {
+                    if (shiftPref.getDay() == -1 && shiftPref.getShift().equals(assignments[emp][day])) {
+                        // check the preferences vs. the given shift assignment
+                        int ws = fg.setShiftWeight(empShiftPrefs[day], assignments[emp][day]);
+                        if (ws == Integer.MAX_VALUE) {
+                            if (ws == Integer.MAX_VALUE) penalty += hardConstraintPenalty;
+                            // else penalty -= hardConstraintPenalty/5;
+                            hardConstraints++;
+                        } else if (Math.abs(ws) >= 0 && Math.abs(ws) < fg.getBaseEdgeWeight()) {
+                            penalty -= (1000 - ws); // reflects that prefLvl 1 = 0 represents -1000 in weight and prefLvl 5 = 5 represents -5
+                            fulfilled++;
+                        } else if (ws != fg.getBaseEdgeWeight() && ws != -fg.getBaseEdgeWeight()) {
+                            penalty += (ws-fg.getBaseEdgeWeight());
+                            softConstraints++;
+                        }
+                    }
+                } 
+                
             }
         }
-        // TODO: temporary x2 boost to penalty to make sure preferences aren't overlooked
-        return penalty*2; // Note: multiplying this by a factor makes the employee penalty have more focus, but more hours are mismatched
+        hardConstraintsBroken = hardConstraints;
+        softConstraintsBroken = softConstraints;
+        prefsFulfilled = fulfilled;
+        return penalty; // Note: multiplying this by a factor makes the employee penalty have more focus, but more hours are mismatched
     }
 
     public int calc11HrPenalty(Shift[][] assignments) {
         int penalty = 0;
         for (int emp = 0; emp < assignments.length; emp++) {
             for (int day = 0; day < assignments[0].length; day++) {
+                // int dayBeforeEndTime = -1;
+                // if (day != 0 && assignments[emp][day-1] != null) dayBeforeEndTime = assignments[emp][day-1].getEndTime();
+                // boolean shiftRule = (dayBeforeEndTime == -1 || assignments[emp][day].validShift(assignments[emp][day].getStartTime(), dayBeforeEndTime));
+                // if (!shiftRule) penalty += hardConstraintPenalty;
                 if (day > 0) {
                     int endTime = assignments[emp][day-1] != null ? assignments[emp][day-1].getEndTime() : -1;
                     int startTime = assignments[emp][day] != null ? assignments[emp][day].getStartTime() : -1;
@@ -321,14 +564,107 @@ public class TabuAlgorithms {
             for (int day = 0; day < assignments[0].length; day++) {
                 if (assignments[emp][day] != null) empHoursLeft -= assignments[emp][day].calcHours();
             }
-            if (empHoursLeft > 0) penalty += empHoursLeft*(softConstraintPenalty*6); // apply penalty to objective value if hours are unassigned
-            if (empHoursLeft < 0) penalty += (-empHoursLeft)*(softConstraintPenalty*8); // apply penalty to objective value if too many hours are assigned
-            //TODO: could maybe make sure extra penalty is applied if more than 1/6 (or something) of hours are unassigned 
-            if (empHoursLeft > 16 || -empHoursLeft > 16) penalty += hardConstraintPenalty;
+            if (empHoursLeft > 0) penalty += empHoursLeft*(hardConstraintPenalty/60); // apply penalty to objective value if hours are unassigned
+            if (empHoursLeft < 0) penalty += (-empHoursLeft)*(hardConstraintPenalty/8); // apply penalty to objective value if too many hours are assigned
+            if (empHoursLeft > 8 || -empHoursLeft > 8) penalty += hardConstraintPenalty;
         }
         return penalty;
     }
 
+    public int calcDepPenalty(Shift[][] assignments) {
+        int penalty = 0;
+        int hoursNeededDay = 48;
+        int hoursNeededElse = 32;
+        for (int day = 0; day < assignments[0].length; day++) {
+            ArrayList<int[]> hours = getDepHours(assignments, day);
+            int[] labHours = hours.get(0);
+            int[] matHours = hours.get(1);
+            int[] mixHours = hours.get(2);
+            if (labHours[0] > hoursNeededDay) penalty += hardConstraintPenalty;
+            if (labHours[1] > hoursNeededElse) penalty += hardConstraintPenalty;
+            if (labHours[2] > hoursNeededElse) penalty += hardConstraintPenalty;
+            if (matHours[0] > hoursNeededDay) penalty += hardConstraintPenalty;
+            if (matHours[1] > hoursNeededElse) penalty += hardConstraintPenalty;
+            if (matHours[2] > hoursNeededElse) penalty += hardConstraintPenalty;
+
+            if (labHours[0] + mixHours[0] < hoursNeededDay) penalty += hardConstraintPenalty/25;
+            if (matHours[0] + (mixHours[0]-labHours[0]) < hoursNeededDay) penalty += hardConstraintPenalty/25;
+
+            if (labHours[1] + mixHours[1] < hoursNeededElse) penalty += hardConstraintPenalty/25;
+            if (matHours[1] + (mixHours[1]-labHours[1]) < hoursNeededElse) penalty += hardConstraintPenalty/25;
+
+            if (labHours[2] + mixHours[2] < hoursNeededElse) penalty += hardConstraintPenalty/25;
+            if (matHours[2] + (mixHours[2]-labHours[2]) < hoursNeededElse) penalty += hardConstraintPenalty/25;
+
+        }
+        return penalty;
+    }
+
+    public ArrayList<int[]> getDepHours(Shift[][] assignments, int day) {
+        int[] labHours = new int[3]; // each element corresponds to a time of day (day,eve,night)
+        int[] matHours = new int[3];
+        int[] mixHours = new int[3];
+        for (int emp = 0; emp < assignments.length; emp++) {
+            if (assignments[emp][day] == null) continue;
+            switch (assignments[emp][day].getStartTime()) {
+                case 7:
+                    if (emps[emp].getDepartments().length > 1) {
+                        mixHours[0] += 8;
+                        if (assignments[emp][day].calcHours() == 12) mixHours[1] += 4;
+                    } else if (emps[emp].getDepartments()[0] == 0) { // lab
+                        labHours[0] += 8;
+                        if (assignments[emp][day].calcHours() == 12) labHours[1] += 4;
+                    } else { // mat
+                        matHours[0] += 8;
+                        if (assignments[emp][day].calcHours() == 12) matHours[1] += 4;
+                    }
+                    break;
+                case 15:
+                    if (emps[emp].getDepartments().length > 1) {
+                        mixHours[1] += 8;
+                    } else if (emps[emp].getDepartments()[0] == 0) { // lab
+                        labHours[1] += 8;
+                    } else { // mat
+                        matHours[1] += 8;
+                    }
+                    break;
+                case 19:
+                    if (emps[emp].getDepartments().length > 1) {
+                        mixHours[1] += 4;
+                        mixHours[2] += 8;
+                    } else if (emps[emp].getDepartments()[0] == 0) { // lab
+                        labHours[1] += 4;
+                        labHours[2] += 8;
+                    } else { // mat
+                        matHours[1] += 4;
+                        matHours[2] += 8;
+                    }
+                    break;
+                case 23:
+                    if (emps[emp].getDepartments().length > 1) {
+                        mixHours[2] += 8;
+                    } else if (emps[emp].getDepartments()[0] == 0) { // lab
+                        labHours[2] += 8;
+                    } else { // mat
+                        matHours[2] += 8;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        ArrayList<int[]> hours = new ArrayList<>();
+        hours.add(labHours);
+        hours.add(matHours);
+        hours.add(mixHours);
+        return hours;
+    }
+
+    // public int calcExpPenalty(Shift[][] assignments) {
+    //     int penalty = 0;
+        
+    //     return penalty;
+    // }
     // set the initial values/conditions based on the given flow model
     public void gatherInformation() {
         // translating the invalid paths to hours needed
@@ -353,7 +689,7 @@ public class TabuAlgorithms {
 
         // update which paths are invalid (shift version)
         fg.clearInvalidPaths();
-        fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, 2);
+        if (!eightHour) fg.updateInvalidPaths(fg.getS(), fg.getT(), new boolean[fg.getS().getTotalVertices()], new ArrayList<Vertex>(), new ArrayList<Integer>(), 0, new ArrayList<Integer>(), 0, 2);
         invalidPaths = fg.getInvalidPaths();
         System.out.println("new size of invalidPaths: " + invalidPaths.size());
 
@@ -607,22 +943,166 @@ public class TabuAlgorithms {
 
     // print statements
     public void printShiftAssignments(Shift[][] assignments) {
+        int mismatchedHours = 0;
+        int hoursLacking = 0;
+        int hoursInAbundance = 0;
+        for (int emp = 0; emp < assignments.length; emp++) {
+            int empHoursLeft = emps[emp].getWeeklyHrs()*(fg.getDaysInPeriod()/7);
+            for (int day = 0; day < assignments[0].length; day++) {
+                if (assignments[emp][day] != null) empHoursLeft -= assignments[emp][day].calcHours();
+            }
+            if (empHoursLeft > 0) mismatchedHours += empHoursLeft; // apply penalty to objective value if hours are unassigned
+            if (empHoursLeft < 0) mismatchedHours += (-empHoursLeft); // apply penalty to objective value if too many hours are assigned
+            if (empHoursLeft > 0 && empHoursLeft > hoursLacking) hoursLacking = empHoursLeft;
+            if (empHoursLeft < 0 && empHoursLeft < hoursInAbundance) hoursInAbundance = empHoursLeft;
+        }
+        System.out.println("Total hours mismatched: " + mismatchedHours + ", largest lackinghours: " + hoursLacking + " hours, largest hours in abundance: " + (-hoursInAbundance));
+
         for (int emp = 0; emp < assignments.length; emp++) {
             int totalHours = 0;
             for (int day = 0; day < assignments[0].length; day++) {
                 if (assignments[emp][day] != null) totalHours += assignments[emp][day].calcHours();
             }
             System.out.println(emps[emp] + ": " + totalHours + "/" + emps[emp].getWeeklyHrs()*(fg.getDaysInPeriod()/7));
+            LocalDate date = fg.getStartDate();
+            int week = -1;
             for (int day = 0; day < assignments[0].length; day++) {
-                // if (assignments[emp][day] != null) System.out.println("\tday " + day + ": " + assignments[emp][day]);
+                if (week == -1 || week != fg.getStartDate().plusDays(day).get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)) {
+                    week = fg.getStartDate().plusDays(day).get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+                    System.out.println("\tWeek " + week + ":");
+                }
+                if (assignments[emp][day] != null) {
+                    date = fg.getStartDate().plusDays(day);
+                    String dayOfWeek = fg.weekdayToString(date.getDayOfWeek().getValue());
+
+                    System.out.println("\tday " + day + ", " + dayOfWeek + ": " + assignments[emp][day]);
+                    
+                }
             }
         }
+
     }
+
+    public void saveShiftAssignmentsToFile(Shift[][] assignments) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("shift_assignments.txt"))) {
+            int mismatchedHours = 0;
+            int hoursLacking = 0;
+            int hoursInAbundance = 0;
+            int[][] deps = assignDepartments(assignments);
+            // Calculate mismatched hours and max mismatch
+            for (int emp = 0; emp < assignments.length; emp++) {
+                int empHoursLeft = emps[emp].getWeeklyHrs() * (fg.getDaysInPeriod() / 7);
+                for (int day = 0; day < assignments[0].length; day++) {
+                    if (assignments[emp][day] != null) empHoursLeft -= assignments[emp][day].calcHours();
+                }
+                if (empHoursLeft > 0) mismatchedHours += empHoursLeft;
+                if (empHoursLeft < 0) mismatchedHours += (-empHoursLeft);
+                if (empHoursLeft > 0 && empHoursLeft > hoursLacking) hoursLacking = empHoursLeft;
+                if (empHoursLeft < 0 && empHoursLeft < hoursInAbundance) hoursInAbundance = empHoursLeft;
+            }
+
+            writer.write("Total hours mismatched: " + mismatchedHours + ", largest lackinghours: " + hoursLacking + " hours, largest hours in abundance: " + (-hoursInAbundance) + "\n");
+
+            // Write details for each employee
+            for (int emp = 0; emp < assignments.length; emp++) {
+                int totalHours = 0;
+                for (int day = 0; day < assignments[0].length; day++) {
+                    if (assignments[emp][day] != null) totalHours += assignments[emp][day].calcHours();
+                }
+                writer.write(emps[emp] + ": " + totalHours + "/" + emps[emp].getWeeklyHrs() * (fg.getDaysInPeriod() / 7) + "\n");
+
+                LocalDate date = fg.getStartDate();
+                int week = -1;
+                for (int day = 0; day < assignments[0].length; day++) {
+                    if (week == -1 || week != fg.getStartDate().plusDays(day).get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)) {
+                        week = fg.getStartDate().plusDays(day).get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+                        writer.write("\tWeek " + week + ":\n");
+                    }
+                    if (assignments[emp][day] != null) {
+                        date = fg.getStartDate().plusDays(day);
+                        String dayOfWeek = fg.weekdayToString(date.getDayOfWeek().getValue());
+                        String department = "-1";
+                        if (deps[emp][day] != -1) department = deps[emp][day] == 0 ? "Labor" : "Maternity";
+                        writer.write("\tday " + day + ", " + dayOfWeek + ": " + assignments[emp][day] + ", " + department + "\n");
+                    }
+                }
+            }
+            int[][][] depHoursAssigned = new int[assignments[0].length][2][3];
+            for (int emp = 0; emp < assignments.length; emp++) {
+                for (int day = 0; day < assignments[0].length; day++) {
+                    if (assignments[emp][day] != null) {
+                        switch (assignments[emp][day].getStartTime()) {
+                            case 7:
+                                if (assignments[emp][day].calcHours() == 8) {
+                                    if (deps[emp][day] == 0) {
+                                        depHoursAssigned[day][0][0] += 8;
+                                    } else if (deps[emp][day] == 1) {
+                                        depHoursAssigned[day][1][0] += 8;
+                                    }
+                                } else {
+                                    if (deps[emp][day] == 0) {
+                                        depHoursAssigned[day][0][0] += 8;
+                                        depHoursAssigned[day][0][1] += 4;
+                                    } else if (deps[emp][day] == 1) {
+                                        depHoursAssigned[day][1][0] += 8;
+                                        depHoursAssigned[day][1][1] += 4;
+                                    }
+                                }
+                                break;
+                            case 15:
+                                if (deps[emp][day] == 0) {
+                                    depHoursAssigned[day][0][1] += 8;
+                                } else if (deps[emp][day] == 1) {
+                                    depHoursAssigned[day][1][1] += 8;
+                                }
+                                break;
+                            case 19:
+                                if (deps[emp][day] == 0) {
+                                    depHoursAssigned[day][0][1] += 4;
+                                    depHoursAssigned[day][0][2] += 8;
+                                } else if (deps[emp][day] == 1) {
+                                    depHoursAssigned[day][1][1] += 4;
+                                    depHoursAssigned[day][1][2] += 8;
+                                }
+                                break;
+                            case 23:
+                                if (deps[emp][day] == 0) {
+                                    depHoursAssigned[day][0][2] += 8;
+                                } else if (deps[emp][day] == 1) {
+                                    depHoursAssigned[day][1][2] += 8;
+                                }
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+            for (int day = 0; day < assignments[0].length; day++) {
+                writer.write("day " + day + ", Labor:  day = " + depHoursAssigned[day][0][0] + "/48, eve = " + depHoursAssigned[day][0][1] + "/32, night = " + depHoursAssigned[day][0][2] + "/32\n");
+                writer.write("day " + day + ", Maternity:  day = " + depHoursAssigned[day][1][0] + "/48, eve = " + depHoursAssigned[day][1][1] + "/32, night = " + depHoursAssigned[day][1][2] + "/32\n");
+            }
+            
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+
 
 
     // Getters
     public Shift[][] getInitialShiftAssignments() {
         return initialShiftAssignments;
+    }
+
+    public int getHardConstraintPenalty() {
+        return hardConstraintPenalty;
+    }
+
+    public int[] getPrefData() {
+        return new int[] {hardConstraintsBroken, softConstraintsBroken, prefsFulfilled};
     }
 
     // Setters

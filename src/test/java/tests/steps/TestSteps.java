@@ -20,6 +20,7 @@ import app.program.model.Employee;
 import app.program.model.FlowGraph;
 import app.program.model.Preference;
 import app.program.model.Shift;
+import app.program.model.TabuAlgorithms;
 import app.program.model.Vertex;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -154,13 +155,10 @@ public class TestSteps {
             for (Edge toDay : toEmp.getTo().getOutGoing()) {
                 if (toDay.getType() == 1) continue;
                 if (!(toDay.getFrm().getEmp().getName().equals("Employee P") || toDay.getFrm().getEmp().getName().equals("Employee V") ||toDay.getFrm().getEmp().getName().equals("Employee Ø"))) continue;
-                System.out.println("has edge " + toDay);
                 for (Edge toShift : toDay.getTo().getOutGoing()) {
                     // if (toShift.getType() == 1) continue;
-                    System.out.println("has edge " + toShift);
                     for (Edge fromShift : toShift.getTo().getOutGoing()) {
                         if (fromShift.getType() == 0) continue;
-                        System.out.println("Backwards edge: " + fromShift);
                     }
                 }
             }
@@ -888,6 +886,110 @@ public class TestSteps {
         int[] results = algo.fasterSuccessiveShortestPaths(fg.getS().getTotalVertices(), totalEmployeeHours, fg.getS(), fg.getT());
 
         assertTrue(results[0] != 0);
+    }
+
+    private Shift[][] assignments;
+    @When("employees are assigned a shift which is unwanted")
+    public void employees_are_assigned_a_shift_which_is_unwanted() {
+        assignments = new Shift[employees.length][fg.getDaysInPeriod()];
+        for (int emp = 0; emp < employees.length; emp++) {
+            for (Preference p : employees[emp].getPref()) {
+                int firstDay = fg.firstDay(fg.getStartDate(), p);
+                LocalDate date = fg.getStartDate();
+                int week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+                if (p.getDay() != -1 && p.getShift() == null) {
+                    if (p.getRepeat() != -1) {
+                        int startingWeek = 0;
+                        switch (p.getRepeat()) {
+                            case 1: // weekly
+                                assignments[emp][firstDay] = new Shift(7, 15);
+                                break;
+                            case 2: // odd weeks
+                                date = date.plusDays(firstDay);
+                                week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+                                startingWeek = week%2 == 1 ? 0 : 1;
+                                assignments[emp][firstDay+7*startingWeek] = new Shift(7, 15);
+                                date = date.minusDays(firstDay);
+                                break;
+                            case 3: // even weeks
+                                date = date.plusDays(firstDay);
+                                week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+                                startingWeek = week%2 == 0 ? 0 : 1;
+                                assignments[emp][firstDay+7*startingWeek] = new Shift(7, 15);
+                                date = date.minusDays(firstDay);
+                                break;
+                            case 4: // tri-weekly
+                                // TODO
+                                break;
+                            case 5: // monthly
+                                assignments[emp][firstDay] = new Shift(7, 15);
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        assignments[emp][firstDay] = new Shift(7, 15);
+                    }
+                } else if (p.getDay() != -1 && p.getShift() != null) {
+                    if (p.getRepeat() != -1) {
+                        int startingWeek = 0;
+                        switch (p.getRepeat()) {
+                            case 1: // weekly
+                                assignments[emp][firstDay+14] = p.getShift();
+                                break;
+                            case 2: // odd weeks
+                                date = date.plusDays(firstDay);
+                                week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+                                startingWeek = week%2 == 1 ? 0 : 1;
+                                assignments[emp][firstDay+7*startingWeek] =  p.getShift();
+                                date = date.minusDays(firstDay);
+                                break;
+                            case 3: // even weeks
+                                date = date.plusDays(firstDay);
+                                week = date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+                                startingWeek = week%2 == 0 ? 0 : 1;
+                                assignments[emp][firstDay+7*startingWeek] =  p.getShift();
+                                date = date.minusDays(firstDay);
+                                break;
+                            case 4: // tri-weekly
+                                // TODO
+                                break;
+                            case 5: // monthly
+                                assignments[emp][firstDay+28] =  p.getShift();
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        assignments[emp][firstDay] =  p.getShift();
+                    }
+                } else if (p.getShift() != null) {
+                    assignments[emp][0] =  p.getShift();
+                }
+            }
+        }
+        
+        int shiftsAssigned = 0;
+        for (int emp = 0; emp < assignments.length; emp++) {
+            employees[emp].createShifts(assignments[0].length);
+            for (int day = 0; day < assignments[0].length; day++) {
+                if (assignments[emp][day] != null) {
+                    shiftsAssigned++;
+                }
+            }
+        }
+        assertTrue(shiftsAssigned != 0);
+    }
+
+    @Then("a hard constraint penalty is applied to the objective value")
+    public void a_hard_constraint_penalty_is_applied_to_the_objective_value() {
+        TabuAlgorithms tabu = new TabuAlgorithms(fg, new ArrayList<>(), false);
+        int prefs = 0;
+        for (Employee e : employees) {
+            prefs += e.getPref().length;
+        }
+        System.out.println("expected value: " + (prefs*tabu.getHardConstraintPenalty()) + ", actual value: " + tabu.calcPreferencePenalty(assignments));
+        assertTrue(prefs*tabu.getHardConstraintPenalty() == tabu.calcPreferencePenalty(assignments));
     }
 
 }

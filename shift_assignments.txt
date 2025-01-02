@@ -1,0 +1,1687 @@
+Total hours mismatched: 48, largest lackinghours: 8 hours, largest hours in abundance: 4
+Employee I: 160/160
+	Week 1:
+	day 0, thursday: 7-15, Labor
+	Week 2:
+	day 4, monday: 7-19, Labor
+	day 8, friday: 15-23, Labor
+	Week 3:
+	day 12, tuesday: 7-19, Labor
+	day 15, friday: 19-7, Labor
+	Week 4:
+	day 20, wednesday: 23-7, Labor
+	Week 5:
+	day 25, monday: 23-7, Labor
+	day 27, wednesday: 19-7, Labor
+	day 31, sunday: 7-19, Labor
+	Week 6:
+	day 32, monday: 7-19, Labor
+	Week 7:
+	day 39, monday: 15-23, Labor
+	day 44, saturday: 7-15, Labor
+	Week 8:
+	day 48, wednesday: 19-7, Labor
+	day 49, thursday: 23-7, Labor
+	Week 9:
+	day 54, tuesday: 23-7, Labor
+	day 55, wednesday: 19-7, Labor
+Employee J: 64/64
+	Week 1:
+	day 0, thursday: 23-7, Labor
+	Week 2:
+	day 4, monday: 23-7, Labor
+	day 6, wednesday: 7-15, Labor
+	Week 3:
+	Week 4:
+	Week 5:
+	day 28, thursday: 23-7, Labor
+	Week 6:
+	day 32, monday: 15-23, Labor
+	day 33, tuesday: 23-7, Labor
+	day 34, wednesday: 23-7, Labor
+	Week 7:
+	day 40, tuesday: 7-15, Labor
+	Week 8:
+	Week 9:
+Employee K: 260/264
+	Week 1:
+	day 0, thursday: 7-19, Labor
+	day 3, sunday: 7-15, Labor
+	Week 2:
+	day 5, tuesday: 7-19, Labor
+	Week 3:
+	day 11, monday: 7-19, Labor
+	day 12, tuesday: 7-15, Labor
+	day 13, wednesday: 7-19, Labor
+	day 16, saturday: 7-19, Labor
+	Week 4:
+	day 19, tuesday: 7-15, Labor
+	day 20, wednesday: 7-19, Labor
+	day 21, thursday: 7-15, Labor
+	Week 5:
+	day 26, tuesday: 7-19, Labor
+	day 27, wednesday: 7-19, Labor
+	day 31, sunday: 7-19, Labor
+	Week 6:
+	day 33, tuesday: 7-15, Labor
+	day 34, wednesday: 7-19, Labor
+	day 35, thursday: 7-15, Labor
+	Week 7:
+	day 39, monday: 7-15, Labor
+	day 40, tuesday: 7-15, Labor
+	day 41, wednesday: 7-15, Labor
+	day 43, friday: 7-15, Labor
+	day 45, sunday: 7-19, Labor
+	Week 8:
+	day 48, wednesday: 7-19, Labor
+	day 50, friday: 7-19, Labor
+	Week 9:
+	day 53, monday: 7-19, Labor
+	day 54, tuesday: 7-19, Labor
+Employee L: 264/264
+	Week 1:
+	day 2, saturday: 23-7, Labor
+	day 3, sunday: 23-7, Labor
+	Week 2:
+	day 4, monday: 23-7, Labor
+	day 5, tuesday: 19-7, Labor
+	day 7, thursday: 15-23, Labor
+	day 8, friday: 23-7, Labor
+	Week 3:
+	day 11, monday: 7-19, Labor
+	day 12, tuesday: 7-15, Labor
+	day 14, thursday: 23-7, Labor
+	day 16, saturday: 19-7, Labor
+	Week 4:
+	day 19, tuesday: 23-7, Labor
+	day 20, wednesday: 23-7, Labor
+	day 22, friday: 23-7, Labor
+	Week 5:
+	day 25, monday: 19-7, Labor
+	day 26, tuesday: 23-7, Labor
+	day 27, wednesday: 23-7, Labor
+	day 30, saturday: 23-7, Labor
+	day 31, sunday: 23-7, Labor
+	Week 6:
+	day 32, monday: 23-7, Labor
+	day 33, tuesday: 23-7, Labor
+	day 36, friday: 7-19, Labor
+	Week 7:
+	day 39, monday: 7-15, Labor
+	day 40, tuesday: 7-19, Labor
+	day 42, thursday: 7-19, Labor
+	day 45, sunday: 15-23, Labor
+	Week 8:
+	day 47, tuesday: 7-15, Labor
+	day 50, friday: 7-15, Labor
+	Week 9:
+	day 53, monday: 7-19, Labor
+	day 55, wednesday: 23-7, Labor
+Employee M: 240/240
+	Week 1:
+	day 1, friday: 7-19, Labor
+	day 2, saturday: 7-15, Labor
+	Week 2:
+	day 4, monday: 7-19, Labor
+	day 7, thursday: 7-19, Labor
+	day 8, friday: 7-19, Labor
+	Week 3:
+	day 17, sunday: 7-19, Labor
+	Week 4:
+	day 18, monday: 7-19, Labor
+	day 20, wednesday: 7-15, Labor
+	day 21, thursday: 7-19, Labor
+	day 22, friday: 7-19, Labor
+	Week 5:
+	day 26, tuesday: 7-19, Labor
+	day 29, friday: 7-19, Labor
+	day 31, sunday: 7-15, Labor
+	Week 6:
+	day 32, monday: 7-19, Labor
+	day 35, thursday: 7-15, Labor
+	day 36, friday: 7-15, Labor
+	Week 7:
+	day 39, monday: 7-19, Labor
+	day 44, saturday: 7-19, Labor
+	Week 8:
+	day 46, monday: 7-15, Labor
+	day 48, wednesday: 7-19, Labor
+	day 49, thursday: 7-19, Labor
+	day 50, friday: 7-19, Labor
+	Week 9:
+Employee N: 200/200
+	Week 1:
+	day 2, saturday: 15-23, Labor
+	day 3, sunday: 15-23, Labor
+	Week 2:
+	day 4, monday: 15-23, Labor
+	day 5, tuesday: 15-23, Labor
+	day 6, wednesday: 15-23, Labor
+	day 7, thursday: 15-23, Labor
+	Week 3:
+	day 15, friday: 15-23, Labor
+	day 16, saturday: 15-23, Labor
+	day 17, sunday: 15-23, Labor
+	Week 4:
+	day 21, thursday: 15-23, Labor
+	Week 5:
+	day 25, monday: 7-15, Labor
+	day 26, tuesday: 7-15, Labor
+	day 27, wednesday: 15-23, Labor
+	day 30, saturday: 15-23, Labor
+	day 31, sunday: 15-23, Labor
+	Week 6:
+	day 32, monday: 15-23, Labor
+	day 35, thursday: 15-23, Labor
+	Week 7:
+	day 40, tuesday: 15-23, Labor
+	day 41, wednesday: 15-23, Labor
+	day 42, thursday: 15-23, Labor
+	day 45, sunday: 15-23, Labor
+	Week 8:
+	day 47, tuesday: 15-23, Labor
+	day 48, wednesday: 15-23, Labor
+	day 50, friday: 15-23, Labor
+	Week 9:
+	day 55, wednesday: 15-23, Labor
+Employee Q: 264/264
+	Week 1:
+	day 0, thursday: 23-7, Labor
+	day 1, friday: 23-7, Labor
+	Week 2:
+	day 4, monday: 15-23, Labor
+	day 5, tuesday: 19-7, Labor
+	day 7, thursday: 7-15, Labor
+	day 10, sunday: 15-23, Labor
+	Week 3:
+	day 12, tuesday: 7-15, Labor
+	day 13, wednesday: 7-15, Labor
+	day 15, friday: 7-15, Labor
+	Week 4:
+	day 18, monday: 7-19, Labor
+	day 19, tuesday: 7-19, Labor
+	day 21, thursday: 7-19, Labor
+	day 23, saturday: 7-19, Labor
+	Week 5:
+	day 26, tuesday: 7-15, Labor
+	day 29, friday: 19-7, Labor
+	Week 6:
+	day 32, monday: 7-15, Labor
+	day 33, tuesday: 7-15, Labor
+	day 34, wednesday: 15-23, Labor
+	day 36, friday: 23-7, Labor
+	day 37, saturday: 23-7, Labor
+	Week 7:
+	day 39, monday: 19-7, Labor
+	day 41, wednesday: 7-15, Labor
+	day 42, thursday: 7-19, Labor
+	day 43, friday: 7-15, Labor
+	Week 8:
+	day 47, tuesday: 7-15, Labor
+	day 49, thursday: 7-15, Labor
+	day 51, saturday: 7-19, Labor
+	Week 9:
+	day 53, monday: 7-19, Labor
+Employee P: 296/296
+	Week 1:
+	day 2, saturday: 19-7, Labor
+	day 3, sunday: 19-7, Labor
+	Week 2:
+	day 5, tuesday: 7-19, Labor
+	day 7, thursday: 7-19, Labor
+	day 8, friday: 7-19, Labor
+	day 9, saturday: 23-7, Labor
+	day 10, sunday: 23-7, Labor
+	Week 3:
+	day 14, thursday: 23-7, Labor
+	day 17, sunday: 7-15, Labor
+	Week 4:
+	day 18, monday: 7-15, Labor
+	day 21, thursday: 7-15, Labor
+	Week 5:
+	day 25, monday: 7-19, Labor
+	day 27, wednesday: 19-7, Labor
+	day 30, saturday: 7-15, Labor
+	day 31, sunday: 7-19, Labor
+	Week 6:
+	day 32, monday: 7-15, Labor
+	day 34, wednesday: 7-19, Labor
+	day 35, thursday: 23-7, Labor
+	day 36, friday: 23-7, Labor
+	day 37, saturday: 19-7, Labor
+	Week 7:
+	day 39, monday: 7-19, Labor
+	day 40, tuesday: 7-19, Labor
+	day 43, friday: 19-7, Labor
+	day 44, saturday: 19-7, Labor
+	Week 8:
+	day 48, wednesday: 19-7, Labor
+	day 50, friday: 19-7, Labor
+	day 51, saturday: 19-7, Labor
+	day 52, sunday: 19-7, Labor
+	Week 9:
+Employee Q: 260/256
+	Week 1:
+	day 0, thursday: 23-7, Labor
+	day 2, saturday: 23-7, Labor
+	Week 2:
+	day 4, monday: 7-15, Labor
+	day 6, wednesday: 23-7, Labor
+	day 8, friday: 23-7, Labor
+	day 10, sunday: 23-7, Labor
+	Week 3:
+	day 12, tuesday: 23-7, Labor
+	day 13, wednesday: 23-7, Labor
+	day 14, thursday: 23-7, Labor
+	day 15, friday: 23-7, Labor
+	day 17, sunday: 23-7, Labor
+	Week 4:
+	day 20, wednesday: 23-7, Labor
+	day 21, thursday: 23-7, Labor
+	day 22, friday: 23-7, Labor
+	day 23, saturday: 23-7, Labor
+	Week 5:
+	day 25, monday: 15-23, Labor
+	day 28, thursday: 23-7, Labor
+	day 29, friday: 23-7, Labor
+	day 30, saturday: 23-7, Labor
+	day 31, sunday: 23-7, Labor
+	Week 6:
+	day 37, saturday: 23-7, Labor
+	day 38, sunday: 23-7, Labor
+	Week 7:
+	day 39, monday: 23-7, Labor
+	day 42, thursday: 23-7, Labor
+	day 45, sunday: 23-7, Labor
+	Week 8:
+	day 46, monday: 23-7, Labor
+	day 47, tuesday: 23-7, Labor
+	day 50, friday: 23-7, Labor
+	day 51, saturday: 23-7, Labor
+	day 52, sunday: 19-7, Labor
+	Week 9:
+	day 54, tuesday: 23-7, Labor
+	day 55, wednesday: 23-7, Labor
+Employee R: 256/264
+	Week 1:
+	day 0, thursday: 7-15, Labor
+	day 1, friday: 23-7, Labor
+	day 3, sunday: 7-15, Labor
+	Week 2:
+	day 4, monday: 7-15, Labor
+	day 5, tuesday: 23-7, Labor
+	day 7, thursday: 7-15, Labor
+	day 8, friday: 7-15, Labor
+	Week 3:
+	day 11, monday: 23-7, Labor
+	day 13, wednesday: 7-15, Labor
+	day 14, thursday: 23-7, Labor
+	day 17, sunday: 23-7, Labor
+	Week 4:
+	day 19, tuesday: 7-15, Labor
+	day 20, wednesday: 7-15, Labor
+	day 21, thursday: 7-15, Labor
+	Week 5:
+	day 25, monday: 23-7, Labor
+	day 27, wednesday: 23-7, Labor
+	day 29, friday: 15-23, Labor
+	day 31, sunday: 7-15, Labor
+	Week 6:
+	day 33, tuesday: 23-7, Labor
+	day 35, thursday: 7-15, Labor
+	day 36, friday: 7-15, Labor
+	Week 7:
+	day 39, monday: 23-7, Labor
+	day 40, tuesday: 23-7, Labor
+	day 43, friday: 23-7, Labor
+	day 44, saturday: 23-7, Labor
+	day 45, sunday: 23-7, Labor
+	Week 8:
+	day 47, tuesday: 7-15, Labor
+	day 48, wednesday: 7-15, Labor
+	day 49, thursday: 7-15, Labor
+	day 50, friday: 15-23, Labor
+	Week 9:
+	day 53, monday: 23-7, Labor
+	day 55, wednesday: 7-15, Labor
+Employee S: 96/96
+	Week 1:
+	day 1, friday: 7-15, Labor
+	day 2, saturday: 7-15, Labor
+	day 3, sunday: 7-15, Labor
+	Week 2:
+	Week 3:
+	day 11, monday: 23-7, Labor
+	day 17, sunday: 7-15, Labor
+	Week 4:
+	Week 5:
+	day 28, thursday: 7-15, Labor
+	day 29, friday: 7-15, Labor
+	day 30, saturday: 7-15, Labor
+	day 31, sunday: 7-15, Labor
+	Week 6:
+	day 37, saturday: 7-15, Labor
+	Week 7:
+	day 42, thursday: 15-23, Labor
+	Week 8:
+	Week 9:
+	day 54, tuesday: 23-7, Labor
+Employee T: 264/264
+	Week 1:
+	day 0, thursday: 15-23, Labor
+	Week 2:
+	day 5, tuesday: 7-19, Labor
+	day 6, wednesday: 7-15, Labor
+	day 9, saturday: 7-15, Labor
+	day 10, sunday: 7-19, Labor
+	Week 3:
+	day 12, tuesday: 7-15, Labor
+	day 13, wednesday: 7-19, Labor
+	day 15, friday: 15-23, Labor
+	Week 4:
+	day 18, monday: 7-15, Labor
+	day 19, tuesday: 23-7, Labor
+	day 20, wednesday: 23-7, Labor
+	day 21, thursday: 19-7, Labor
+	day 24, sunday: 7-15, Labor
+	Week 5:
+	day 25, monday: 23-7, Labor
+	day 27, wednesday: 15-23, Labor
+	day 28, thursday: 19-7, Labor
+	day 29, friday: 23-7, Labor
+	Week 6:
+	day 32, monday: 23-7, Labor
+	day 33, tuesday: 23-7, Labor
+	day 35, thursday: 7-15, Labor
+	day 37, saturday: 23-7, Labor
+	Week 7:
+	day 39, monday: 7-15, Labor
+	day 40, tuesday: 7-19, Labor
+	day 43, friday: 7-19, Labor
+	Week 8:
+	day 47, tuesday: 19-7, Labor
+	day 49, thursday: 7-15, Labor
+	day 52, sunday: 19-7, Labor
+	Week 9:
+	day 54, tuesday: 19-7, Labor
+Employee A: 128/128
+	Week 1:
+	day 1, friday: 7-15, Maternity
+	Week 2:
+	day 5, tuesday: 7-15, Maternity
+	day 8, friday: 7-15, Maternity
+	day 10, sunday: 7-15, Maternity
+	Week 3:
+	Week 4:
+	day 18, monday: 7-15, Maternity
+	day 19, tuesday: 7-15, Maternity
+	day 22, friday: 7-15, Maternity
+	day 24, sunday: 7-15, Maternity
+	Week 5:
+	day 28, thursday: 7-15, Maternity
+	Week 6:
+	day 34, wednesday: 7-15, Maternity
+	day 36, friday: 7-15, Maternity
+	day 37, saturday: 7-15, Maternity
+	Week 7:
+	day 43, friday: 7-15, Maternity
+	Week 8:
+	day 46, monday: 7-15, Maternity
+	Week 9:
+	day 54, tuesday: 7-15, Maternity
+	day 55, wednesday: 7-15, Maternity
+Employee B: 256/256
+	Week 1:
+	day 1, friday: 15-23, Maternity
+	day 2, saturday: 15-23, Maternity
+	Week 2:
+	day 4, monday: 7-15, Maternity
+	day 5, tuesday: 7-15, Maternity
+	day 6, wednesday: 7-15, Maternity
+	day 7, thursday: 7-19, Maternity
+	Week 3:
+	day 11, monday: 7-19, Maternity
+	day 13, wednesday: 7-15, Maternity
+	day 14, thursday: 15-23, Maternity
+	day 16, saturday: 7-15, Maternity
+	Week 4:
+	day 19, tuesday: 7-15, Maternity
+	day 20, wednesday: 7-19, Maternity
+	day 21, thursday: 7-19, Maternity
+	day 22, friday: 7-19, Maternity
+	Week 5:
+	day 25, monday: 7-15, Maternity
+	day 29, friday: 7-15, Maternity
+	day 30, saturday: 7-15, Maternity
+	Week 6:
+	day 33, tuesday: 7-15, Maternity
+	day 34, wednesday: 7-15, Maternity
+	day 35, thursday: 15-23, Maternity
+	Week 7:
+	day 39, monday: 7-19, Maternity
+	day 41, wednesday: 7-19, Maternity
+	day 43, friday: 7-15, Maternity
+	day 44, saturday: 7-19, Maternity
+	day 45, sunday: 7-15, Maternity
+	Week 8:
+	day 46, monday: 7-15, Maternity
+	day 50, friday: 15-23, Maternity
+	Week 9:
+	day 53, monday: 7-15, Maternity
+Employee C: 176/176
+	Week 1:
+	day 0, thursday: 7-15, Maternity
+	day 1, friday: 7-15, Maternity
+	Week 2:
+	day 6, wednesday: 23-7, Maternity
+	Week 3:
+	day 11, monday: 19-7, Maternity
+	day 13, wednesday: 7-15, Maternity
+	day 14, thursday: 7-15, Maternity
+	day 15, friday: 7-15, Maternity
+	Week 4:
+	day 20, wednesday: 7-15, Maternity
+	Week 5:
+	day 25, monday: 7-15, Maternity
+	day 26, tuesday: 7-15, Maternity
+	day 27, wednesday: 7-15, Maternity
+	day 28, thursday: 7-15, Maternity
+	day 29, friday: 7-15, Maternity
+	Week 6:
+	day 34, wednesday: 7-19, Maternity
+	day 35, thursday: 15-23, Maternity
+	Week 7:
+	day 39, monday: 23-7, Maternity
+	day 41, wednesday: 7-15, Maternity
+	day 42, thursday: 7-15, Maternity
+	day 43, friday: 7-15, Maternity
+	Week 8:
+	Week 9:
+	day 53, monday: 15-23, Maternity
+	day 55, wednesday: 7-15, Maternity
+Employee D: 176/176
+	Week 1:
+	day 0, thursday: 7-15, Maternity
+	day 2, saturday: 7-15, Maternity
+	day 3, sunday: 23-7, Maternity
+	Week 2:
+	day 7, thursday: 7-19, Maternity
+	day 8, friday: 15-23, Maternity
+	Week 3:
+	day 14, thursday: 23-7, Maternity
+	Week 4:
+	day 18, monday: 7-15, Maternity
+	day 19, tuesday: 7-15, Maternity
+	day 21, thursday: 23-7, Maternity
+	day 22, friday: 23-7, Maternity
+	Week 5:
+	day 28, thursday: 7-15, Maternity
+	day 30, saturday: 23-7, Maternity
+	Week 6:
+	day 33, tuesday: 7-15, Maternity
+	Week 7:
+	day 39, monday: 19-7, Maternity
+	day 40, tuesday: 23-7, Maternity
+	day 44, saturday: 7-15, Maternity
+	day 45, sunday: 7-15, Maternity
+	Week 8:
+	day 48, wednesday: 23-7, Maternity
+	day 49, thursday: 23-7, Maternity
+	day 50, friday: 23-7, Maternity
+	Week 9:
+	day 53, monday: 7-15, Maternity
+Employee E: 120/120
+	Week 1:
+	day 2, saturday: 7-15, Maternity
+	day 3, sunday: 7-15, Maternity
+	Week 2:
+	day 9, saturday: 7-15, Maternity
+	day 10, sunday: 7-15, Maternity
+	Week 3:
+	day 17, sunday: 15-23, Maternity
+	Week 4:
+	day 23, saturday: 7-15, Maternity
+	day 24, sunday: 7-15, Maternity
+	Week 5:
+	day 30, saturday: 7-15, Maternity
+	day 31, sunday: 7-15, Maternity
+	Week 6:
+	day 37, saturday: 7-15, Maternity
+	day 38, sunday: 7-15, Maternity
+	Week 7:
+	day 44, saturday: 7-15, Maternity
+	day 45, sunday: 7-15, Maternity
+	Week 8:
+	day 51, saturday: 7-15, Maternity
+	day 52, sunday: 7-15, Maternity
+	Week 9:
+Employee F: 260/264
+	Week 1:
+	day 1, friday: 19-7, Maternity
+	Week 2:
+	day 4, monday: 23-7, Maternity
+	day 6, wednesday: 7-19, Maternity
+	day 7, thursday: 7-15, Maternity
+	day 8, friday: 15-23, Maternity
+	day 9, saturday: 23-7, Maternity
+	Week 3:
+	day 12, tuesday: 23-7, Maternity
+	day 13, wednesday: 23-7, Maternity
+	day 15, friday: 23-7, Maternity
+	Week 4:
+	day 18, monday: 23-7, Maternity
+	day 19, tuesday: 23-7, Maternity
+	day 20, wednesday: 23-7, Maternity
+	day 22, friday: 23-7, Maternity
+	day 24, sunday: 7-15, Maternity
+	Week 5:
+	day 26, tuesday: 15-23, Maternity
+	day 27, wednesday: 23-7, Maternity
+	day 28, thursday: 23-7, Maternity
+	Week 6:
+	day 32, monday: 7-15, Maternity
+	day 33, tuesday: 23-7, Maternity
+	day 34, wednesday: 23-7, Maternity
+	day 35, thursday: 19-7, Maternity
+	day 38, sunday: 7-19, Maternity
+	Week 7:
+	day 40, tuesday: 23-7, Maternity
+	day 42, thursday: 23-7, Maternity
+	day 43, friday: 19-7, Maternity
+	Week 8:
+	day 46, monday: 23-7, Maternity
+	day 48, wednesday: 7-15, Maternity
+	day 50, friday: 23-7, Maternity
+	Week 9:
+	day 53, monday: 23-7, Maternity
+	day 55, wednesday: 7-15, Maternity
+Employee G: 32/32
+	Week 1:
+	Week 2:
+	Week 3:
+	day 16, saturday: 23-7, Maternity
+	Week 4:
+	day 24, sunday: 7-15, Maternity
+	Week 5:
+	Week 6:
+	day 38, sunday: 23-7, Maternity
+	Week 7:
+	Week 8:
+	day 51, saturday: 23-7, Maternity
+	Week 9:
+Employee H: 172/176
+	Week 1:
+	day 1, friday: 15-23, Maternity
+	day 2, saturday: 15-23, Maternity
+	day 3, sunday: 15-23, Maternity
+	Week 2:
+	Week 3:
+	day 11, monday: 15-23, Maternity
+	day 12, tuesday: 15-23, Maternity
+	day 13, wednesday: 15-23, Maternity
+	Week 4:
+	day 18, monday: 15-23, Maternity
+	day 20, wednesday: 7-19, Maternity
+	day 21, thursday: 15-23, Maternity
+	day 22, friday: 15-23, Maternity
+	Week 5:
+	day 26, tuesday: 15-23, Maternity
+	day 28, thursday: 15-23, Maternity
+	day 30, saturday: 15-23, Maternity
+	day 31, sunday: 15-23, Maternity
+	Week 6:
+	day 35, thursday: 15-23, Maternity
+	day 36, friday: 15-23, Maternity
+	Week 7:
+	day 40, tuesday: 15-23, Maternity
+	day 43, friday: 15-23, Maternity
+	day 44, saturday: 15-23, Maternity
+	day 45, sunday: 15-23, Maternity
+	Week 8:
+	Week 9:
+	day 54, tuesday: 7-15, Maternity
+Employee U: 296/296
+	Week 1:
+	day 0, thursday: 23-7, Maternity
+	day 1, friday: 19-7, Labor
+	day 3, sunday: 15-23, Maternity
+	Week 2:
+	day 5, tuesday: 7-15, Maternity
+	day 7, thursday: 23-7, Maternity
+	day 8, friday: 23-7, Maternity
+	day 10, sunday: 7-19, Labor
+	Week 3:
+	day 12, tuesday: 7-19, Maternity
+	day 16, saturday: 15-23, Maternity
+	Week 4:
+	day 19, tuesday: 7-19, Maternity
+	day 22, friday: 15-23, Labor
+	day 23, saturday: 19-7, Maternity
+	day 24, sunday: 19-7, Maternity
+	Week 5:
+	day 27, wednesday: 23-7, Maternity
+	day 29, friday: 23-7, Maternity
+	day 30, saturday: 23-7, Maternity
+	day 31, sunday: 23-7, Maternity
+	Week 6:
+	day 32, monday: 19-7, Maternity
+	day 36, friday: 23-7, Maternity
+	day 38, sunday: 15-23, Labor
+	Week 7:
+	day 39, monday: 15-23, Maternity
+	Week 8:
+	day 46, monday: 7-15, Labor
+	day 47, tuesday: 19-7, Maternity
+	day 48, wednesday: 19-7, Maternity
+	day 49, thursday: 23-7, Maternity
+	day 50, friday: 23-7, Maternity
+	day 51, saturday: 23-7, Maternity
+	day 52, sunday: 19-7, Maternity
+	Week 9:
+	day 53, monday: 19-7, Maternity
+	day 54, tuesday: 19-7, Maternity
+	day 55, wednesday: 23-7, Maternity
+Employee V: 296/296
+	Week 1:
+	day 0, thursday: 7-15, Maternity
+	day 2, saturday: 7-19, Maternity
+	day 3, sunday: 23-7, Maternity
+	Week 2:
+	day 6, wednesday: 19-7, Maternity
+	day 8, friday: 7-15, Maternity
+	day 9, saturday: 7-19, Maternity
+	day 10, sunday: 7-19, Maternity
+	Week 3:
+	day 13, wednesday: 19-7, Maternity
+	day 14, thursday: 23-7, Maternity
+	day 15, friday: 23-7, Maternity
+	day 17, sunday: 19-7, Maternity
+	Week 4:
+	day 19, tuesday: 23-7, Maternity
+	day 22, friday: 23-7, Maternity
+	day 23, saturday: 23-7, Maternity
+	day 24, sunday: 23-7, Labor
+	Week 5:
+	day 26, tuesday: 23-7, Maternity
+	day 28, thursday: 19-7, Labor
+	day 30, saturday: 15-23, Maternity
+	day 31, sunday: 23-7, Maternity
+	Week 6:
+	day 32, monday: 23-7, Maternity
+	day 34, wednesday: 19-7, Maternity
+	day 35, thursday: 23-7, Maternity
+	day 37, saturday: 7-19, Labor
+	Week 7:
+	day 39, monday: 19-7, Maternity
+	day 43, friday: 7-19, Maternity
+	day 44, saturday: 7-19, Labor
+	Week 8:
+	day 47, tuesday: 19-7, Maternity
+	day 51, saturday: 7-15, Maternity
+	day 52, sunday: 7-15, Labor
+	Week 9:
+	day 53, monday: 7-19, Maternity
+Employee W: 296/296
+	Week 1:
+	day 2, saturday: 7-15, Labor
+	day 3, sunday: 7-19, Maternity
+	Week 2:
+	day 5, tuesday: 23-7, Maternity
+	day 6, wednesday: 23-7, Labor
+	day 8, friday: 19-7, Maternity
+	day 9, saturday: 23-7, Maternity
+	Week 3:
+	day 11, monday: 15-23, Labor
+	day 13, wednesday: 23-7, Labor
+	day 14, thursday: 19-7, Maternity
+	day 15, friday: 23-7, Maternity
+	day 17, sunday: 15-23, Maternity
+	Week 4:
+	day 18, monday: 23-7, Labor
+	day 23, saturday: 19-7, Maternity
+	day 24, sunday: 19-7, Labor
+	Week 5:
+	day 25, monday: 23-7, Maternity
+	day 29, friday: 7-19, Maternity
+	day 30, saturday: 7-19, Maternity
+	day 31, sunday: 7-15, Maternity
+	Week 6:
+	day 34, wednesday: 23-7, Labor
+	day 35, thursday: 19-7, Labor
+	day 37, saturday: 7-19, Maternity
+	day 38, sunday: 7-15, Labor
+	Week 7:
+	day 41, wednesday: 15-23, Maternity
+	day 43, friday: 7-19, Labor
+	day 44, saturday: 7-19, Maternity
+	Week 8:
+	day 48, wednesday: 15-23, Maternity
+	day 50, friday: 7-19, Maternity
+	day 51, saturday: 19-7, Maternity
+	day 52, sunday: 23-7, Maternity
+	Week 9:
+	day 55, wednesday: 19-7, Maternity
+Employee X: 264/264
+	Week 1:
+	day 0, thursday: 7-15, Maternity
+	day 1, friday: 23-7, Maternity
+	day 3, sunday: 23-7, Maternity
+	Week 2:
+	day 6, wednesday: 7-15, Maternity
+	day 7, thursday: 23-7, Labor
+	day 10, sunday: 7-15, Labor
+	Week 3:
+	day 11, monday: 7-15, Maternity
+	day 12, tuesday: 15-23, Labor
+	day 14, thursday: 7-15, Labor
+	day 15, friday: 7-15, Maternity
+	day 16, saturday: 23-7, Maternity
+	Week 4:
+	day 19, tuesday: 7-15, Labor
+	day 22, friday: 7-15, Labor
+	day 24, sunday: 7-15, Labor
+	Week 5:
+	day 25, monday: 7-15, Maternity
+	day 26, tuesday: 7-15, Maternity
+	day 28, thursday: 23-7, Maternity
+	day 29, friday: 23-7, Maternity
+	day 31, sunday: 23-7, Maternity
+	Week 6:
+	day 33, tuesday: 23-7, Maternity
+	day 34, wednesday: 23-7, Maternity
+	day 36, friday: 23-7, Maternity
+	day 38, sunday: 23-7, Maternity
+	Week 7:
+	day 39, monday: 23-7, Maternity
+	day 41, wednesday: 7-15, Maternity
+	day 42, thursday: 23-7, Maternity
+	Week 8:
+	day 46, monday: 15-23, Maternity
+	day 47, tuesday: 23-7, Maternity
+	day 48, wednesday: 23-7, Maternity
+	day 49, thursday: 23-7, Labor
+	day 52, sunday: 15-23, Maternity
+	Week 9:
+	day 54, tuesday: 23-7, Maternity
+	day 55, wednesday: 23-7, Maternity
+Employee Y: 264/264
+	Week 1:
+	day 1, friday: 15-23, Labor
+	day 2, saturday: 15-23, Labor
+	Week 2:
+	day 5, tuesday: 23-7, Maternity
+	day 8, friday: 15-23, Labor
+	day 9, saturday: 15-23, Labor
+	day 10, sunday: 15-23, Maternity
+	Week 3:
+	day 12, tuesday: 23-7, Maternity
+	day 15, friday: 15-23, Maternity
+	day 17, sunday: 15-23, Labor
+	Week 4:
+	day 18, monday: 15-23, Maternity
+	day 20, wednesday: 15-23, Labor
+	day 22, friday: 15-23, Maternity
+	day 23, saturday: 15-23, Labor
+	Week 5:
+	day 25, monday: 15-23, Maternity
+	day 26, tuesday: 15-23, Labor
+	day 28, thursday: 15-23, Maternity
+	day 29, friday: 15-23, Maternity
+	day 30, saturday: 15-23, Labor
+	day 31, sunday: 15-23, Maternity
+	Week 6:
+	day 33, tuesday: 15-23, Maternity
+	day 35, thursday: 15-23, Labor
+	day 36, friday: 15-23, Labor
+	Week 7:
+	day 39, monday: 15-23, Maternity
+	day 40, tuesday: 15-23, Maternity
+	day 42, thursday: 15-23, Maternity
+	day 45, sunday: 15-23, Maternity
+	Week 8:
+	day 46, monday: 15-23, Labor
+	day 47, tuesday: 15-23, Maternity
+	day 49, thursday: 15-23, Maternity
+	day 50, friday: 15-23, Maternity
+	day 51, saturday: 15-23, Maternity
+	day 52, sunday: 15-23, Maternity
+	Week 9:
+	day 53, monday: 15-23, Labor
+Employee Z: 128/128
+	Week 1:
+	day 1, friday: 7-15, Maternity
+	day 2, saturday: 7-15, Maternity
+	day 3, sunday: 7-15, Maternity
+	Week 2:
+	day 7, thursday: 7-15, Maternity
+	Week 3:
+	day 16, saturday: 15-23, Maternity
+	Week 4:
+	day 18, monday: 7-15, Maternity
+	day 23, saturday: 7-15, Maternity
+	Week 5:
+	day 25, monday: 7-15, Labor
+	day 29, friday: 7-15, Labor
+	day 30, saturday: 7-15, Labor
+	day 31, sunday: 7-15, Maternity
+	Week 6:
+	day 35, thursday: 7-15, Maternity
+	day 38, sunday: 7-15, Labor
+	Week 7:
+	day 43, friday: 7-15, Maternity
+	day 44, saturday: 7-15, Labor
+	Week 8:
+	day 49, thursday: 15-23, Labor
+	Week 9:
+Employee Æ: 132/136
+	Week 1:
+	day 3, sunday: 15-23, Labor
+	Week 2:
+	day 6, wednesday: 7-15, Labor
+	day 8, friday: 23-7, Maternity
+	day 9, saturday: 23-7, Labor
+	day 10, sunday: 23-7, Maternity
+	Week 3:
+	day 13, wednesday: 7-19, Maternity
+	day 14, thursday: 23-7, Maternity
+	day 16, saturday: 23-7, Labor
+	Week 4:
+	Week 5:
+	day 29, friday: 15-23, Maternity
+	day 30, saturday: 15-23, Labor
+	day 31, sunday: 23-7, Labor
+	Week 6:
+	day 38, sunday: 23-7, Labor
+	Week 7:
+	Week 8:
+	day 46, monday: 7-15, Maternity
+	day 50, friday: 7-15, Maternity
+	day 51, saturday: 7-15, Labor
+	day 52, sunday: 7-15, Maternity
+	Week 9:
+Employee Ø: 200/200
+	Week 1:
+	day 1, friday: 7-19, Labor
+	day 2, saturday: 7-19, Labor
+	Week 2:
+	day 8, friday: 7-19, Maternity
+	day 10, sunday: 7-19, Maternity
+	Week 3:
+	Week 4:
+	day 18, monday: 7-19, Maternity
+	day 20, wednesday: 7-15, Maternity
+	day 22, friday: 7-15, Maternity
+	day 23, saturday: 7-19, Labor
+	day 24, sunday: 7-19, Labor
+	Week 5:
+	day 30, saturday: 7-15, Maternity
+	day 31, sunday: 7-15, Maternity
+	Week 6:
+	day 34, wednesday: 15-23, Maternity
+	day 36, friday: 15-23, Maternity
+	day 38, sunday: 15-23, Maternity
+	Week 7:
+	day 43, friday: 7-19, Labor
+	day 45, sunday: 7-19, Labor
+	Week 8:
+	day 48, wednesday: 7-15, Maternity
+	day 50, friday: 15-23, Maternity
+	day 52, sunday: 7-19, Labor
+	Week 9:
+	day 53, monday: 7-15, Maternity
+Employee Å: 196/200
+	Week 1:
+	day 1, friday: 7-15, Maternity
+	day 2, saturday: 7-15, Maternity
+	day 3, sunday: 15-23, Maternity
+	Week 2:
+	day 8, friday: 15-23, Maternity
+	day 9, saturday: 15-23, Maternity
+	day 10, sunday: 23-7, Maternity
+	Week 3:
+	day 15, friday: 23-7, Labor
+	day 17, sunday: 23-7, Maternity
+	Week 4:
+	day 19, tuesday: 15-23, Maternity
+	day 22, friday: 7-15, Labor
+	day 23, saturday: 7-15, Maternity
+	Week 5:
+	day 27, wednesday: 23-7, Maternity
+	day 29, friday: 7-15, Maternity
+	day 30, saturday: 23-7, Maternity
+	day 31, sunday: 23-7, Maternity
+	Week 6:
+	day 34, wednesday: 15-23, Maternity
+	day 37, saturday: 7-19, Labor
+	Week 7:
+	day 41, wednesday: 7-15, Labor
+	day 44, saturday: 7-19, Maternity
+	day 45, sunday: 7-19, Labor
+	Week 8:
+	day 50, friday: 23-7, Labor
+	day 51, saturday: 23-7, Labor
+	day 52, sunday: 23-7, Maternity
+	Week 9:
+Employee AA: 124/128
+	Week 1:
+	day 1, friday: 23-7, Maternity
+	Week 2:
+	day 4, monday: 7-15, Maternity
+	day 10, sunday: 7-15, Labor
+	Week 3:
+	day 12, tuesday: 7-15, Maternity
+	day 15, friday: 7-15, Labor
+	Week 4:
+	day 19, tuesday: 7-19, Maternity
+	day 22, friday: 15-23, Labor
+	day 24, sunday: 15-23, Maternity
+	Week 5:
+	day 28, thursday: 7-15, Labor
+	Week 6:
+	day 32, monday: 7-15, Maternity
+	day 37, saturday: 15-23, Maternity
+	day 38, sunday: 15-23, Labor
+	Week 7:
+	day 43, friday: 23-7, Maternity
+	Week 8:
+	day 47, tuesday: 7-15, Maternity
+	day 51, saturday: 7-15, Maternity
+	Week 9:
+Employee AB: 176/176
+	Week 1:
+	day 0, thursday: 23-7, Maternity
+	day 1, friday: 23-7, Maternity
+	Week 2:
+	day 5, tuesday: 7-15, Maternity
+	day 9, saturday: 7-15, Labor
+	Week 3:
+	day 12, tuesday: 15-23, Maternity
+	day 13, wednesday: 23-7, Maternity
+	day 14, thursday: 23-7, -1
+	Week 4:
+	day 19, tuesday: 23-7, Maternity
+	day 21, thursday: 15-23, Maternity
+	day 24, sunday: 7-15, Labor
+	Week 5:
+	day 25, monday: 7-15, Maternity
+	day 28, thursday: 23-7, Maternity
+	Week 6:
+	day 32, monday: 23-7, Maternity
+	day 33, tuesday: 23-7, Maternity
+	day 36, friday: 15-23, Labor
+	day 38, sunday: 23-7, Maternity
+	Week 7:
+	day 41, wednesday: 23-7, Maternity
+	Week 8:
+	day 46, monday: 23-7, Maternity
+	day 47, tuesday: 23-7, Labor
+	day 49, thursday: 15-23, Maternity
+	day 51, saturday: 15-23, Labor
+	Week 9:
+	day 54, tuesday: 7-15, Labor
+Employee AC: 200/200
+	Week 1:
+	day 1, friday: 7-15, Labor
+	day 3, sunday: 7-15, Maternity
+	Week 2:
+	day 4, monday: 23-7, Maternity
+	day 7, thursday: 7-15, Maternity
+	Week 3:
+	day 11, monday: 15-23, Maternity
+	day 13, wednesday: 15-23, Labor
+	day 14, thursday: 15-23, Labor
+	day 17, sunday: 23-7, Maternity
+	Week 4:
+	day 20, wednesday: 15-23, Maternity
+	day 21, thursday: 15-23, Maternity
+	day 22, friday: 15-23, Maternity
+	Week 5:
+	day 25, monday: 15-23, Maternity
+	day 29, friday: 7-15, Labor
+	day 30, saturday: 23-7, Labor
+	Week 6:
+	day 32, monday: 7-15, Maternity
+	day 34, wednesday: 23-7, Labor
+	day 36, friday: 23-7, Maternity
+	Week 7:
+	day 39, monday: 23-7, Labor
+	day 41, wednesday: 23-7, Labor
+	day 43, friday: 7-15, Maternity
+	day 45, sunday: 7-15, Maternity
+	Week 8:
+	day 46, monday: 23-7, Labor
+	day 48, wednesday: 23-7, Labor
+	day 49, thursday: 23-7, Maternity
+	Week 9:
+	day 53, monday: 7-15, Labor
+Employee AD: 296/296
+	Week 1:
+	day 3, sunday: 7-19, Labor
+	Week 2:
+	day 4, monday: 7-15, Maternity
+	day 6, wednesday: 7-15, Maternity
+	day 7, thursday: 23-7, Maternity
+	day 9, saturday: 7-15, Maternity
+	day 10, sunday: 23-7, Maternity
+	Week 3:
+	day 11, monday: 23-7, Maternity
+	day 12, tuesday: 23-7, Labor
+	day 15, friday: 7-15, Maternity
+	day 16, saturday: 23-7, Maternity
+	Week 4:
+	day 19, tuesday: 23-7, Labor
+	day 20, wednesday: 19-7, Maternity
+	day 21, thursday: 23-7, Maternity
+	day 22, friday: 23-7, Labor
+	day 24, sunday: 15-23, Labor
+	Week 5:
+	day 26, tuesday: 23-7, Maternity
+	day 29, friday: 7-15, Maternity
+	day 30, saturday: 7-19, Labor
+	day 31, sunday: 23-7, Labor
+	Week 6:
+	day 34, wednesday: 19-7, Labor
+	day 35, thursday: 23-7, Maternity
+	day 36, friday: 19-7, Maternity
+	Week 7:
+	day 39, monday: 23-7, -1
+	day 40, tuesday: 23-7, Labor
+	day 42, thursday: 23-7, Labor
+	day 44, saturday: 23-7, Maternity
+	Week 8:
+	day 46, monday: 7-15, Labor
+	day 47, tuesday: 7-15, Maternity
+	day 48, wednesday: 7-19, Maternity
+	day 49, thursday: 7-19, Maternity
+	day 50, friday: 23-7, Maternity
+	day 52, sunday: 7-15, Maternity
+	Week 9:
+	day 53, monday: 19-7, Maternity
+Employee AE: 264/264
+	Week 1:
+	day 0, thursday: 7-15, Labor
+	Week 2:
+	day 4, monday: 7-15, Maternity
+	day 5, tuesday: 7-15, Labor
+	day 6, wednesday: 7-15, Labor
+	day 7, thursday: 7-15, Labor
+	Week 3:
+	day 11, monday: 7-15, Maternity
+	day 12, tuesday: 7-15, Maternity
+	day 13, wednesday: 7-15, Maternity
+	day 14, thursday: 23-7, -1
+	Week 4:
+	day 18, monday: 7-15, Maternity
+	day 19, tuesday: 7-15, Labor
+	day 20, wednesday: 7-15, Labor
+	day 21, thursday: 7-15, Maternity
+	Week 5:
+	day 25, monday: 7-15, Labor
+	day 26, tuesday: 7-15, Maternity
+	day 27, wednesday: 7-15, Maternity
+	day 28, thursday: 7-15, Labor
+	Week 6:
+	day 32, monday: 7-15, Maternity
+	day 33, tuesday: 7-15, Maternity
+	day 34, wednesday: 7-15, Labor
+	day 35, thursday: 7-15, Maternity
+	day 38, sunday: 7-15, Maternity
+	Week 7:
+	day 39, monday: 7-15, Maternity
+	day 40, tuesday: 7-15, Maternity
+	day 41, wednesday: 7-15, Maternity
+	day 43, friday: 23-7, Maternity
+	Week 8:
+	day 46, monday: 7-15, Maternity
+	day 47, tuesday: 7-15, Maternity
+	day 48, wednesday: 7-15, Maternity
+	day 49, thursday: 15-23, Labor
+	Week 9:
+	day 53, monday: 7-15, Maternity
+	day 54, tuesday: 7-15, Maternity
+	day 55, wednesday: 7-15, Labor
+Employee AF: 64/64
+	Week 1:
+	day 2, saturday: 23-7, Maternity
+	Week 2:
+	Week 3:
+	day 13, wednesday: 15-23, Maternity
+	Week 4:
+	day 20, wednesday: 15-23, Labor
+	Week 5:
+	day 27, wednesday: 15-23, Maternity
+	Week 6:
+	day 34, wednesday: 15-23, Labor
+	Week 7:
+	day 41, wednesday: 15-23, Labor
+	Week 8:
+	day 48, wednesday: 15-23, Maternity
+	Week 9:
+	day 55, wednesday: 7-15, Labor
+Employee AG: 180/184
+	Week 1:
+	day 0, thursday: 7-15, Maternity
+	day 1, friday: 7-15, Maternity
+	Week 2:
+	day 4, monday: 23-7, Maternity
+	day 9, saturday: 7-15, Labor
+	Week 3:
+	day 12, tuesday: 19-7, Labor
+	day 14, thursday: 7-15, Maternity
+	Week 4:
+	day 19, tuesday: 7-15, Maternity
+	day 20, wednesday: 15-23, Maternity
+	day 21, thursday: 23-7, Maternity
+	day 23, saturday: 15-23, Maternity
+	Week 5:
+	day 27, wednesday: 7-15, Labor
+	day 28, thursday: 7-19, Maternity
+	Week 6:
+	day 33, tuesday: 15-23, Labor
+	day 38, sunday: 7-15, Labor
+	Week 7:
+	day 40, tuesday: 23-7, Maternity
+	day 41, wednesday: 23-7, Maternity
+	Week 8:
+	day 46, monday: 15-23, Maternity
+	day 47, tuesday: 23-7, Maternity
+	day 51, saturday: 7-19, Labor
+	day 52, sunday: 7-15, Labor
+	Week 9:
+	day 55, wednesday: 7-15, Maternity
+Employee AH: 260/264
+	Week 1:
+	day 0, thursday: 7-19, Labor
+	Week 2:
+	day 5, tuesday: 7-19, Maternity
+	day 6, wednesday: 7-19, Maternity
+	day 7, thursday: 15-23, Maternity
+	day 9, saturday: 7-19, Maternity
+	Week 3:
+	day 13, wednesday: 7-19, Maternity
+	day 14, thursday: 7-15, Labor
+	day 17, sunday: 7-19, Maternity
+	Week 4:
+	day 18, monday: 15-23, Labor
+	day 20, wednesday: 7-15, Maternity
+	day 23, saturday: 7-15, Labor
+	day 24, sunday: 7-19, Maternity
+	Week 5:
+	day 27, wednesday: 7-19, Maternity
+	day 28, thursday: 15-23, Labor
+	Week 6:
+	day 32, monday: 7-15, Maternity
+	day 33, tuesday: 15-23, Maternity
+	day 34, wednesday: 15-23, Maternity
+	day 37, saturday: 7-19, Maternity
+	day 38, sunday: 7-19, Maternity
+	Week 7:
+	day 41, wednesday: 15-23, Maternity
+	day 43, friday: 7-19, Labor
+	Week 8:
+	day 46, monday: 15-23, Labor
+	day 48, wednesday: 7-19, Labor
+	day 52, sunday: 7-19, Maternity
+	Week 9:
+	day 54, tuesday: 7-15, Labor
+	day 55, wednesday: 15-23, Maternity
+Employee AI: 264/264
+	Week 1:
+	day 2, saturday: 7-19, Labor
+	Week 2:
+	day 4, monday: 7-15, Maternity
+	day 6, wednesday: 15-23, Labor
+	day 8, friday: 7-15, Maternity
+	day 9, saturday: 15-23, Labor
+	day 10, sunday: 23-7, Labor
+	Week 3:
+	day 12, tuesday: 7-15, Maternity
+	day 17, sunday: 7-15, Maternity
+	Week 4:
+	day 18, monday: 19-7, Labor
+	day 19, tuesday: 19-7, Labor
+	day 21, thursday: 23-7, Labor
+	day 22, friday: 23-7, Maternity
+	day 23, saturday: 23-7, Labor
+	Week 5:
+	day 27, wednesday: 7-15, Labor
+	day 29, friday: 7-15, Labor
+	day 30, saturday: 7-15, Maternity
+	day 31, sunday: 23-7, -1
+	Week 6:
+	day 32, monday: 23-7, Labor
+	day 34, wednesday: 7-15, Maternity
+	day 35, thursday: 23-7, Labor
+	day 37, saturday: 7-15, Labor
+	day 38, sunday: 23-7, Labor
+	Week 7:
+	day 40, tuesday: 23-7, Labor
+	day 43, friday: 15-23, Maternity
+	day 45, sunday: 23-7, Maternity
+	Week 8:
+	day 47, tuesday: 7-15, Maternity
+	day 50, friday: 7-15, Maternity
+	day 51, saturday: 23-7, Maternity
+	day 52, sunday: 23-7, Maternity
+	Week 9:
+	day 53, monday: 23-7, Labor
+	day 55, wednesday: 19-7, Maternity
+Employee AJ: 272/272
+	Week 1:
+	day 0, thursday: 7-15, Maternity
+	day 1, friday: 7-19, Labor
+	day 2, saturday: 15-23, Maternity
+	Week 2:
+	day 5, tuesday: 7-15, Labor
+	day 6, wednesday: 23-7, Maternity
+	day 8, friday: 23-7, Labor
+	Week 3:
+	day 11, monday: 7-15, Labor
+	day 12, tuesday: 7-15, Maternity
+	day 13, wednesday: 7-15, Labor
+	day 14, thursday: 7-19, Maternity
+	day 15, friday: 7-15, Labor
+	day 16, saturday: 23-7, Labor
+	Week 4:
+	day 19, tuesday: 15-23, Labor
+	day 21, thursday: 23-7, Maternity
+	Week 5:
+	day 25, monday: 7-15, Maternity
+	day 26, tuesday: 7-15, Maternity
+	day 27, wednesday: 7-15, Maternity
+	day 28, thursday: 7-15, Labor
+	day 29, friday: 7-15, Maternity
+	day 31, sunday: 23-7, -1
+	Week 6:
+	day 33, tuesday: 15-23, Labor
+	day 36, friday: 7-19, Maternity
+	Week 7:
+	day 39, monday: 7-15, Maternity
+	day 40, tuesday: 7-15, Maternity
+	day 41, wednesday: 7-15, Labor
+	day 42, thursday: 7-15, Maternity
+	day 43, friday: 7-15, -1
+	day 44, saturday: 15-23, Labor
+	Week 8:
+	day 47, tuesday: 7-19, Labor
+	Week 9:
+	day 53, monday: 7-15, Labor
+	day 54, tuesday: 7-15, Maternity
+	day 55, wednesday: 23-7, Labor
+Employee AK: 236/240
+	Week 1:
+	Week 2:
+	day 4, monday: 7-19, Labor
+	day 5, tuesday: 7-15, Maternity
+	day 6, wednesday: 7-15, Labor
+	day 7, thursday: 7-15, Maternity
+	day 8, friday: 15-23, Labor
+	Week 3:
+	day 13, wednesday: 7-19, Maternity
+	day 14, thursday: 7-19, Labor
+	Week 4:
+	day 19, tuesday: 7-19, Labor
+	day 20, wednesday: 7-15, Labor
+	day 21, thursday: 23-7, Labor
+	day 23, saturday: 15-23, Maternity
+	day 24, sunday: 23-7, Maternity
+	Week 5:
+	day 27, wednesday: 7-15, Labor
+	day 28, thursday: 7-15, Maternity
+	Week 6:
+	day 32, monday: 15-23, Maternity
+	day 34, wednesday: 7-15, Labor
+	day 35, thursday: 7-15, Maternity
+	day 36, friday: 7-15, Maternity
+	day 37, saturday: 7-15, Maternity
+	Week 7:
+	day 40, tuesday: 7-15, Maternity
+	Week 8:
+	day 46, monday: 7-15, Labor
+	day 47, tuesday: 7-15, Maternity
+	day 48, wednesday: 7-15, Maternity
+	day 51, saturday: 7-19, Maternity
+	day 52, sunday: 7-15, Labor
+	Week 9:
+	day 53, monday: 15-23, Maternity
+	day 55, wednesday: 23-7, -1
+Employee AL: 224/224
+	Week 1:
+	day 1, friday: 23-7, Labor
+	Week 2:
+	day 4, monday: 19-7, Maternity
+	day 6, wednesday: 23-7, Labor
+	day 7, thursday: 23-7, Labor
+	Week 3:
+	day 11, monday: 7-19, Maternity
+	day 13, wednesday: 7-15, Labor
+	day 14, thursday: 15-23, Labor
+	Week 4:
+	day 18, monday: 23-7, Maternity
+	day 20, wednesday: 7-15, Maternity
+	day 22, friday: 7-15, Maternity
+	Week 5:
+	day 25, monday: 7-19, Labor
+	day 26, tuesday: 15-23, Maternity
+	day 28, thursday: 23-7, Maternity
+	day 29, friday: 23-7, Maternity
+	day 31, sunday: 7-15, Maternity
+	Week 6:
+	day 32, monday: 23-7, Maternity
+	day 36, friday: 23-7, Labor
+	Week 7:
+	day 40, tuesday: 7-15, Maternity
+	day 41, wednesday: 15-23, Labor
+	day 42, thursday: 23-7, Maternity
+	day 44, saturday: 7-15, Labor
+	Week 8:
+	day 46, monday: 23-7, Maternity
+	day 49, thursday: 7-19, Maternity
+	day 50, friday: 19-7, -1
+	Week 9:
+	day 54, tuesday: 19-7, Maternity
+Employee AM: 264/264
+	Week 1:
+	day 1, friday: 7-15, Maternity
+	day 2, saturday: 23-7, Maternity
+	day 3, sunday: 23-7, Labor
+	Week 2:
+	day 5, tuesday: 7-15, Labor
+	day 8, friday: 15-23, -1
+	day 10, sunday: 7-15, Maternity
+	Week 3:
+	day 11, monday: 15-23, Labor
+	day 13, wednesday: 7-15, -1
+	day 14, thursday: 7-15, Maternity
+	day 15, friday: 7-15, Maternity
+	day 16, saturday: 7-15, Maternity
+	day 17, sunday: 7-19, Maternity
+	Week 4:
+	day 23, saturday: 7-15, Maternity
+	Week 5:
+	day 25, monday: 7-19, Maternity
+	day 26, tuesday: 23-7, Labor
+	day 28, thursday: 23-7, -1
+	day 29, friday: 23-7, Maternity
+	day 30, saturday: 23-7, Maternity
+	day 31, sunday: 23-7, -1
+	Week 6:
+	day 36, friday: 23-7, Labor
+	day 37, saturday: 19-7, Maternity
+	Week 7:
+	day 39, monday: 7-15, Maternity
+	day 42, thursday: 23-7, Labor
+	day 43, friday: 23-7, Labor
+	day 45, sunday: 7-15, Labor
+	Week 8:
+	day 46, monday: 23-7, Labor
+	day 50, friday: 7-15, Maternity
+	day 51, saturday: 7-15, Labor
+	day 52, sunday: 7-15, Maternity
+	Week 9:
+	day 54, tuesday: 7-15, Labor
+	day 55, wednesday: 7-19, Labor
+Employee AN: 272/272
+	Week 1:
+	day 0, thursday: 7-19, Labor
+	day 1, friday: 19-7, -1
+	Week 2:
+	day 6, wednesday: 7-15, Maternity
+	day 8, friday: 7-15, Labor
+	Week 3:
+	day 12, tuesday: 7-19, Maternity
+	day 13, wednesday: 23-7, Labor
+	day 15, friday: 7-19, Labor
+	day 17, sunday: 15-23, Labor
+	Week 4:
+	day 20, wednesday: 7-19, Labor
+	day 21, thursday: 7-19, Maternity
+	day 22, friday: 7-19, Labor
+	Week 5:
+	day 26, tuesday: 15-23, Labor
+	day 28, thursday: 19-7, -1
+	day 29, friday: 23-7, Labor
+	day 31, sunday: 7-15, Maternity
+	Week 6:
+	day 34, wednesday: 7-19, -1
+	day 36, friday: 7-15, Maternity
+	day 38, sunday: 19-7, Maternity
+	Week 7:
+	day 39, monday: 23-7, -1
+	day 41, wednesday: 7-15, Maternity
+	day 42, thursday: 23-7, Maternity
+	day 43, friday: 19-7, Labor
+	day 45, sunday: 7-15, Maternity
+	Week 8:
+	day 48, wednesday: 7-15, Labor
+	day 49, thursday: 7-15, Maternity
+	day 50, friday: 7-15, Labor
+	Week 9:
+	day 53, monday: 15-23, Labor
+	day 54, tuesday: 19-7, Maternity
+Employee AO: 264/264
+	Week 1:
+	day 1, friday: 19-7, -1
+	day 3, sunday: 19-7, Labor
+	Week 2:
+	day 4, monday: 23-7, Labor
+	day 7, thursday: 23-7, Maternity
+	day 9, saturday: 7-15, Labor
+	day 10, sunday: 23-7, Maternity
+	Week 3:
+	day 11, monday: 23-7, Maternity
+	day 12, tuesday: 23-7, Maternity
+	day 14, thursday: 19-7, -1
+	day 15, friday: 23-7, Maternity
+	Week 4:
+	day 18, monday: 15-23, Maternity
+	day 19, tuesday: 19-7, Maternity
+	day 23, saturday: 7-19, Labor
+	day 24, sunday: 7-19, Labor
+	Week 5:
+	day 26, tuesday: 23-7, Maternity
+	day 29, friday: 7-19, Labor
+	day 30, saturday: 7-15, Labor
+	day 31, sunday: 7-19, -1
+	Week 6:
+	day 35, thursday: 23-7, Maternity
+	day 37, saturday: 7-19, Labor
+	Week 7:
+	day 41, wednesday: 7-19, Labor
+	day 43, friday: 7-15, -1
+	day 44, saturday: 7-19, Maternity
+	day 45, sunday: 19-7, Maternity
+	Week 8:
+	day 51, saturday: 23-7, Labor
+	day 52, sunday: 23-7, Labor
+	Week 9:
+	day 55, wednesday: 23-7, -1
+Employee AP: 200/200
+	Week 1:
+	day 1, friday: 23-7, -1
+	Week 2:
+	day 4, monday: 7-15, Maternity
+	day 5, tuesday: 23-7, Maternity
+	day 8, friday: 23-7, Maternity
+	day 9, saturday: 23-7, Maternity
+	day 10, sunday: 23-7, Labor
+	Week 3:
+	day 15, friday: 23-7, Labor
+	day 17, sunday: 23-7, Labor
+	Week 4:
+	day 19, tuesday: 7-15, -1
+	Week 5:
+	day 25, monday: 23-7, Maternity
+	day 26, tuesday: 23-7, Labor
+	day 27, wednesday: 23-7, Maternity
+	day 29, friday: 23-7, -1
+	day 30, saturday: 23-7, Labor
+	day 31, sunday: 23-7, -1
+	Week 6:
+	day 34, wednesday: 7-15, Maternity
+	day 38, sunday: 7-15, Labor
+	Week 7:
+	day 40, tuesday: 15-23, Maternity
+	day 42, thursday: 23-7, Labor
+	day 43, friday: 23-7, Maternity
+	Week 8:
+	day 48, wednesday: 7-15, Maternity
+	day 50, friday: 23-7, Labor
+	day 51, saturday: 23-7, -1
+	day 52, sunday: 23-7, -1
+	Week 9:
+	day 54, tuesday: 23-7, -1
+Employee AQ: 264/264
+	Week 1:
+	day 1, friday: 23-7, -1
+	day 2, saturday: 23-7, Maternity
+	day 3, sunday: 23-7, Maternity
+	Week 2:
+	day 4, monday: 23-7, Labor
+	day 8, friday: 23-7, Labor
+	day 9, saturday: 23-7, Labor
+	day 10, sunday: 23-7, -1
+	Week 3:
+	day 13, wednesday: 7-15, -1
+	day 14, thursday: 23-7, -1
+	day 16, saturday: 23-7, Maternity
+	Week 4:
+	day 18, monday: 23-7, Maternity
+	day 20, wednesday: 23-7, Maternity
+	day 22, friday: 23-7, Labor
+	day 23, saturday: 23-7, Labor
+	day 24, sunday: 23-7, Maternity
+	Week 5:
+	day 25, monday: 23-7, Maternity
+	day 29, friday: 23-7, -1
+	day 30, saturday: 23-7, -1
+	day 31, sunday: 23-7, -1
+	Week 6:
+	day 32, monday: 23-7, Labor
+	day 37, saturday: 19-7, Maternity
+	Week 7:
+	day 41, wednesday: 23-7, Labor
+	day 43, friday: 23-7, -1
+	day 44, saturday: 19-7, Labor
+	Week 8:
+	day 46, monday: 23-7, Maternity
+	day 47, tuesday: 23-7, Labor
+	day 49, thursday: 23-7, Labor
+	day 50, friday: 23-7, -1
+	day 51, saturday: 23-7, -1
+	day 52, sunday: 23-7, -1
+	Week 9:
+	day 53, monday: 23-7, Labor
+	day 55, wednesday: 7-15, Maternity
+day 0, Labor:  day = 48/48, eve = 20/32, night = 24/32
+day 0, Maternity:  day = 48/48, eve = 0/32, night = 16/32
+day 1, Labor:  day = 40/48, eve = 24/32, night = 32/32
+day 1, Maternity:  day = 48/48, eve = 20/32, night = 32/32
+day 2, Labor:  day = 40/48, eve = 28/32, night = 24/32
+day 2, Maternity:  day = 40/48, eve = 28/32, night = 24/32
+day 3, Labor:  day = 32/48, eve = 28/32, night = 32/32
+day 3, Maternity:  day = 32/48, eve = 28/32, night = 32/32
+day 4, Labor:  day = 40/48, eve = 28/32, night = 32/32
+day 4, Maternity:  day = 48/48, eve = 4/32, night = 32/32
+day 5, Labor:  day = 48/48, eve = 28/32, night = 24/32
+day 5, Maternity:  day = 48/48, eve = 4/32, night = 24/32
+day 6, Labor:  day = 40/48, eve = 16/32, night = 24/32
+day 6, Maternity:  day = 48/48, eve = 12/32, night = 24/32
+day 7, Labor:  day = 40/48, eve = 24/32, night = 16/32
+day 7, Maternity:  day = 48/48, eve = 16/32, night = 24/32
+day 8, Labor:  day = 32/48, eve = 32/32, night = 32/32
+day 8, Maternity:  day = 32/48, eve = 32/32, night = 32/32
+day 9, Labor:  day = 32/48, eve = 16/32, night = 24/32
+day 9, Maternity:  day = 32/48, eve = 16/32, night = 24/32
+day 10, Labor:  day = 32/48, eve = 16/32, night = 32/32
+day 10, Maternity:  day = 40/48, eve = 16/32, night = 32/32
+day 11, Labor:  day = 24/48, eve = 24/32, night = 16/32
+day 11, Maternity:  day = 32/48, eve = 28/32, night = 24/32
+day 12, Labor:  day = 40/48, eve = 16/32, night = 24/32
+day 12, Maternity:  day = 48/48, eve = 24/32, night = 24/32
+day 13, Labor:  day = 48/48, eve = 16/32, night = 24/32
+day 13, Maternity:  day = 48/48, eve = 32/32, night = 24/32
+day 14, Labor:  day = 24/48, eve = 20/32, night = 32/32
+day 14, Maternity:  day = 32/48, eve = 16/32, night = 32/32
+day 15, Labor:  day = 32/48, eve = 24/32, night = 32/32
+day 15, Maternity:  day = 32/48, eve = 8/32, night = 32/32
+day 16, Labor:  day = 8/48, eve = 16/32, night = 24/32
+day 16, Maternity:  day = 16/48, eve = 16/32, night = 32/32
+day 17, Labor:  day = 24/48, eve = 28/32, night = 24/32
+day 17, Maternity:  day = 24/48, eve = 28/32, night = 24/32
+day 18, Labor:  day = 32/48, eve = 20/32, night = 16/32
+day 18, Maternity:  day = 40/48, eve = 28/32, night = 24/32
+day 19, Labor:  day = 48/48, eve = 20/32, night = 32/32
+day 19, Maternity:  day = 48/48, eve = 20/32, night = 32/32
+day 20, Labor:  day = 48/48, eve = 24/32, night = 32/32
+day 20, Maternity:  day = 48/48, eve = 28/32, night = 24/32
+day 21, Labor:  day = 40/48, eve = 20/32, night = 32/32
+day 21, Maternity:  day = 24/48, eve = 32/32, night = 32/32
+day 22, Labor:  day = 32/48, eve = 24/32, night = 32/32
+day 22, Maternity:  day = 32/48, eve = 28/32, night = 32/32
+day 23, Labor:  day = 32/48, eve = 20/32, night = 24/32
+day 23, Maternity:  day = 32/48, eve = 24/32, night = 24/32
+day 24, Labor:  day = 40/48, eve = 20/32, night = 16/32
+day 24, Maternity:  day = 40/48, eve = 16/32, night = 24/32
+day 25, Labor:  day = 40/48, eve = 20/32, night = 32/32
+day 25, Maternity:  day = 48/48, eve = 20/32, night = 24/32
+day 26, Labor:  day = 32/48, eve = 24/32, night = 24/32
+day 26, Maternity:  day = 32/48, eve = 24/32, night = 24/32
+day 27, Labor:  day = 32/48, eve = 28/32, night = 32/32
+day 27, Maternity:  day = 32/48, eve = 12/32, night = 32/32
+day 28, Labor:  day = 32/48, eve = 16/32, night = 32/32
+day 28, Maternity:  day = 40/48, eve = 20/32, night = 32/32
+day 29, Labor:  day = 48/48, eve = 20/32, night = 32/32
+day 29, Maternity:  day = 48/48, eve = 20/32, night = 32/32
+day 30, Labor:  day = 40/48, eve = 28/32, night = 32/32
+day 30, Maternity:  day = 40/48, eve = 20/32, night = 32/32
+day 31, Labor:  day = 48/48, eve = 20/32, night = 32/32
+day 31, Maternity:  day = 48/48, eve = 16/32, night = 32/32
+day 32, Labor:  day = 32/48, eve = 24/32, night = 32/32
+day 32, Maternity:  day = 40/48, eve = 12/32, night = 32/32
+day 33, Labor:  day = 16/48, eve = 16/32, night = 32/32
+day 33, Maternity:  day = 24/48, eve = 16/32, night = 24/32
+day 34, Labor:  day = 32/48, eve = 28/32, night = 32/32
+day 34, Maternity:  day = 40/48, eve = 32/32, night = 24/32
+day 35, Labor:  day = 32/48, eve = 20/32, night = 24/32
+day 35, Maternity:  day = 24/48, eve = 28/32, night = 32/32
+day 36, Labor:  day = 24/48, eve = 20/32, night = 32/32
+day 36, Maternity:  day = 32/48, eve = 24/32, night = 32/32
+day 37, Labor:  day = 40/48, eve = 16/32, night = 32/32
+day 37, Maternity:  day = 40/48, eve = 24/32, night = 16/32
+day 38, Labor:  day = 32/48, eve = 16/32, night = 24/32
+day 38, Maternity:  day = 32/48, eve = 20/32, night = 32/32
+day 39, Labor:  day = 40/48, eve = 20/32, night = 32/32
+day 39, Maternity:  day = 32/48, eve = 28/32, night = 32/32
+day 40, Labor:  day = 40/48, eve = 20/32, night = 24/32
+day 40, Maternity:  day = 32/48, eve = 24/32, night = 24/32
+day 41, Labor:  day = 40/48, eve = 28/32, night = 16/32
+day 41, Maternity:  day = 40/48, eve = 20/32, night = 16/32
+day 42, Labor:  day = 16/48, eve = 24/32, night = 32/32
+day 42, Maternity:  day = 16/48, eve = 8/32, night = 32/32
+day 43, Labor:  day = 48/48, eve = 24/32, night = 32/32
+day 43, Maternity:  day = 48/48, eve = 24/32, night = 32/32
+day 44, Labor:  day = 40/48, eve = 24/32, night = 24/32
+day 44, Maternity:  day = 48/48, eve = 24/32, night = 8/32
+day 45, Labor:  day = 32/48, eve = 28/32, night = 16/32
+day 45, Maternity:  day = 40/48, eve = 20/32, night = 16/32
+day 46, Labor:  day = 32/48, eve = 16/32, night = 24/32
+day 46, Maternity:  day = 32/48, eve = 16/32, night = 32/32
+day 47, Labor:  day = 32/48, eve = 16/32, night = 32/32
+day 47, Maternity:  day = 40/48, eve = 16/32, night = 32/32
+day 48, Labor:  day = 40/48, eve = 28/32, night = 24/32
+day 48, Maternity:  day = 48/48, eve = 24/32, night = 24/32
+day 49, Labor:  day = 32/48, eve = 20/32, night = 24/32
+day 49, Maternity:  day = 24/48, eve = 24/32, night = 24/32
+day 50, Labor:  day = 32/48, eve = 28/32, night = 32/32
+day 50, Maternity:  day = 32/48, eve = 28/32, night = 32/32
+day 51, Labor:  day = 32/48, eve = 20/32, night = 32/32
+day 51, Maternity:  day = 32/48, eve = 16/32, night = 32/32
+day 52, Labor:  day = 32/48, eve = 16/32, night = 32/32
+day 52, Maternity:  day = 40/48, eve = 24/32, night = 32/32
+day 53, Labor:  day = 40/48, eve = 28/32, night = 24/32
+day 53, Maternity:  day = 40/48, eve = 28/32, night = 24/32
+day 54, Labor:  day = 32/48, eve = 8/32, night = 32/32
+day 54, Maternity:  day = 32/48, eve = 12/32, night = 32/32
+day 55, Labor:  day = 32/48, eve = 16/32, night = 32/32
+day 55, Maternity:  day = 40/48, eve = 16/32, night = 32/32
